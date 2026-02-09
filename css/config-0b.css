@@ -108,25 +108,38 @@ canvas {
   flex-shrink: 0;
 }
 
-
 .vpn-hint{
   font-family: sans-serif;
   position: relative;
   display:flex;
   align-items:center;
   justify-content:center;
-  gap: 14px;
-  margin-bottom: 14px;
-  font-size: 2.2rem;      /* chỉnh theo layout của bạn */
+  gap: clamp(8px, 1.2vw, 16px);
+  margin-bottom: clamp(8px, 1.2vw, 14px);
+
+  /* ✅ responsive chữ */
+  font-size: clamp(28px, 4.6vw, 78px);
   font-weight: 700;
   line-height: 1;
-  color: white;
+  color: #fff;
+
+  /* ✅ tránh rớt dòng */
+  white-space: nowrap;
+  max-width: 95vw;
+  overflow: hidden;
 }
 
 .vpn-icon{
-  height: 1.3em;          /* icon cao theo chữ */
+  /* ✅ bám theo chiều cao chữ (cùng dòng) */
+  height: 0.95em;
   width: auto;
+
+  /* ✅ giới hạn để không quá to */
+  max-height: 1.05em;
+  max-width: clamp(110px, 18vw, 260px);
+
   display: inline-block;
+  flex: 0 0 auto;
   vertical-align: middle;
   object-fit: contain;
 }
