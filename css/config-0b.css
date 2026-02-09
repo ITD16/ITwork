@@ -110,6 +110,8 @@ canvas {
 
 
 .vpn-hint{
+  font-family: sans-serif;
+  position: relative;
   display:flex;
   align-items:center;
   justify-content:center;
