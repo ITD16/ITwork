@@ -87,7 +87,7 @@ canvas {
   pointer-events: none;
   overflow: hidden;
   position: relative;
-  margin-top: 8vh;
+  margin-top: 12vh;
 }
 
 #clock-line {
