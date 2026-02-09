@@ -13,7 +13,7 @@
 
   <!-- Hai dòng domain, sẽ được gán text bằng JS -->
    <div class="content">
-       <div class="vpn-hint autofit">
+       <div class="vpn-hint">
     <span>Tải</span>
       <img class="vpn-icon" src="../img/1111-t.png" alt="1.1.1.1" />
     <span>để truy cập</span>
@@ -54,7 +54,7 @@ async function applyConfig() {
 
     document.getElementById("domain1").textContent = d0;
     document.getElementById("domain2").textContent = d1;
-    autoFitText();
+    if (window.autoFitText2) window.autoFitText2();
 
     // Bật pháo hoa
     if (cfg.enableFirework === true && !window._fireworkStarted) {
@@ -68,7 +68,7 @@ async function applyConfig() {
 }
 
 // Lần đầu
-applyConfig();
+if (window.autoFitText2) window.autoFitText2();
 
 // Reload config mỗi 10s
 setInterval(applyConfig, 10000);
@@ -83,5 +83,6 @@ setInterval(applyConfig, 10000);
 
   <!-- Tự động co chữ theo độ dài -->
   <script src="../js/autofit.js" defer></script>
+  <script src="../js/autofit-2.js" defer></script>
 </body>
 </html>
