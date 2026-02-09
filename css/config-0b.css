@@ -108,25 +108,35 @@ canvas {
   flex-shrink: 0;
 }
 .vpn-hint{
-  position: relative;
   display: inline-flex;
-  align-items: center;      /* canh giữa theo trục dọc */
+  align-items: center;
   justify-content: center;
   white-space: nowrap;
-  gap: 0.35em;              /* khoảng cách cũng theo font-size */
-  line-height: 1;           /* quan trọng: line-height gọn */
+  gap: 0.35em;
+  line-height: 1;
   color: #fff;
 
-  /* nếu bạn muốn responsive: */
+  /* nếu bạn đang dùng clamp thì giữ, hoặc dùng cái này */
   font-size: clamp(28px, 4.6vw, 78px);
+
+  /* ✅ đẩy cả dòng lên một chút */
+  transform: translateY(-0.06em);
 }
 
-.vpn-icon{
-  height: 1em !important;   /* ✅ luôn = chiều cao chữ */
-  width: auto !important;
+/* ✅ khung cắt theo đúng chiều cao chữ */
+.vpn-icon-wrap{
+  height: 1em;          /* = chiều cao chữ */
   display: inline-block;
+  overflow: hidden;     /* cắt phần thừa trên/dưới */
+  vertical-align: -0.08em; /* canh baseline đẹp hơn */
+}
+
+/* ✅ phóng nhẹ và kéo lên để “ăn” padding trong ảnh */
+.vpn-icon{
+  height: 1.35em;       /* lớn hơn wrapper để có phần bị cắt */
+  width: auto;
+  display: block;       /* tránh khoảng trống inline-img */
   object-fit: contain;
 
-  /* tránh bị co giãn bởi flex */
-  flex: 0 0 auto;
+  transform: translateY(-0.18em);  /* ✅ đẩy ảnh lên */
 }
