@@ -107,3 +107,23 @@ canvas {
   width: 1.5em;   /* ~ 1 tab thị giác */
   flex-shrink: 0;
 }
+
+
+.vpn-hint{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap: 14px;
+  margin-bottom: 14px;
+  font-size: 2.2rem;      /* chỉnh theo layout của bạn */
+  font-weight: 700;
+  line-height: 1;
+}
+
+.vpn-icon{
+  height: 1.3em;          /* icon cao theo chữ */
+  width: auto;
+  display: inline-block;
+  vertical-align: middle;
+  object-fit: contain;
+}
