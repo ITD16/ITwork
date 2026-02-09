@@ -14,15 +14,14 @@
   <!-- Hai dòng domain, sẽ được gán text bằng JS -->
    <div class="content">
      <div class="vpn-hint">
-      <span>Tải</span>
-      <span class="vpn-icon-wrap">
+        <span>Tải</span>
         <img class="vpn-icon" src="../img/1111-t.png" alt="1.1.1.1" />
-      </span>
-      <span>để truy cập</span>
-    </div>
+        <span>để truy cập</span>
+        </div>
 
-    <h1 class="autofit" id="domain1"></h1>
-    <h1 class="autofit" id="domain2"></h1>
+
+    <h1 class="autofit" id="domain1">HITCLUB.SX</h1>
+    <h1 class="autofit" id="domain2">GO88.MN</h1>
     <!-- Đồng hồ GMT+7 -->
     <div id="clock-container">
       <div id="clock-line">--:--:-- - --/--/----</div>
@@ -57,7 +56,8 @@ async function applyConfig() {
 
     document.getElementById("domain1").textContent = d0;
     document.getElementById("domain2").textContent = d1;
-    if (window.autoFitText2) window.autoFitText2();
+    autoFitText();
+
 
     // Bật pháo hoa
     if (cfg.enableFirework === true && !window._fireworkStarted) {
@@ -86,6 +86,5 @@ setInterval(applyConfig, 10000);
 
   <!-- Tự động co chữ theo độ dài -->
   <script src="../js/autofit.js" defer></script>
-  <script src="../js/autofit-2.js" defer></script>
 </body>
 </html>
