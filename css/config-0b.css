@@ -107,31 +107,33 @@ canvas {
   width: 1.5em;   /* ~ 1 tab thị giác */
   flex-shrink: 0;
 }
-
 .vpn-hint{
-  position: relative;          /* ✅ có ; */
-  align-items: center;
-  text-align: center;
+  position: relative;
+  width: 95vw;                 /* ✅ cho phép trải dài */
+  display: flex;
+  align-items: center;         /* ✅ cùng hàng */
   justify-content: center;
-  white-space: nowrap;
   gap: 0.35em;
+  white-space: nowrap;
   line-height: 1;
   color: #fff;
-  font-family:  sans-serif;
+  font-family: sans-serif;
   font-weight: 700;
-
-  /* size riêng cho dòng đầu */
-  font-size: clamp(22px, 3.2vw, 60px);
-
-  /* đẩy lên nhẹ nếu cần */
-  transform: translateY(-0.08em);
 }
 
+/* wrapper = chiều cao chữ => icon luôn “cùng cỡ chữ” */
+.vpn-icon-wrap{
+  height: 1em;
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;            /* ✅ cắt padding thừa nếu có */
+}
+
+/* icon bám theo chữ */
 .vpn-icon{
-  height: 0.9em;               /* cao ngang chữ */
+  height: 1.35em;              /* lớn hơn wrap để crop trên/dưới */
   width: auto;
-  display: inline-block;
-  vertical-align: middle;
+  display: block;
   object-fit: contain;
-  flex: 0 0 auto;
+  transform: translateY(-0.18em); /* ✅ đẩy lên nhẹ (tùy PNG) */
 }
