@@ -109,25 +109,30 @@ canvas {
 }
 
 .vpn-hint{
-  position: relative;
+  position: relative;          /* ✅ có ; */
   display: inline-flex;
-  align-items: center;      /* canh giữa theo trục dọc */
+  align-items: center;
+  text-align: center;
   justify-content: center;
   white-space: nowrap;
-  gap: 0.35em;              /* khoảng cách cũng theo font-size */
-  line-height: 1;           /* quan trọng: line-height gọn */
+  gap: 0.35em;
+  line-height: 1;
   color: #fff;
+  font-family:  sans-serif;
+  font-weight: 700;
 
-  /* nếu bạn muốn responsive: */
-  font-size: clamp(28px, 4.6vw, 78px);
+  /* size riêng cho dòng đầu */
+  font-size: clamp(22px, 3.2vw, 60px);
+
+  /* đẩy lên nhẹ nếu cần */
+  transform: translateY(-0.08em);
 }
 
 .vpn-icon{
-  height: 0.9em !important;   /* ✅ luôn = chiều cao chữ */
-  width: auto !important;
+  height: 0.9em;               /* cao ngang chữ */
+  width: auto;
   display: inline-block;
+  vertical-align: middle;
   object-fit: contain;
-
-  /* tránh bị co giãn bởi flex */
   flex: 0 0 auto;
 }
