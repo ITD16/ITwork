@@ -1,1 +1,90 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HIT</title>
+  <link rel="stylesheet" href="../css/config-0b.css">
+</head>
+<body>
+  <!-- gọi chạy pháo hoa -->
+  <canvas id="canvas"></canvas>
+
+  <!-- Hai dòng domain, sẽ được gán text bằng JS -->
+   <div class="content">
+     <div class="vpn-hint">
+      <span>Tải</span>
+      <span class="vpn-icon-wrap">
+        <img class="vpn-icon" src="../img/1111-t.png" alt="1.1.1.1" />
+      </span>
+      <span>để truy cập</span>
+    </div>
+
+    <h1 class="autofit" id="domain1"></h1>
+    <h1 class="autofit" id="domain2"></h1>
+    <!-- Đồng hồ GMT+7 -->
+    <div id="clock-container">
+      <div id="clock-line">--:--:-- - --/--/----</div>
+    </div>
+   </div>
+
+
+
+  
+  <script src="../js/firework.js"></script>
+  <script src="../js/oclock.js"></script>
+    <script>
+const CONFIG_URL = "../config.json";
+
+let lastDomainsKey = null;
+
+async function applyConfig() {
+  try {
+    const res = await fetch(CONFIG_URL + "?t=" + Date.now(), { cache: "no-cache" });
+    if (!res.ok) throw new Error("Không load được config.json");
+
+    const cfg = await res.json();
+    const domains = Array.isArray(cfg.domains0b) ? cfg.domains0b : [];
+    const d0 = domains[0] || "";
+    const d1 = domains[1] || "";
+
+    // Tạo key để so sánh
+    const key = d0 + "|" + d1;
+    if (key === lastDomainsKey) return; // không đổi => không update DOM
+
+    lastDomainsKey = key;
+
+    document.getElementById("domain1").textContent = d0;
+    document.getElementById("domain2").textContent = d1;
+    if (window.autoFitText2) window.autoFitText2();
+
+    // Bật pháo hoa
+    if (cfg.enableFirework === true && !window._fireworkStarted) {
+      window._fireworkStarted = true;
+      startFirework();
+    }
+
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+// Lần đầu
+applyConfig();
+
+// Reload config mỗi 10s
+setInterval(applyConfig, 10000);
+</script>
+
+
+
+  <!-- Chạy script Double Fullscreen -->
+  <script src="../js/fullscreen.js"></script> 
+  
+
+
+  <!-- Tự động co chữ theo độ dài -->
+  <script src="../js/autofit-0b.js" defer></script>
+</body>
+</html>
