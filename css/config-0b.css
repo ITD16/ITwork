@@ -81,6 +81,7 @@ canvas {
 /* Xử lý đồng hồ */
 
 #clock-container {
+  margin-top: 8vh;
   display: inline-block;
   width: 100%;
   text-align: center;
@@ -108,7 +109,6 @@ canvas {
   flex-shrink: 0;
 }
 .vpn-hint{
-    
   margin: 0 auto;
   position: relative;
   width: 95vw; 
