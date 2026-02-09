@@ -40,25 +40,39 @@
     }
   }
 
-  function autoFit2() {
-    // 1) Domain: ưu tiên lớn (chủ đạo)
-    fitGroup("#domain1, #domain2", {
-      maxWidthRatio: 0.95,
-      maxHeightRatio: 0.50, // mỗi dòng domain được phép cao hơn chút
-      start: 260,           // cho phép thử to hơn 220
-      min: 24,
-      step: 1,
-    });
+function autoFit2() {
+  // 1) Fit DOMAIN: ưu tiên lớn nhất có thể
+  fitGroup("#domain1, #domain2", {
+    maxWidthRatio: 0.95,
+    maxHeightRatio: 0.50,
+    start: 320,
+    min: 24,
+    step: 1,
+  });
 
-    // 2) Hint: nhỏ hơn domain, không kéo domain xuống
-    fitGroup(".vpn-hint", {
-      maxWidthRatio: 0.95,
-      maxHeightRatio: 0.12, // chỉ chiếm ít chiều cao
-      start: 90,
-      min: 18,
-      step: 1,
-    });
+  // 2) Dòng đầu: lấy theo % size domain (to hơn hiện tại)
+  const hint = document.querySelector(".vpn-hint");
+  const d1 = document.querySelector("#domain1");
+  if (!hint || !d1) return;
+
+  const domainSize = parseFloat(getComputedStyle(d1).fontSize) || 120;
+
+  // ✅ CHỈNH TỈ LỆ Ở ĐÂY:
+  // 0.32 = 32% size domain; tăng lên 0.36 / 0.40 nếu muốn dòng đầu to hơn nữa
+  let hintSize = Math.round(domainSize * 0.34);
+
+  // Giới hạn để không quá bé / quá khổng lồ
+  hintSize = Math.max(22, Math.min(hintSize, 90));
+
+  hint.style.fontSize = hintSize + "px";
+
+  // 3) Nếu dòng đầu bị tràn ngang => giảm dần đến khi vừa
+  const maxWidth = window.innerWidth * 0.95;
+  while (hintSize > 18 && hint.scrollWidth > maxWidth) {
+    hintSize--;
+    hint.style.fontSize = hintSize + "px";
   }
+}
 
   window.addEventListener("load", autoFit2);
   window.addEventListener("resize", autoFit2);
