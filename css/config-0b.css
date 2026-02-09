@@ -126,13 +126,3 @@ canvas {
   font-size: clamp(100px, 4.6vw, 120px);
   
 }
-
-.vpn-icon{
-  height: 1em !important;   /* ✅ luôn = chiều cao chữ */
-  width: auto !important;
-  display: inline-block;
-  object-fit: contain;
-
-  /* tránh bị co giãn bởi flex */
-  flex: 0 0 auto;
-}
