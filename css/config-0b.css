@@ -120,6 +120,7 @@ canvas {
   font-size: 2.2rem;      /* chỉnh theo layout của bạn */
   font-weight: 700;
   line-height: 1;
+  color: white;
 }
 
 .vpn-icon{
