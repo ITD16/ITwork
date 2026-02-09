@@ -34,6 +34,10 @@ body {
   gap: 2vh;
 }
 
+.content{
+  margin-top: 2vh;
+}
+
 /* H1: font Impact, màu cam, responsive size */
 
  h1.old {
@@ -81,7 +85,6 @@ canvas {
 /* Xử lý đồng hồ */
 
 #clock-container {
-  margin-top: 8vh;
   display: inline-block;
   width: 100%;
   text-align: center;
@@ -109,7 +112,7 @@ canvas {
   flex-shrink: 0;
 }
 .vpn-hint{
-  margin: 0 auto;
+  margin-bottom: 2vh;
   position: relative;
   width: 95vw; 
   text-align: center;
@@ -121,6 +124,7 @@ canvas {
   font-family: sans-serif;
   /* nếu bạn muốn responsive: */
   font-size: clamp(100px, 4.6vw, 120px);
+  
 }
 
 .vpn-icon{
