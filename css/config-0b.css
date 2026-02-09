@@ -110,7 +110,6 @@ canvas {
 
 .vpn-hint{
   position: relative;          /* ✅ có ; */
-  display: inline-flex;
   align-items: center;
   text-align: center;
   justify-content: center;
