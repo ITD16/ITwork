@@ -3,7 +3,7 @@ function autoFitText() {
   const maxWidth = window.innerWidth * 0.95;
   const maxHeight = window.innerHeight * 0.45; // Mỗi dòng chiếm khoảng 45% chiều cao
 
-  let fontSize = 220;
+  let fontSize = 150;
 
   // Gán fontSize lớn nhất ban đầu
   elements.forEach(el => el.style.fontSize = fontSize + 'px');
