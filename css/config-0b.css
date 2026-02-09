@@ -129,4 +129,6 @@ canvas {
 }
 .vpn-1111{
   color: #fa4120;
+  
+  font-size: clamp(110px, 4.6vw, 130px);
 }
