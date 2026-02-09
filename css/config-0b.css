@@ -109,7 +109,7 @@ canvas {
 }
 
 .vpn-hint{
-  position:relative
+  position: relative;
   display: inline-flex;
   align-items: center;      /* canh giữa theo trục dọc */
   justify-content: center;
