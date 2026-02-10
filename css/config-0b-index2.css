@@ -80,6 +80,10 @@ body {
   line-height: 0.9;
 }
 
+#domain1{
+  margin-top: 30px;
+}
+
 canvas {
   position: fixed;
   top: 0;
@@ -101,7 +105,7 @@ canvas {
   pointer-events: none;
   overflow: hidden;
   position: relative;
-  margin-top: 30px;
+  margin-top: 60px;
 }
 
 #clock-line {
@@ -134,10 +138,11 @@ canvas {
   font-weight: 900;
   font-family: sans-serif;
   /* nếu bạn muốn responsive: */
-  font-size: clamp(120px, 5.1vw, 140px);
+  font-size: clamp(110px, 5.1vw, 130px);
   
 }
 .vpn-1111{
   color: #FF2525;
-  font-size: clamp(120px, 5.2vw, 140px);
+  border: 4px solid #fff;
+  font-size: clamp(130px, 5.2vw, 150px);
 }
