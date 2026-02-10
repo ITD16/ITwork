@@ -138,12 +138,10 @@ canvas {
   font-weight: 900;
   font-family: sans-serif;
   /* nếu bạn muốn responsive: */
-  font-size: clamp(110px, 5.1vw, 130px);
+  font-size: clamp(110px, 4.9vw, 125px);
   
 }
 .vpn-1111{
   color: #FF2525;
-  font-size: clamp(130px, 5.2vw, 150px);
-  text-stroke: 4px white;
-  -webkit-text-stroke: 4px white;
+  font-size: clamp(150px, 5.4vw, 160px);
 }
