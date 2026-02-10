@@ -77,6 +77,7 @@ body {
   position: relative;
   text-align: center;
   font-size: clamp(32px, 14vw, 220px);
+  line-height: 0.9;
 }
 
 canvas {
@@ -94,6 +95,7 @@ canvas {
 /* Xử lý đồng hồ */
 
 #clock-container {
+  margin-top: 10px;
   display: inline-block;
   width: 100%;
   text-align: center;
