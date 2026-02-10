@@ -130,14 +130,13 @@ canvas {
   gap: 0.35em;              /* khoảng cách cũng theo font-size */
   line-height: 1;           /* quan trọng: line-height gọn */
   color: #fff;
-  font-weight: 700;
+  font-weight: 900;
   font-family: sans-serif;
   /* nếu bạn muốn responsive: */
-  font-size: clamp(110px, 5.1vw, 130px);
+  font-size: clamp(120px, 5.1vw, 140px);
   
 }
 .vpn-1111{
-  color: #fa4120;
-  
+  color: #FF2525;
   font-size: clamp(120px, 5.2vw, 140px);
 }
