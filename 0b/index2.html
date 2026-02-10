@@ -34,6 +34,31 @@
   <script src="../js/firework.js"></script>
   <script src="../js/oclock.js"></script>
   <!-- Chạy script Double Fullscreen -->
+
+      <script>
+const CONFIG_URL = "../config.json";
+
+let lastDomainsKey = null;
+
+async function applyConfig() {
+  try {
+    // Bật pháo hoa
+    if (cfg.enableFirework === true && !window._fireworkStarted) {
+      window._fireworkStarted = true;
+      startFirework();
+    }
+
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+        
+// Lần đầu
+applyConfig();
+</script>
+
+  
   <script src="../js/fullscreen.js"></script> 
 
   <!-- Tự động co chữ theo độ dài -->
