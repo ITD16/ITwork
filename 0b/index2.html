@@ -41,16 +41,8 @@ const CONFIG_URL = "../config.json";
 let lastDomainsKey = null;
 
 async function applyConfig() {
-  try {
-    // Bật pháo hoa
-    if (cfg.enableFirework === true && !window._fireworkStarted) {
-      window._fireworkStarted = true;
-      startFirework();
-    }
-
-  } catch (e) {
-    console.error(e);
-  }
+  window._fireworkStarted = true;
+  startFirework();
 }
 
         
