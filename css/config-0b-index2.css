@@ -101,7 +101,7 @@ canvas {
   pointer-events: none;
   overflow: hidden;
   position: relative;
-  
+  margin-top: 30px;
 }
 
 #clock-line {
@@ -114,7 +114,6 @@ canvas {
   font-size: 6.5rem;
   color: #ffffff;
   line-height: 1.2;
-  margin-top: 10px;
 }
 
 /* khoảng cách tương đương 1 tab */
