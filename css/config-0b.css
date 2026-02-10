@@ -111,24 +111,3 @@ canvas {
   width: 1.5em;   /* ~ 1 tab thị giác */
   flex-shrink: 0;
 }
-.vpn-hint{
-  margin-bottom: 2vh;
-  position: relative;
-  width: 95vw; 
-  text-align: center;
-  align-items: center;    
-  white-space: nowrap;
-  gap: 0.35em;              /* khoảng cách cũng theo font-size */
-  line-height: 1;           /* quan trọng: line-height gọn */
-  color: #fff;
-  font-weight: 700;
-  font-family: sans-serif;
-  /* nếu bạn muốn responsive: */
-  font-size: clamp(100px, 4.6vw, 120px);
-  
-}
-.vpn-1111{
-  color: #fa4120;
-  
-  font-size: clamp(110px, 4.6vw, 130px);
-}
