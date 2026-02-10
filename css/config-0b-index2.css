@@ -70,6 +70,13 @@ body {
   overflow: hidden;
 }
 
+#domain1, #domain2{
+  color: #f5d622;
+  position: relative;
+  text-align: center;
+  font-size: clamp(32px, 14vw, 220px);
+}
+
 canvas {
   position: fixed;
   top: 0;
