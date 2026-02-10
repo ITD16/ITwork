@@ -81,7 +81,7 @@ body {
 }
 
 #domain1{
-  margin-top: 30px;
+  margin-top: 40px;
 }
 
 canvas {
@@ -105,7 +105,7 @@ canvas {
   pointer-events: none;
   overflow: hidden;
   position: relative;
-  margin-top: 50px;
+  margin-top: 40px;
 }
 
 #clock-line {
