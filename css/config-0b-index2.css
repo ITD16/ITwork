@@ -144,4 +144,6 @@ canvas {
 .vpn-1111{
   color: #FF2525;
   font-size: clamp(130px, 5.2vw, 150px);
+  text-stroke: 4px white;
+  -webkit-text-stroke: 4px white;
 }
