@@ -74,7 +74,6 @@ body {
   font-family: 'ImpactLocal', Impact, sans-serif;
   color: #ff3c00;
   font-weight: 900;
-  font-family: sans-serif;
   position: relative;
   text-align: center;
   font-size: clamp(32px, 14vw, 220px);
