@@ -71,6 +71,7 @@ body {
 }
 
 #domain1, #domain2{
+  font-family: 'ImpactLocal', Impact, sans-serif;
   color: #ff3c00;
   font-weight: 900;
   font-family: sans-serif;
