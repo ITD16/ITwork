@@ -145,6 +145,6 @@ canvas {
   color: #fff2bf;
   font-weight: 900;
   font-size: clamp(150px, 5.4vw, 160px);
-  text-stroke: 5px #FF2525;
-  -webkit-text-stroke: 5px #FF2525;
+  text-stroke: 5px #fff2bf;
+  -webkit-text-stroke: 5px #fff2bf;
 }
