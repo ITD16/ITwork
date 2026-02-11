@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HIT</title>
+  <link rel="stylesheet" href="../css//config-0b-index2.css">
+</head>
+<body>
+  <!-- gọi chạy pháo hoa -->
+  <canvas id="canvas"></canvas>
+
+  <!-- Hai dòng domain, sẽ được gán text bằng JS -->
+   <div class="content">
+     <div class="vpn-hint">
+         <span>Tải</span>
+         <span class="vpn-1111"> 1.1.1.1 </span>
+         <span>để truy cập</span>
+      </div>
+
+
+    <h1 id="domain1">SUN.WIN</h1>
+    <h1 id="domain2">GEM.WIN</h1>
+    <!-- Đồng hồ GMT+7 -->
+    <div id="clock-container">
+      <div id="clock-line">--:--:-- - --/--/----</div>
+    </div>
+   </div> 
+  <script src="../js/firework.js"></script>
+  <script src="../js/oclock.js"></script>
+  <!-- Chạy script Double Fullscreen -->
+
+      <script>
+const CONFIG_URL = "../config.json";
+
+let lastDomainsKey = null;
+
+async function applyConfig() {
+  window._fireworkStarted = true;
+  startFirework();
+}
+
+        
+// Lần đầu
+applyConfig();
+</script>
+
+  
+  <script src="../js/fullscreen.js"></script> 
+
+  <!-- Tự động co chữ theo độ dài -->
+  <script src="../js/autofit.js" defer></script>
+</body>
+</html>
