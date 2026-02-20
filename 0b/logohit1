@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Domain</title>
+
+<style>
+@font-face{
+  font-family:"SF Pro Display";
+  src:url("../font/SFPRODISPLAYBOLD.OTF") format("opentype");
+  font-weight:700;
+}
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  background:transparent;
+  overflow:hidden;
+}
+svg{width:100%;height:100%;}
+</style>
+</head>
+
+<body>
+
+<svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid meet">
+<defs>
+
+<!-- ===== THÂN CHỮ: VÀNG KEM ===== -->
+<linearGradient id="brownGoldFill" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%"   stop-color="#fff4c9"/>
+  <stop offset="40%"  stop-color="#ffe7a3"/>
+  <stop offset="70%"  stop-color="#f7d887"/>
+  <stop offset="100%" stop-color="#eac66d"/>
+</linearGradient>
+
+<!-- ===== VIỀN VÀNG KEM (KHÔNG CHÁY SÁNG) ===== -->
+<linearGradient id="goldMetal" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%"   stop-color="#ffeab3"/>
+  <stop offset="40%"  stop-color="#ffd97a"/>
+  <stop offset="70%"  stop-color="#e6c16a"/>
+  <stop offset="100%" stop-color="#cfa24a"/>
+</linearGradient>
+
+<!-- ===== BÓNG ĐỔ ĐÈN CHIẾU NHẸ ===== -->
+<filter id="softLampShadow" x="-30%" y="-30%" width="160%" height="160%">
+  <feDropShadow
+    dx="0"
+    dy="8"
+    stdDeviation="7"
+    flood-color="rgba(0,0,0,0.42)"/>
+</filter>
+
+<!-- ===== GLOW MỀM (ỔN ĐỊNH KHI STREAM) ===== -->
+<filter id="goldGlow" x="-40%" y="-40%" width="180%" height="180%">
+  <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#ffd97a" flood-opacity="0.55"/>
+</filter>
+
+</defs>
+
+<!-- ===== GIỮ NGUYÊN CẤU TRÚC GROUP (CHỈ BỎ SCALE Y GÂY MÉO FONT) ===== -->
+<g font-family="SF Pro Display, system-ui"
+   font-weight="700"
+   text-anchor="middle"
+   stroke-linejoin="round"
+   stroke-linecap="round"
+   transform="translate(0,140)">
+
+  <!-- ================= HITCLUB ================= -->
+
+  <!-- Viền ngoài vàng -->
+  <text x="960" y="520"
+        font-size="205"
+        letter-spacing="0.13em"
+        fill="none"
+        stroke="url(#goldMetal)"
+        stroke-width="18"
+        filter="url(#goldGlow)"
+        class="hitclub autofit">
+  </text>
+
+  <!-- Viền chính -->
+  <text x="960" y="520"
+        font-size="205"
+        letter-spacing="0.13em"
+        fill="none"
+        stroke="url(#goldMetal)"
+        stroke-width="10"
+        class="hitclub autofit">
+  </text>
+
+  <!-- Thân chữ (FIX bệt chữ M + nét hơn khi live) -->
+  <text x="960" y="520"
+        font-size="205"
+        letter-spacing="0.13em"
+        fill="url(#brownGoldFill)"
+        stroke="#d6b45f"
+        stroke-width="4"
+        paint-order="fill stroke"
+        filter="url(#softLampShadow)"
+        class="hitclub autofit">
+  </text>
+
+  <!-- ================= GO88 ================= -->
+
+  <!-- Viền ngoài vàng -->
+  <text x="960" y="759"
+        font-size="205"
+        letter-spacing="0.09em"
+        fill="none"
+        stroke="url(#goldMetal)"
+        stroke-width="18"
+        filter="url(#goldGlow)"
+        class="go88 autofit">
+  </text>
+
+  <!-- Viền chính -->
+  <text x="960" y="759"
+        font-size="205"
+        letter-spacing="0.09em"
+        fill="none"
+        stroke="url(#goldMetal)"
+        stroke-width="10"
+        class="go88 autofit">
+  </text>
+
+  <!-- Thân chữ (FIX lỗi chữ M, N, W khi render OBS/vMix) -->
+  <text x="960" y="759"
+        font-size="205"
+        letter-spacing="0.09em"
+        fill="url(#brownGoldFill)"
+        stroke="#d6b45f"
+        stroke-width="4"
+        paint-order="fill stroke"
+        filter="url(#softLampShadow)"
+        class="go88 autofit">
+  </text>
+
+</g>
+</svg>
+
+<script>
+const CONFIG_URL = "../config.json";
+let lastDomainsKey = null;
+
+async function applyConfig() {
+  try {
+    const res = await fetch(CONFIG_URL + "?t=" + Date.now(), { cache: "no-cache" });
+    if (!res.ok) throw new Error("Không load được config.json");
+
+    const cfg = await res.json();
+    const domains = Array.isArray(cfg.domains0b) ? cfg.domains0b : [];
+    const d0 = domains[0] || "";
+    const d1 = domains[1] || "";
+
+    const key = d0 + "|" + d1;
+    if (key === lastDomainsKey) return;
+
+    lastDomainsKey = key;
+
+    document.querySelectorAll(".hitclub").forEach(el => {
+      if (el.textContent !== d0) el.textContent = d0;
+    });
+    document.querySelectorAll(".go88").forEach(el => {
+      if (el.textContent !== d1) el.textContent = d1;
+    });
+
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+applyConfig();
+setInterval(applyConfig, 10000);
+</script>
+
+<script src="../js/autofit.js" defer></script>
+</body>
+</html>
