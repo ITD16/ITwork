@@ -8,7 +8,7 @@
 <style>
 @font-face{
   font-family:"SF Pro Display";
-  src:url("../font/SFPRODISPLAYBOLD.OTF") format("opentype");
+  src: url(../font/SFPRODISPLAYBOLD.OTF) format("opentype");
   font-weight:700;
 }
 html,body{
@@ -18,128 +18,130 @@ html,body{
   background:transparent;
   overflow:hidden;
 }
-svg{width:100%;height:100%;}
+svg{
+  width:100%;
+  height:100%;
+  text-rendering:geometricPrecision;
+  shape-rendering:geometricPrecision;
+}
 </style>
 </head>
 
 <body>
-
 <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid meet">
 <defs>
 
-<!-- ===== THÂN CHỮ: VÀNG KEM  ===== -->
-<linearGradient id="brownGoldFill" x1="0" y1="0" x2="0" y2="1">
-  <stop offset="0%"   stop-color="#c99a3a"/>
-  <stop offset="35%"  stop-color="#a8741f"/>
-  <stop offset="65%"  stop-color="#7a4d14"/>
-  <stop offset="100%" stop-color="#4e2f0b"/>
-</linearGradient>
+  <!-- ===== GOLD 4K GIỐNG CODE MẪU ===== -->
+  <linearGradient id="gold4k" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%"   stop-color="#d9b46a"/>
+    <stop offset="25%"  stop-color="#f0ddb0"/>
+    <stop offset="50%"  stop-color="#fff6dc"/>
+    <stop offset="75%"  stop-color="#f0ddb0"/>
+    <stop offset="100%" stop-color="#c9973f"/>
+  </linearGradient>
 
-<!-- ===== VIỀN VÀNG KEM  ===== -->
-<linearGradient id="goldMetal" x1="0" y1="0" x2="0" y2="1">
-  <stop offset="0%"   stop-color="#e6c16a"/>
-  <stop offset="40%"  stop-color="#c99a3a"/>
-  <stop offset="70%"  stop-color="#9a6a1f"/>
-  <stop offset="100%" stop-color="#6a4312"/>
-</linearGradient>
+  <!-- ===== CÁP VIỀN CHỮ  ===== -->
+  <linearGradient id="edgeCap" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%"   stop-color="#b78945"/>
+    <stop offset="50%"  stop-color="#8a632c"/>
+    <stop offset="100%" stop-color="#b78945"/>
+  </linearGradient>
 
-  <!-- ===== BÓNG ĐỔ ĐÈN CHIẾU RẤT NHẸ ===== -->
-<filter id="softLampShadow" x="-30%" y="-30%" width="160%" height="160%">
-  <feDropShadow
-    dx="0"
-    dy="8"
-    stdDeviation="7"
-    flood-color="rgba(0,0,0,0.42)"/>
-</filter>
-<!-- ===== GLOW MỀM (KHÔNG CHÁY VIỀN) ===== -->
-<filter id="goldGlow" x="-40%" y="-40%" width="180%" height="180%">
-  <feDropShadow dx="0" dy="0" stdDeviation="2.2" flood-color="#ffd97a" flood-opacity="0.6"/>
-</filter>
+  <!-- ===== MICRO RIM 4K ===== -->
+  <linearGradient id="microRim" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%"   stop-color="#fff9e6"/>
+    <stop offset="100%" stop-color="#f3e3bd"/>
+  </linearGradient>
+
+  <!-- ===== BÓNG ĐỔ SANG  ===== -->
+  <filter id="softLampShadow" x="-35%" y="-35%" width="170%" height="170%">
+    <feDropShadow dx="0" dy="12" stdDeviation="6" flood-color="rgba(40,22,10,0.75)"/>
+  </filter>
+
+  <!-- ===== SPARKLE NHẸ ÁNH KIM  ===== -->
+  <filter id="sparkle4k" x="-20%" y="-20%" width="140%" height="140%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="1" seed="2" result="n"/>
+    <feColorMatrix in="n" type="matrix"
+      values="
+        1 0 0 0 0
+        0 1 0 0 0
+        0 0 1 0 0
+        0 0 0 0.18 0" result="a"/>
+    <feComposite in="a" in2="SourceGraphic" operator="in" result="spark"/>
+    <feBlend in="SourceGraphic" in2="spark" mode="screen"/>
+  </filter>
+
 </defs>
 
-<!-- ===== NÉN CHIỀU CAO CHỮ ===== -->
+<!-- ===== CẤU TRÚC ===== -->
 <g font-family="SF Pro Display, system-ui"
    font-weight="700"
    text-anchor="middle"
    stroke-linejoin="round"
    stroke-linecap="round"
-   transform="scale(1,0.88) translate(0,140)">
+   transform="scale(1,0.9) translate(0,110)">
 
-  <!-- ================= HITCLUB.IN ================= -->
-
-  <!-- Viền ngoài vàng kim -->
+  <!-- ================= HITCLUB ================= -->
+  <!-- Edge Cap + Shadow -->
   <text x="960" y="520"
         font-size="205"
         letter-spacing="0.13em"
         fill="none"
-        stroke="url(#goldMetal)"
-        stroke-width="26.0"
-        filter="url(#goldGlow)"
-        class="hitclub autofit">
-  </text>
-
-  <!-- Viền vàng kim chính -->
-  <text x="960" y="520"
-        font-size="205"
-        letter-spacing="0.13em"
-        fill="none"
-        stroke="url(#goldMetal)"
-        stroke-width="14.0"
-        class="hitclub autofit">
-  </text>
-
-  <!-- Thân chữ + bóng đổ đèn chiếu -->
-  <text x="960" y="520"
-        font-size="205"
-        letter-spacing="0.13em"
-        fill="url(#brownGoldFill)"
-        stroke="url(#brownGoldFill)"
-        stroke-width="17.0"
-        paint-order="stroke fill"
+        stroke="url(#edgeCap)"
+        stroke-width="11"
         filter="url(#softLampShadow)"
-        class="hitclub autofit">
-  </text>
+        class="hitclub autofit"></text>
 
-  <!-- ================= GO88.PW ================= -->
+  <!-- Gold Body -->
+  <text x="960" y="520"
+        font-size="205"
+        letter-spacing="0.13em"
+        fill="url(#gold4k)"
+        stroke="none"
+        filter="url(#sparkle4k)"
+        class="hitclub autofit"></text>
 
-  <!-- Viền ngoài vàng kim -->
+  <!-- Micro Rim (viền sáng mảnh) -->
+  <text x="960" y="520"
+        font-size="205"
+        letter-spacing="0.13em"
+        fill="none"
+        stroke="url(#microRim)"
+        stroke-width="2"
+        opacity="0.7"
+        class="hitclub autofit"></text>
+
+  <!-- ================= GO88 ================= -->
   <text x="960" y="759"
         font-size="205"
         letter-spacing="0.09em"
         fill="none"
-        stroke="url(#goldMetal)"
-        stroke-width="26.0"
-        filter="url(#goldGlow)"
-        class="go88 autofit">
-  </text>
-
-  <!-- Viền vàng kim chính -->
-  <text x="960" y="759"
-        font-size="205"
-        letter-spacing="0.09em"
-        fill="none"
-        stroke="url(#goldMetal)"
-        stroke-width="14.0"
-        class="go88 autofit">
-  </text>
-
-  <!-- Thân chữ + bóng đổ đèn chiếu -->
-  <text x="960" y="759"
-        font-size="205"
-        letter-spacing="0.09em"
-        fill="url(#brownGoldFill)"
-        stroke="url(#brownGoldFill)"
-        stroke-width="15.8"
-        paint-order="stroke fill"
+        stroke="url(#edgeCap)"
+        stroke-width="11"
         filter="url(#softLampShadow)"
-        class="go88 autofit">
-  </text>
+        class="go88 autofit"></text>
+
+  <text x="960" y="759"
+        font-size="205"
+        letter-spacing="0.09em"
+        fill="url(#gold4k)"
+        stroke="none"
+        filter="url(#sparkle4k)"
+        class="go88 autofit"></text>
+
+  <text x="960" y="759"
+        font-size="205"
+        letter-spacing="0.09em"
+        fill="none"
+        stroke="url(#microRim)"
+        stroke-width="2"
+        opacity="0.7"
+        class="go88 autofit"></text>
 
 </g>
 </svg>
 
-
-  <script>
+<script>
 const CONFIG_URL = "../config.json";
 let lastDomainsKey = null;
 
@@ -153,13 +155,11 @@ async function applyConfig() {
     const d0 = domains[0] || "";
     const d1 = domains[1] || "";
 
-    // Tạo key để so sánh
     const key = d0 + "|" + d1;
-    if (key === lastDomainsKey) return; // không đổi => không update DOM
+    if (key === lastDomainsKey) return;
 
     lastDomainsKey = key;
 
-    // Set domain
     document.querySelectorAll(".hitclub").forEach(el => {
       if (el.textContent !== d0) el.textContent = d0;
     });
@@ -172,15 +172,8 @@ async function applyConfig() {
   }
 }
 
-  // Lần đầu
-  applyConfig();
-  
-  // Reload config mỗi 10s
-  setInterval(applyConfig, 10000);
+applyConfig();
+setInterval(applyConfig, 10000);
 </script>
-
-  
-  <!-- Tự động co chữ theo độ dài -->
-  <script src="../js/autofit.js" defer></script>
 </body>
 </html>
