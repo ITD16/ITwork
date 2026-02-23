@@ -11,15 +11,18 @@
   <canvas id="canvas"></canvas>
 
   <!-- Hai dòng domain, sẽ được gán text bằng JS -->
+<!-- Vùng chạy chữ 9:16 ở giữa -->
+<div id="portraitStage">
   <h1 class="moving-domain" id="domain1">
-  <span class="icon">✅</span>
-  <span class="domain-text"></span>
-</h1>
+    <span class="icon">✅</span>
+    <span class="domain-text"></span>
+  </h1>
 
-<h1 class="moving-domain" id="domain2">
-  <span class="icon">✅</span>
-  <span class="domain-text"></span>
-</h1>
+  <h1 class="moving-domain" id="domain2">
+    <span class="icon">✅</span>
+    <span class="domain-text"></span>
+  </h1>
+</div>
 
 
   <!-- Script đọc config.json và set domain + firework -->
@@ -29,6 +32,7 @@
 
   let domain1 = null;
   let domain2 = null;
+  let stage = null;
 
   // ====== Đọc config.json và gán title / domain / firework ======
   async function applyConfig() {
@@ -68,76 +72,74 @@
   }
 
   function initPositions() {
-    // Nếu vì lý do gì đó domain1/domain2 chưa sẵn sàng thì bỏ qua lần này
-    if (!domain1 || !domain2) {
-      console.warn("initPositions() gọi khi domain1/domain2 chưa sẵn sàng");
-      return;
-    }
+  if (!domain1 || !domain2 || !stage) return;
 
-    const W = window.innerWidth;
-    const H = window.innerHeight;
+  const W = stage.clientWidth;
+  const H = stage.clientHeight;
 
-    const w1 = domain1.offsetWidth;
-    const h1 = domain1.offsetHeight;
-    const w2 = domain2.offsetWidth;
-    const h2 = domain2.offsetHeight;
+  const w1 = domain1.offsetWidth;
+  const h1 = domain1.offsetHeight;
+  const w2 = domain2.offsetWidth;
+  const h2 = domain2.offsetHeight;
 
-    x1 = random(0, Math.max(1, W - w1));
-    y1 = random(0, Math.max(1, H - h1));
-    x2 = random(0, Math.max(1, W - w2));
-    y2 = random(0, Math.max(1, H - h2));
+  x1 = random(0, Math.max(1, W - w1));
+  y1 = random(0, Math.max(1, H - h1));
+  x2 = random(0, Math.max(1, W - w2));
+  y2 = random(0, Math.max(1, H - h2));
 
-    // dx1 = 1 * (Math.random() < 0.5 ? 1 : -1);
-    dx1 = 1.3 * (Math.random() < 0.5 ? 1 : -1);   
-    dy1 = 1.6 * (Math.random() < 0.5 ? 1 : -1);
+  dx1 = 1.3 * (Math.random() < 0.5 ? 1 : -1);   
+  dy1 = 1.6 * (Math.random() < 0.5 ? 1 : -1);
 
-    dx2 = 1.3 * (Math.random() < 0.5 ? 1 : -1);
-    dy2 = 1.6 * (Math.random() < 0.5 ? 1 : -1);
-  }
+  dx2 = 1.3 * (Math.random() < 0.5 ? 1 : -1);
+  dy2 = 1.6 * (Math.random() < 0.5 ? 1 : -1);
+}
 
   function animate1() {
-    if (!domain1) return; // phòng hờ
-    const W = window.innerWidth;
-    const H = window.innerHeight;
-    const w = domain1.offsetWidth;
-    const h = domain1.offsetHeight;
+  if (!domain1 || !stage) return;
 
-    x1 += dx1;
-    y1 += dy1;
+  const W = stage.clientWidth;
+  const H = stage.clientHeight;
+  const w = domain1.offsetWidth;
+  const h = domain1.offsetHeight;
 
-    if (x1 <= 0 || x1 + w >= W) dx1 = -dx1;
-    if (y1 <= 0 || y1 + h >= H) dy1 = -dy1;
+  x1 += dx1;
+  y1 += dy1;
 
-    domain1.style.left = x1 + "px";
-    domain1.style.top  = y1 + "px";
+  if (x1 <= 0 || x1 + w >= W) dx1 = -dx1;
+  if (y1 <= 0 || y1 + h >= H) dy1 = -dy1;
 
-    requestAnimationFrame(animate1);
-  }
+  domain1.style.left = x1 + "px";
+  domain1.style.top  = y1 + "px";
+
+  requestAnimationFrame(animate1);
+}
 
   function animate2() {
-    if (!domain2) return; // phòng hờ
-    const W = window.innerWidth;
-    const H = window.innerHeight;
-    const w = domain2.offsetWidth;
-    const h = domain2.offsetHeight;
+  if (!domain2 || !stage) return;
 
-    x2 += dx2;
-    y2 += dy2;
+  const W = stage.clientWidth;
+  const H = stage.clientHeight;
+  const w = domain2.offsetWidth;
+  const h = domain2.offsetHeight;
 
-    if (x2 <= 0 || x2 + w >= W) dx2 = -dx2;
-    if (y2 <= 0 || y2 + h >= H) dy2 = -dy2;
+  x2 += dx2;
+  y2 += dy2;
 
-    domain2.style.left = x2 + "px";
-    domain2.style.top  = y2 + "px";
+  if (x2 <= 0 || x2 + w >= W) dx2 = -dx2;
+  if (y2 <= 0 || y2 + h >= H) dy2 = -dy2;
 
-    requestAnimationFrame(animate2);
-  }
+  domain2.style.left = x2 + "px";
+  domain2.style.top  = y2 + "px";
+
+  requestAnimationFrame(animate2);
+}
 
   // ====== Khởi động tất cả ======
   async function startAll() {
     // DOM đã có 2 thẻ h1 (vì script nằm cuối body)
     domain1 = document.getElementById("domain1");
     domain2 = document.getElementById("domain2");
+    stage = document.getElementById("portraitStage");
 
     if (!domain1 || !domain2) {
       console.error("Không tìm thấy #domain1 hoặc #domain2 trong DOM");
