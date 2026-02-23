@@ -1,9 +1,10 @@
-body { 
-  margin: 0; 
-  overflow: hidden; 
-  background: #404040; 
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #404040;
 }
 
+/* Canvas full màn hình */
 #canvas{
   position: fixed;
   inset: 0;
@@ -11,30 +12,40 @@ body {
   height: 100%;
 }
 
-/* Vùng portrait 9:16 ở giữa màn hình */
-#portraitStage{
+/* Frame 16:9 chuẩn 1920x1080 (scale bằng JS) */
+#frame169{
   position: fixed;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);
+  width: 1920px;
+  height: 1080px;
+  transform-origin: center;
+  transform: translate(-50%, -50%) scale(1);
+  /* debug nếu cần */
+  /* outline: 2px solid rgba(255,255,255,.15); */
+}
 
-  /* fit trong màn hình nhưng giữ ratio 9:16 */
-  height: min(100vh, calc(100vw * 16 / 9));
-  width: calc(height * 9 / 16);
-
-  /* để chữ không chạy ra ngoài vùng */
+/* Vùng chạy chữ 9:16 ở giữa (607.5 x 1080) */
+#portraitStage{
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 607.5px;     /* 1080 * 9/16 */
+  height: 1080px;
+  transform: translateX(-50%);
   overflow: hidden;
 
-  /* debug (bạn có thể bỏ) */
+  /* debug nếu cần */
   /* outline: 2px dashed rgba(255,255,255,.35); */
 }
 
-/* H1 chạy trong portraitStage */
-.moving-domain{
+/* H1 dùng để định vị & di chuyển */
+.moving-domain {
   position: absolute;
   font-size: 24px;
   white-space: nowrap;
   pointer-events: none;
+
   margin: 0;
   padding: 0;
   line-height: 1;
@@ -42,7 +53,7 @@ body {
               "Segoe UI", sans-serif;
 }
 
-/* Emoji + gradient text giữ nguyên như bạn */
+/* Emoji */
 .moving-domain .icon {
   display: inline-block;
   vertical-align: middle;
@@ -50,15 +61,17 @@ body {
   filter: none;
 }
 
+/* Gradient chỉ áp lên chữ domain */
 .moving-domain .domain-text {
   display: inline-block;
   vertical-align: middle;
+
   font-weight: 700;
   letter-spacing: 2px;
 
   background: linear-gradient(
     55deg,
-    #fffebe 0%, 
+    #fffebe 0%,
     #fffebe 10%,
     #ffac3e 20%,
     #ffac3e 25%,
@@ -70,6 +83,7 @@ body {
     #ffac3e 85%,
     #ffac3e 100%
   );
+
   filter: drop-shadow(0.5px 0.1px 1px #0d0d0d);
   -webkit-background-clip: text;
   background-clip: text;
