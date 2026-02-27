@@ -1,96 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        html, body{
-    margin:0;
-    padding:0;
-    background:black;
-    height:100%;
-    overflow:hidden;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Tablet Portrait Lock</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      touch-action: manipulation;
+    }
 
-/* khung 9:16 portrait */
-#stage{
-    position:fixed;
-    inset:0;
+    /* Lớp phủ full màn hình */
+    #app {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100dvh;
+      background: #000;
+      overflow: hidden;
+    }
 
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    /* Khung nội dung luôn theo kiểu dọc */
+    #stage {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 100vw;
+      height: 100dvh;
+      transform: translate(-50%, -50%);
+      transform-origin: center center;
 
-    background:black;
-}
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000;
+    }
 
-/* khi fullscreen */
-#stage:fullscreen,
-#stage:-webkit-full-screen {
-    width:100vw;
-    height:100vh;
-}
+    /* Ảnh luôn fit theo khung dọc */
+    #stage img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      user-select: none;
+      -webkit-user-drag: none;
+      pointer-events: none;
+    }
 
-/* nội dung portrait */
-#stage img{
-    height:100vh;
-    width:auto;
-    max-width:100vw;
-    object-fit:contain;
-}
-    </style>
+    /* Khi browser bị ép ngang, xoay ngược stage để nhìn vẫn dọc */
+    .force-portrait-landscape #stage {
+      width: 100dvh;
+      height: 100vw;
+      transform: translate(-50%, -50%) rotate(90deg);
+    }
+  </style>
 </head>
 <body>
-  <div id="stage">
-      <img src="../img/bannertablet1111.png">
+  <div id="app">
+    <div id="stage">
+      <img src="../img/bannertablet1111.png" alt="Banner" />
+    </div>
   </div>
 
-
-
-    <!-- Chạy script Double Fullscreen -->
   <script>
-      // Hàm bật fullscreen
-function requestFullscreen() {
-  const el = document.getElementById("stage");
+    function applyPortraitMode() {
+      const app = document.getElementById("app");
+      const isLandscape = window.innerWidth > window.innerHeight;
 
-  if (el.requestFullscreen) {
-    el.requestFullscreen().then(lockPortrait);
-  } else if (el.webkitRequestFullscreen) {
-    el.webkitRequestFullscreen();
-    lockPortrait();
-  }
-}
+      if (isLandscape) {
+        app.classList.add("force-portrait-landscape");
+      } else {
+        app.classList.remove("force-portrait-landscape");
+      }
+    }
 
-      async function lockPortrait(){
-  try{
-    await screen.orientation.lock("portrait");
-  }catch(e){
-    console.log("Orientation lock not supported");
-  }
-}
+    async function tryLockPortrait() {
+      if (!screen.orientation || !screen.orientation.lock) return;
 
-// Double TAP (mobile) và double CLICK (desktop)
-let lastTapTime = 0;
+      try {
+        await screen.orientation.lock("portrait-primary");
+      } catch (e) {
+        // Via có thể bỏ qua, không sao
+      }
+    }
 
-function handleDoubleTap() {
-  const now = Date.now();
-  const tapInterval = now - lastTapTime;
+    function init() {
+      applyPortraitMode();
+      tryLockPortrait();
+    }
 
-  if (tapInterval < 300 && tapInterval > 0) {
-    requestFullscreen();
-  }
+    window.addEventListener("load", init);
+    window.addEventListener("resize", applyPortraitMode);
+    window.addEventListener("orientationchange", applyPortraitMode);
 
-  lastTapTime = now;
-}
-
-// Cho mobile
-document.addEventListener('touchstart', handleDoubleTap);
-
-// Cho desktop
-document.addEventListener('dblclick', requestFullscreen);
+    // Chạm lần đầu sẽ thử lock lại (vì nhiều browser chỉ cho phép sau user gesture)
+    document.addEventListener("touchstart", tryLockPortrait, { passive: true });
+    document.addEventListener("click", tryLockPortrait);
   </script>
-  
-
 </body>
 </html>
