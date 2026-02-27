@@ -148,7 +148,7 @@ canvas {
 .vpn-1111{
   color: #9c920b;
   font-weight: 900;
-  letter-spacing: 10px;
+  /* letter-spacing: 10px; */
   font-size: clamp(150px, 5.4vw, 160px);
   text-stroke: 5px #9c920b;
   -webkit-text-stroke: 5px #9c920b;
