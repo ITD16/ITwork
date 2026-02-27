@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Tablet Portrait Lock</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no"
+  />
+  <title>Portrait Fullscreen</title>
   <style>
     html, body {
       margin: 0;
@@ -15,8 +18,8 @@
       touch-action: manipulation;
     }
 
-    /* Lớp phủ full màn hình */
-    #app {
+    /* Phần tử sẽ được fullscreen */
+    #fsRoot {
       position: fixed;
       inset: 0;
       width: 100vw;
@@ -25,7 +28,7 @@
       overflow: hidden;
     }
 
-    /* Khung nội dung luôn theo kiểu dọc */
+    /* Khung hiển thị nội dung */
     #stage {
       position: absolute;
       left: 50%;
@@ -34,28 +37,24 @@
       height: 100dvh;
       transform: translate(-50%, -50%);
       transform-origin: center center;
-
       display: flex;
       justify-content: center;
       align-items: center;
       background: #000;
     }
 
-    /* Ảnh luôn fit theo khung dọc */
     #stage img {
-      max-width: 100%;
-      max-height: 100%;
-      width: auto;
-      height: auto;
-      object-fit: contain;
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* đổi thành cover nếu muốn phủ kín */
       display: block;
       user-select: none;
       -webkit-user-drag: none;
       pointer-events: none;
     }
 
-    /* Khi browser bị ép ngang, xoay ngược stage để nhìn vẫn dọc */
-    .force-portrait-landscape #stage {
+    /* Nếu thiết bị đang ngang nhưng ta muốn nhìn như dọc */
+    .force-portrait #stage {
       width: 100dvh;
       height: 100vw;
       transform: translate(-50%, -50%) rotate(90deg);
@@ -63,46 +62,109 @@
   </style>
 </head>
 <body>
-  <div id="app">
+  <div id="fsRoot">
     <div id="stage">
       <img src="../img/bannertablet1111.png" alt="Banner" />
     </div>
   </div>
 
   <script>
-    function applyPortraitMode() {
-      const app = document.getElementById("app");
-      const isLandscape = window.innerWidth > window.innerHeight;
-
-      if (isLandscape) {
-        app.classList.add("force-portrait-landscape");
-      } else {
-        app.classList.remove("force-portrait-landscape");
-      }
-    }
+    const fsRoot = document.getElementById("fsRoot");
 
     async function tryLockPortrait() {
-      if (!screen.orientation || !screen.orientation.lock) return;
+      if (!screen.orientation || !screen.orientation.lock) return false;
 
       try {
-        await screen.orientation.lock("portrait-primary");
-      } catch (e) {
-        // Via có thể bỏ qua, không sao
+        // thử kiểu bao quát trước
+        await screen.orientation.lock("portrait");
+        return true;
+      } catch (e1) {
+        try {
+          // fallback
+          await screen.orientation.lock("portrait-primary");
+          return true;
+        } catch (e2) {
+          return false;
+        }
       }
     }
 
-    function init() {
-      applyPortraitMode();
-      tryLockPortrait();
+    function isFullscreen() {
+      return !!(
+        document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        document.msFullscreenElement
+      );
     }
 
-    window.addEventListener("load", init);
-    window.addEventListener("resize", applyPortraitMode);
-    window.addEventListener("orientationchange", applyPortraitMode);
+    async function enterFullscreen() {
+      // Thử khóa trước
+      await tryLockPortrait();
 
-    // Chạm lần đầu sẽ thử lock lại (vì nhiều browser chỉ cho phép sau user gesture)
-    document.addEventListener("touchstart", tryLockPortrait, { passive: true });
-    document.addEventListener("click", tryLockPortrait);
+      try {
+        if (fsRoot.requestFullscreen) {
+          await fsRoot.requestFullscreen({ navigationUI: "hide" });
+        } else if (fsRoot.webkitRequestFullscreen) {
+          fsRoot.webkitRequestFullscreen();
+        } else if (fsRoot.msRequestFullscreen) {
+          fsRoot.msRequestFullscreen();
+        }
+      } catch (e) {
+        // bỏ qua, browser có thể chặn
+      }
+
+      // Thử khóa lại sau khi đã fullscreen
+      await tryLockPortrait();
+
+      // Áp fallback xoay nội dung nếu vẫn bị ngang
+      applyVisualPortraitFallback();
+    }
+
+    function applyVisualPortraitFallback() {
+      const isLandscape = window.innerWidth > window.innerHeight;
+
+      // Nếu đang fullscreen mà viewport vẫn ngang -> xoay ngược nội dung
+      if (isLandscape) {
+        fsRoot.classList.add("force-portrait");
+      } else {
+        fsRoot.classList.remove("force-portrait");
+      }
+    }
+
+    function handleDoubleTap() {
+      const now = Date.now();
+      const delta = now - (handleDoubleTap.lastTap || 0);
+
+      if (delta > 0 && delta < 300) {
+        enterFullscreen();
+      }
+
+      handleDoubleTap.lastTap = now;
+    }
+    handleDoubleTap.lastTap = 0;
+
+    // Retry sau khi browser đổi trạng thái fullscreen
+    document.addEventListener("fullscreenchange", async () => {
+      if (isFullscreen()) {
+        await tryLockPortrait();
+      }
+      applyVisualPortraitFallback();
+    });
+
+    document.addEventListener("webkitfullscreenchange", async () => {
+      if (isFullscreen()) {
+        await tryLockPortrait();
+      }
+      applyVisualPortraitFallback();
+    });
+
+    window.addEventListener("resize", applyVisualPortraitFallback);
+    window.addEventListener("orientationchange", () => {
+      setTimeout(applyVisualPortraitFallback, 50);
+    });
+
+    document.addEventListener("touchstart", handleDoubleTap, { passive: true });
+    document.addEventListener("dblclick", enterFullscreen);
   </script>
 </body>
 </html>
