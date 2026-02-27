@@ -79,6 +79,9 @@ body {
   text-align: center;
   font-size: clamp(32px, 14vw, 220px);
   line-height: 0.9;
+  
+  text-stroke: 2px #9c920b;
+  -webkit-text-stroke: 2px #9c920b;
 }
 
 #domain1{
