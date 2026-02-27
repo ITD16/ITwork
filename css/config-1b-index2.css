@@ -127,7 +127,7 @@ canvas {
   flex-shrink: 0;
 }
 .vpn-hint{
-  margin-bottom: 10px;
+  margin-bottom: 30px;
   position: relative;
   width: 95vw; 
   text-align: center;
@@ -151,8 +151,4 @@ canvas {
   -webkit-text-stroke: 5px #9c920b;
 }
 
-.truycap{
-
-  margin: 0 0 9px 0 !important;
-}
 
