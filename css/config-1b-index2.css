@@ -55,6 +55,11 @@ body {
   z-index: 1;          /* cao hơn canvas */
 } 
 
+.truycap{
+
+  margin-bottom: 9px;
+}
+
 .autofit {
   font-family:  sans-serif;
   color: #f5d622;
