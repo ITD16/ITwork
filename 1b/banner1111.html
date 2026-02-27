@@ -5,13 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        body{
-            width: 100%;
-        }
+        html, body{
+    margin:0;
+    padding:0;
+    background:black;
+    height:100%;
+    overflow:hidden;
+}
+
+/* khung 9:16 portrait */
+#stage{
+    position:fixed;
+    inset:0;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:black;
+}
+
+/* khi fullscreen */
+#stage:fullscreen,
+#stage:-webkit-full-screen {
+    width:100vw;
+    height:100vh;
+}
+
+/* nội dung portrait */
+#stage img{
+    height:100vh;
+    width:auto;
+    max-width:100vw;
+    object-fit:contain;
+}
     </style>
 </head>
 <body>
-    <img src="../img/bannertablet1111.png" />
+  <div id="stage">
+      <img src="../img/bannertablet1111.png">
+  </div>
 
 
 
@@ -19,13 +52,21 @@
   <script>
       // Hàm bật fullscreen
 function requestFullscreen() {
-  const el = document.documentElement;
+  const el = document.getElementById("stage");
+
   if (el.requestFullscreen) {
-    el.requestFullscreen();
+    el.requestFullscreen().then(lockPortrait);
   } else if (el.webkitRequestFullscreen) {
-    el.webkitRequestFullscreen(); // Safari
-  } else if (el.msRequestFullscreen) {
-    el.msRequestFullscreen(); // IE11
+    el.webkitRequestFullscreen();
+    lockPortrait();
+  }
+}
+
+      async function lockPortrait(){
+  try{
+    await screen.orientation.lock("portrait");
+  }catch(e){
+    console.log("Orientation lock not supported");
   }
 }
 
