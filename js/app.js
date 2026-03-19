@@ -144,7 +144,7 @@ async function ensureMe() {
   const data = await res.json();
   currentMe = data;
   if (els.meBox) {
-    els.meBox.textContent = `User: ${data.username} (${data.role || "user"})`;
+    els.meBox.textContent = `User: ${data.username}`;
   }
   applyRoleUi();
 }
