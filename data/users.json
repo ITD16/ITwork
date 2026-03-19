@@ -8,7 +8,7 @@
   },
   {
     "username": "user1",
-    "passwordHash": "REPLACE_WITH_USER1_BCRYPT_HASH",
+    "passwordHash": "$2a$10$7c1OV7SZ86kcb0tK8EyPDe.hNDlnbXnOH/kDMiHGjk9muhcN895tW",
     "role": "user",
     "active": true,
     "mustChangePassword": true
