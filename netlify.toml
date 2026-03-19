@@ -35,7 +35,7 @@
   to = "/.netlify/functions/get-logs"
   status = 200
 
-  [[redirects]]
+[[redirects]]
   from = "/api/users"
   to = "/.netlify/functions/get-users"
   status = 200

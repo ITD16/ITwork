@@ -1,0 +1,13 @@
+{
+  "name": "netlify-config-admin",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Netlify config admin with users, force password change popup, admin reset password, bcrypt password hashing",
+  "scripts": {
+    "build": "echo \"No build step needed\"",
+    "hash-users": "node scripts/hash-users.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3"
+  }
+}
