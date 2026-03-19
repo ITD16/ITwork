@@ -108,6 +108,7 @@
       </section>
     </main>
 
+    <!-- Change Password Modal -->
     <div id="passwordModal" class="modal-backdrop hidden">
       <div class="modal-card">
         <h2>Change Password</h2>
@@ -151,38 +152,34 @@
               Update Password
             </button>
           </div>
-          <div id="addUserModal" class="modal-backdrop hidden">
-            <div class="modal-card">
-              <h2>Add User</h2>
-              <p class="muted">
-                Nhập username, password sẽ được sinh ngẫu nhiên.
-              </p>
 
-              <form id="addUserForm" class="stack">
-                <label>
-                  <span>Username</span>
-                  <input
-                    id="addUsername"
-                    type="text"
-                    autocomplete="off"
-                    required
-                  />
-                </label>
-
-                <div class="row-actions">
-                  <button id="cancelAddUserBtn" type="button" class="secondary">
-                    Cancel
-                  </button>
-                  <button id="confirmAddUserBtn" type="submit">Add User</button>
-                </div>
-
-                <div id="addUserError" class="error"></div>
-                <div id="addUserOk" class="ok"></div>
-              </form>
-            </div>
-          </div>
           <div id="passwordError" class="error"></div>
           <div id="passwordOk" class="ok"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="modal-backdrop hidden">
+      <div class="modal-card">
+        <h2>Add User</h2>
+        <p class="muted">Nhập username, password sẽ được sinh ngẫu nhiên.</p>
+
+        <form id="addUserForm" class="stack">
+          <label>
+            <span>Username</span>
+            <input id="addUsername" type="text" autocomplete="off" required />
+          </label>
+
+          <div class="row-actions">
+            <button id="cancelAddUserBtn" type="button" class="secondary">
+              Cancel
+            </button>
+            <button id="confirmAddUserBtn" type="submit">Add User</button>
+          </div>
+
+          <div id="addUserError" class="error"></div>
+          <div id="addUserOk" class="ok"></div>
         </form>
       </div>
     </div>
