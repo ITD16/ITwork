@@ -44,6 +44,7 @@ button.small { padding: 7px 10px; font-size: 12px; }
 
 .topbar {
   display: flex;
+  position: fixed;
   justify-content: space-between;
   gap: 16px;
   align-items: center;
