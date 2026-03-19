@@ -12,5 +12,12 @@
     "role": "user",
     "active": true,
     "mustChangePassword": false
+  },
+  {
+    "username": "ruth",
+    "passwordHash": "$2a$10$uzr8jeQtjOB4kvMwxC05hORLM7vJiouvzm0lOIVJTHDKNpiklq1fm",
+    "role": "user",
+    "active": true,
+    "mustChangePassword": true
   }
 ]
