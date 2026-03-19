@@ -1,16 +1,16 @@
 [
   {
     "username": "admin",
-    "passwordHash": "$2a$12$tg11koeAzZJaDdfBJss.D.TteAweyF6bz7NnvGv4jVr2k5kHEpitq",
+    "passwordHash": "$2a$10$p3N/9QfqTdiO6XhefK4chOQYy1wRpKCLiYQoES8T9jnM8YwT7hwY2",
     "role": "admin",
     "active": true,
     "mustChangePassword": false
   },
   {
     "username": "user1",
-    "passwordHash": "REPLACE_WITH_USER1_BCRYPT_HASH",
+    "passwordHash": "$2a$10$pe0rapkTnq2DKk7B53YvDefIQhXvJUBt/TwNTOt4eIvmGvt0mQ37G",
     "role": "user",
     "active": true,
-    "mustChangePassword": true
+    "mustChangePassword": false
   }
 ]
