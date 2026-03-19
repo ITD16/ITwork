@@ -1,0 +1,36 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[functions]
+  included_files = ["data/users.json"]
+
+[[redirects]]
+  from = "/api/login"
+  to = "/.netlify/functions/login"
+  status = 200
+
+[[redirects]]
+  from = "/api/logout"
+  to = "/.netlify/functions/logout"
+  status = 200
+
+[[redirects]]
+  from = "/api/me"
+  to = "/.netlify/functions/me"
+  status = 200
+
+[[redirects]]
+  from = "/api/config"
+  to = "/.netlify/functions/get-config"
+  status = 200
+
+[[redirects]]
+  from = "/api/config/save"
+  to = "/.netlify/functions/save-config"
+  status = 200
+
+[[redirects]]
+  from = "/api/logs"
+  to = "/.netlify/functions/get-logs"
+  status = 200
