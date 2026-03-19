@@ -3,12 +3,14 @@
     "username": "admin",
     "password": "123456",
     "role": "admin",
-    "active": true
+    "active": true,
+    "mustChangePassword": false
   },
   {
-    "username": "user",
-    "password": "123456",
+    "username": "user1",
+    "password": "111111",
     "role": "user",
-    "active": true
+    "active": true,
+    "mustChangePassword": true
   }
 ]
