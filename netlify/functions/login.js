@@ -4,7 +4,7 @@ const {
   getClientIp,
   verifyPassword,
   readUsersFromRepo
-} = require("./_utils");
+} = require("./utils");
 
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {

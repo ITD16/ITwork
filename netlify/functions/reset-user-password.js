@@ -5,7 +5,7 @@ const {
   writeUsersToRepo,
   makeRandomPassword,
   hashPassword
-} = require("./_utils");
+} = require("./utils");
 
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {

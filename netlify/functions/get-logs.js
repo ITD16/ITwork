@@ -1,4 +1,4 @@
-const { json, authRequired, getRepoFile, repoInfo } = require("./_utils");
+const { json, authRequired, getRepoFile, repoInfo } = require("./utils");
 exports.handler = async (event) => {
   const auth = authRequired(event);
   if (!auth.ok) return auth.response;

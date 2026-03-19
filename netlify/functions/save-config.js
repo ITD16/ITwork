@@ -1,4 +1,4 @@
-const { json, authRequired, getRepoFile, putRepoFile, repoInfo } = require("./_utils");
+const { json, authRequired, getRepoFile, putRepoFile, repoInfo } = require("./utils");
 function normalizeDomains(arr){return Array.from(new Set((Array.isArray(arr)?arr:[]).map(x=>String(x||"").trim().toUpperCase()).filter(Boolean)));}
 function normalizeConfig(config){return { enableFirework: !!config.enableFirework, domains1b: normalizeDomains(config.domains1b), domains789: normalizeDomains(config.domains789), domains0b: normalizeDomains(config.domains0b) };}
 function isEqual(a,b){return JSON.stringify(a)===JSON.stringify(b);}

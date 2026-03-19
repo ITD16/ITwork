@@ -6,7 +6,7 @@ const {
   setSessionCookie,
   hashPassword,
   verifyPassword
-} = require("./_utils");
+} = require("./utils");
 
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {

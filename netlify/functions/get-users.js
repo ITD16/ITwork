@@ -1,4 +1,4 @@
-const { json, requireAdmin, readUsersFromRepo } = require("./_utils");
+const { json, requireAdmin, readUsersFromRepo } = require("./utils");
 
 exports.handler = async (event) => {
   const auth = requireAdmin(event);
