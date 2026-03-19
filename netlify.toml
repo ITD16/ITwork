@@ -34,3 +34,18 @@
   from = "/api/logs"
   to = "/.netlify/functions/get-logs"
   status = 200
+
+  [[redirects]]
+  from = "/api/users"
+  to = "/.netlify/functions/get-users"
+  status = 200
+
+[[redirects]]
+  from = "/api/users/reset-password"
+  to = "/.netlify/functions/reset-user-password"
+  status = 200
+
+[[redirects]]
+  from = "/api/change-password"
+  to = "/.netlify/functions/change-password"
+  status = 200
