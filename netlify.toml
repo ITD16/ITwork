@@ -49,3 +49,7 @@
   from = "/api/change-password"
   to = "/.netlify/functions/change-password"
   status = 200
+[[redirects]]
+  from = "/api/users/add"
+  to = "/.netlify/functions/add-user"
+  status = 200

@@ -29,10 +29,19 @@ const els = {
   confirmPassword: document.getElementById("confirmPassword"),
   passwordError: document.getElementById("passwordError"),
   passwordOk: document.getElementById("passwordOk"),
-  passwordModalText: document.getElementById("passwordModalText")
+  passwordModalText: document.getElementById("passwordModalText"),
+  addUserBtn: document.getElementById("addUserBtn"),
+  addUserModal: document.getElementById("addUserModal"),
+  addUserForm: document.getElementById("addUserForm"),
+  addUsername: document.getElementById("addUsername"),
+  cancelAddUserBtn: document.getElementById("cancelAddUserBtn"),
+  addUserError: document.getElementById("addUserError"),
+  addUserOk: document.getElementById("addUserOk"),
 };
 
-function isAdmin() { return (currentMe?.role || "user") === "admin"; }
+function isAdmin() {
+  return (currentMe?.role || "user") === "admin";
+}
 function escapeHtml(value) {
   return String(value ?? "")
     .replaceAll("&", "&amp;")
@@ -64,12 +73,12 @@ function createDomainRow(value = "") {
 function renderDomainList(container, items) {
   if (!container) return;
   container.innerHTML = "";
-  (items || []).forEach(item => container.appendChild(createDomainRow(item)));
+  (items || []).forEach((item) => container.appendChild(createDomainRow(item)));
 }
 function getDomainList(container) {
   if (!container) return [];
   return Array.from(container.querySelectorAll("input"))
-    .map(x => x.value.trim().toUpperCase())
+    .map((x) => x.value.trim().toUpperCase())
     .filter(Boolean);
 }
 function collectConfig() {
@@ -77,7 +86,7 @@ function collectConfig() {
     enableFirework: !!els.enableFirework?.checked,
     domains1b: getDomainList(els.domains1bList),
     domains789: getDomainList(els.domains789List),
-    domains0b: getDomainList(els.domains0bList)
+    domains0b: getDomainList(els.domains0bList),
   };
 }
 function renderConfig(config) {
@@ -88,12 +97,18 @@ function renderConfig(config) {
 }
 function applyRoleUi() {
   const admin = isAdmin();
-  document.querySelectorAll("[data-add]").forEach(btn => { btn.style.display = admin ? "" : "none"; });
-  document.querySelectorAll(".domain-row button.danger").forEach(btn => { btn.style.display = admin ? "" : "none"; });
+  document.querySelectorAll("[data-add]").forEach((btn) => {
+    btn.style.display = admin ? "" : "none";
+  });
+  document.querySelectorAll(".domain-row button.danger").forEach((btn) => {
+    btn.style.display = admin ? "" : "none";
+  });
   if (els.userCard) els.userCard.style.display = admin ? "" : "none";
 }
 async function doAutoLogout() {
-  try { await fetch("/api/logout", { method: "POST", credentials: "include" }); } catch (err) {}
+  try {
+    await fetch("/api/logout", { method: "POST", credentials: "include" });
+  } catch (err) {}
   window.location.href = "/";
 }
 function resetIdleTimer() {
@@ -101,14 +116,26 @@ function resetIdleTimer() {
   idleTimer = setTimeout(doAutoLogout, IDLE_LIMIT_MS);
 }
 function bindIdleEvents() {
-  ["mousemove","mousedown","click","scroll","keydown","touchstart","input","change"].forEach(eventName => {
+  [
+    "mousemove",
+    "mousedown",
+    "click",
+    "scroll",
+    "keydown",
+    "touchstart",
+    "input",
+    "change",
+  ].forEach((eventName) => {
     window.addEventListener(eventName, resetIdleTimer, { passive: true });
   });
   resetIdleTimer();
 }
 async function ensureMe() {
   const res = await fetch("/api/me", { credentials: "include" });
-  if (!res.ok) { window.location.href = "/"; return; }
+  if (!res.ok) {
+    window.location.href = "/";
+    return;
+  }
   const data = await res.json();
   currentMe = data;
   if (els.meBox) els.meBox.textContent = `User: ${data.username}`;
@@ -119,7 +146,10 @@ async function loadConfig() {
   if (els.saveMessage) els.saveMessage.textContent = "";
   const res = await fetch("/api/config", { credentials: "include" });
   if (!res.ok) {
-    if (res.status === 401) { window.location.href = "/"; return; }
+    if (res.status === 401) {
+      window.location.href = "/";
+      return;
+    }
     const data = await res.json().catch(() => ({}));
     throw new Error(data.error || "Cannot load config");
   }
@@ -139,32 +169,51 @@ async function loadLogs() {
   }
   const data = await res.json();
   const logs = Array.isArray(data.logs) ? data.logs : [];
-  if (!logs.length) { els.logsBox.innerHTML = `<div class="muted">Chưa có log</div>`; return; }
+  if (!logs.length) {
+    els.logsBox.innerHTML = `<div class="muted">Chưa có log</div>`;
+    return;
+  }
   const admin = isAdmin();
-  els.logsBox.innerHTML = logs.map(log => {
-    const changesHtml = Object.entries(log.changes || {}).map(([key, value]) => `
+  els.logsBox.innerHTML = logs
+    .map((log) => {
+      const changesHtml = Object.entries(log.changes || {})
+        .map(
+          ([key, value]) => `
       <div class="log-change">
         <div><strong>${escapeHtml(key)}</strong></div>
         <div class="log-grid">
           <div><div class="muted">Before</div><pre>${escapeHtml(JSON.stringify(value.before, null, 2))}</pre></div>
           <div><div class="muted">After</div><pre>${escapeHtml(JSON.stringify(value.after, null, 2))}</pre></div>
         </div>
-      </div>`).join("");
-    const adminMeta = admin ? `<div class="muted">IP: ${escapeHtml(log.ip || "-")}</div><div class="muted">Device: ${escapeHtml(log.deviceInfo || "-")}</div>` : "";
-    return `<div class="log-item"><div class="log-meta"><strong>${escapeHtml(log.user || "unknown")}</strong> (${escapeHtml(log.role || "user")}) - ${escapeHtml(log.time || "")}</div>${adminMeta}${changesHtml || `<div class="muted">No detail</div>`}</div>`;
-  }).join("");
+      </div>`,
+        )
+        .join("");
+      const adminMeta = admin
+        ? `<div class="muted">IP: ${escapeHtml(log.ip || "-")}</div><div class="muted">Device: ${escapeHtml(log.deviceInfo || "-")}</div>`
+        : "";
+      return `<div class="log-item"><div class="log-meta"><strong>${escapeHtml(log.user || "unknown")}</strong> (${escapeHtml(log.role || "user")}) - ${escapeHtml(log.time || "")}</div>${adminMeta}${changesHtml || `<div class="muted">No detail</div>`}</div>`;
+    })
+    .join("");
 }
 async function saveConfig() {
   if (els.saveError) els.saveError.textContent = "";
   if (els.saveMessage) els.saveMessage.textContent = "";
   const config = collectConfig();
   const res = await fetch("/api/config/save", {
-    method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify({ config })
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ config }),
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) { if (els.saveError) els.saveError.textContent = data.error || "Save failed"; return; }
+  if (!res.ok) {
+    if (els.saveError) els.saveError.textContent = data.error || "Save failed";
+    return;
+  }
   originalConfig = config;
-  if (els.saveMessage) els.saveMessage.textContent = data.message || `Saved ok. Commit: ${data.commitSha || ""}`;
+  if (els.saveMessage)
+    els.saveMessage.textContent =
+      data.message || `Saved ok. Commit: ${data.commitSha || ""}`;
   await loadLogs();
   resetIdleTimer();
 }
@@ -173,10 +222,18 @@ async function loadUsers() {
   els.usersBox.innerHTML = "Loading...";
   const res = await fetch("/api/users", { credentials: "include" });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) { els.usersBox.innerHTML = `<div class="error">${escapeHtml(data.error || "Cannot load users")}</div>`; return; }
+  if (!res.ok) {
+    els.usersBox.innerHTML = `<div class="error">${escapeHtml(data.error || "Cannot load users")}</div>`;
+    return;
+  }
   const users = Array.isArray(data.users) ? data.users : [];
-  if (!users.length) { els.usersBox.innerHTML = `<div class="muted">No users</div>`; return; }
-  els.usersBox.innerHTML = users.map(user => `
+  if (!users.length) {
+    els.usersBox.innerHTML = `<div class="muted">No users</div>`;
+    return;
+  }
+  els.usersBox.innerHTML = users
+    .map(
+      (user) => `
     <div class="user-row">
       <div class="user-meta">
         <strong>${escapeHtml(user.username)}</strong>
@@ -187,16 +244,25 @@ async function loadUsers() {
       <div class="row-actions">
         <button type="button" class="secondary" data-reset-user="${escapeHtml(user.username)}">Reset Password</button>
       </div>
-    </div>`).join("");
-  document.querySelectorAll("[data-reset-user]").forEach(btn => {
+    </div>`,
+    )
+    .join("");
+  document.querySelectorAll("[data-reset-user]").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const username = btn.getAttribute("data-reset-user");
-      if (!username || !window.confirm(`Reset password for ${username}?`)) return;
+      if (!username || !window.confirm(`Reset password for ${username}?`))
+        return;
       const res = await fetch("/api/users/reset-password", {
-        method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify({ username })
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ username }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) { alert(data.error || "Reset password failed"); return; }
+      if (!res.ok) {
+        alert(data.error || "Reset password failed");
+        return;
+      }
       alert(`Temporary password for ${username}: ${data.tempPassword}`);
       await loadUsers();
       resetIdleTimer();
@@ -207,28 +273,72 @@ function openForcePasswordModal() {
   els.passwordError.textContent = "";
   els.passwordOk.textContent = "";
   els.currentPasswordWrap.classList.add("hidden");
-  els.passwordModalText.textContent = "Bạn cần đổi password trước khi tiếp tục sử dụng.";
+  els.passwordModalText.textContent =
+    "Bạn cần đổi password trước khi tiếp tục sử dụng.";
   els.passwordModal.classList.remove("hidden");
 }
 function closePasswordModal() {
   els.passwordModal.classList.add("hidden");
   els.passwordForm.reset();
 }
-document.querySelectorAll("[data-add]").forEach(btn => {
+function openAddUserModal() {
+  if (!els.addUserModal) return;
+  els.addUserError.textContent = "";
+  els.addUserOk.textContent = "";
+  els.addUserForm.reset();
+  els.addUserModal.classList.remove("hidden");
+}
+
+function closeAddUserModal() {
+  if (!els.addUserModal) return;
+  els.addUserModal.classList.add("hidden");
+  els.addUserForm.reset();
+}
+document.querySelectorAll("[data-add]").forEach((btn) => {
   btn.addEventListener("click", () => {
     if (!isAdmin()) return;
     const key = btn.getAttribute("data-add");
-    const map = { domains1b: els.domains1bList, domains789: els.domains789List, domains0b: els.domains0bList };
+    const map = {
+      domains1b: els.domains1bList,
+      domains789: els.domains789List,
+      domains0b: els.domains0bList,
+    };
     map[key]?.appendChild(createDomainRow(""));
     resetIdleTimer();
   });
 });
 els.saveBtn?.addEventListener("click", saveConfig);
-els.resetBtn?.addEventListener("click", () => { if (originalConfig) renderConfig(originalConfig); applyRoleUi(); resetIdleTimer(); });
-els.reloadBtn?.addEventListener("click", async () => { await loadConfig(); resetIdleTimer(); });
-els.reloadLogsBtn?.addEventListener("click", async () => { await loadLogs(); resetIdleTimer(); });
-els.reloadUsersBtn?.addEventListener("click", async () => { await loadUsers(); resetIdleTimer(); });
-els.logoutBtn?.addEventListener("click", async () => { await fetch("/api/logout", { method: "POST", credentials: "include" }); window.location.href = "/"; });
+els.resetBtn?.addEventListener("click", () => {
+  if (originalConfig) renderConfig(originalConfig);
+  applyRoleUi();
+  resetIdleTimer();
+});
+els.reloadBtn?.addEventListener("click", async () => {
+  await loadConfig();
+  resetIdleTimer();
+});
+els.reloadLogsBtn?.addEventListener("click", async () => {
+  await loadLogs();
+  resetIdleTimer();
+});
+els.addUserBtn?.addEventListener("click", () => {
+  if (!isAdmin()) return;
+  openAddUserModal();
+  resetIdleTimer();
+});
+
+els.cancelAddUserBtn?.addEventListener("click", () => {
+  closeAddUserModal();
+  resetIdleTimer();
+});
+els.reloadUsersBtn?.addEventListener("click", async () => {
+  await loadUsers();
+  resetIdleTimer();
+});
+els.logoutBtn?.addEventListener("click", async () => {
+  await fetch("/api/logout", { method: "POST", credentials: "include" });
+  window.location.href = "/";
+});
 els.passwordForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
   els.passwordError.textContent = "";
@@ -236,13 +346,60 @@ els.passwordForm?.addEventListener("submit", async (e) => {
   const payload = {
     currentPassword: els.currentPassword?.value || "",
     newPassword: els.newPassword?.value || "",
-    confirmPassword: els.confirmPassword?.value || ""
+    confirmPassword: els.confirmPassword?.value || "",
   };
+  els.addUserForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    els.addUserError.textContent = "";
+    els.addUserOk.textContent = "";
+
+    const username = (els.addUsername?.value || "").trim();
+
+    if (!username) {
+      els.addUserError.textContent = "Username is required";
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/users/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ username }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        els.addUserError.textContent = data.error || "Add user failed";
+        return;
+      }
+
+      els.addUserOk.textContent = `Added user ${username}`;
+      alert(`Temporary password for ${username}: ${data.tempPassword}`);
+
+      await loadUsers();
+      resetIdleTimer();
+
+      setTimeout(() => {
+        closeAddUserModal();
+      }, 400);
+    } catch (err) {
+      els.addUserError.textContent = err.message || "Add user failed";
+    }
+  });
   const res = await fetch("/api/change-password", {
-    method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(payload)
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(payload),
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) { els.passwordError.textContent = data.error || "Change password failed"; return; }
+  if (!res.ok) {
+    els.passwordError.textContent = data.error || "Change password failed";
+    return;
+  }
   els.passwordOk.textContent = "Password updated successfully";
   currentMe.mustChangePassword = false;
   setTimeout(() => closePasswordModal(), 500);
