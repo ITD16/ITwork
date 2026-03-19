@@ -8,9 +8,9 @@
   },
   {
     "username": "user1",
-    "passwordHash": "$2a$10$Asm9tgIsgVSpQ3gMcRYfG.NHu8BYxd/p5kAqOe40MduuMeORdV0E.",
+    "passwordHash": "$2a$10$pe0rapkTnq2DKk7B53YvDefIQhXvJUBt/TwNTOt4eIvmGvt0mQ37G",
     "role": "user",
     "active": true,
-    "mustChangePassword": true
+    "mustChangePassword": false
   }
 ]
