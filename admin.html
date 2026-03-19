@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Config Admin</title>
+  <link rel="stylesheet" href="/css/style-admin.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>Config Page</h1>
+      <div class="muted">Copy Right © D16 IT Team</div>
+    </div>
+    <div class="topbar-actions">
+      <span id="meBox" class="chip"></span>
+      <button id="reloadBtn" type="button" class="secondary">Reload</button>
+      <button id="logoutBtn" type="button" class="danger">Logout</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="card">
+      <div class="section-head">
+        <h2>Config</h2>
+        <div class="row-actions">
+          <button id="resetBtn" type="button" class="secondary">Reset</button>
+          <button id="saveBtn" type="button">Save</button>
+        </div>
+      </div>
+
+      <div class="stack">
+        <label class="toggle">
+          <input id="enableFirework" type="checkbox" />
+          <span>Enable Firework</span>
+        </label>
+
+        <div class="group-box">
+          <div class="group-head">
+            <h3>Domains 1B</h3>
+            <button type="button" data-add="domains1b" class="secondary small">+ Add</button>
+          </div>
+          <div id="domains1bList" class="domain-list"></div>
+        </div>
+
+        <div class="group-box">
+          <div class="group-head">
+            <h3>Domains 789</h3>
+            <button type="button" data-add="domains789" class="secondary small">+ Add</button>
+          </div>
+          <div id="domains789List" class="domain-list"></div>
+        </div>
+
+        <div class="group-box">
+          <div class="group-head">
+            <h3>Domains 0B</h3>
+            <button type="button" data-add="domains0b" class="secondary small">+ Add</button>
+          </div>
+          <div id="domains0bList" class="domain-list"></div>
+        </div>
+
+        <div id="saveMessage" class="ok"></div>
+        <div id="saveError" class="error"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-head">
+        <h2>Change Logs</h2>
+        <button id="reloadLogsBtn" type="button" class="secondary">Reload Logs</button>
+      </div>
+      <div id="logsBox" class="logs-box"></div>
+    </section>
+  </main>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
