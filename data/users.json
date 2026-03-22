@@ -48,7 +48,7 @@
     "active": true,
     "mustChangePassword": true,
     "permissions": {
-      "contentidol": true,
+      "contentidol": false,
       "contentidolSettings": true,
       "domains1b": true,
       "domains789": true,
