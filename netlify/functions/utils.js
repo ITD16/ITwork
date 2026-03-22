@@ -10,16 +10,16 @@ function json(statusCode, body, extraHeaders = {}) {
     headers: {
       "Content-Type": "application/json; charset=utf-8",
       "Cache-Control": "no-store",
-      ...extraHeaders
+      ...extraHeaders,
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
   };
 }
 
 function parseCookies(event) {
   const raw = event.headers.cookie || event.headers.Cookie || "";
   const out = {};
-  raw.split(";").forEach(part => {
+  raw.split(";").forEach((part) => {
     const [k, ...v] = part.trim().split("=");
     if (!k) return;
     out[k] = decodeURIComponent(v.join("="));
@@ -37,7 +37,9 @@ function getClientIp(event) {
     event.headers["client-ip"] ||
     event.headers["x-forwarded-for"] ||
     ""
-  ).split(",")[0].trim();
+  )
+    .split(",")[0]
+    .trim();
 }
 
 function makeSession(user, extra = {}) {
@@ -48,7 +50,7 @@ function makeSession(user, extra = {}) {
     mustChangePassword: !!user.mustChangePassword,
     ip: extra.ip || "",
     deviceInfo: extra.deviceInfo || "",
-    exp: Date.now() + 1000 * 60 * 60 * 12
+    exp: Date.now() + 1000 * 60 * 60 * 12,
   });
   const encoded = Buffer.from(payload, "utf8").toString("base64url");
   const sig = signValue(encoded, secret);
@@ -64,7 +66,9 @@ function verifySession(token) {
 
   if (sig !== expected) return null;
 
-  const payload = JSON.parse(Buffer.from(encoded, "base64url").toString("utf8"));
+  const payload = JSON.parse(
+    Buffer.from(encoded, "base64url").toString("utf8"),
+  );
   if (!payload.exp || payload.exp < Date.now()) return null;
 
   return payload;
@@ -130,8 +134,8 @@ async function githubRequest(url, options = {}) {
       Authorization: `Bearer ${token}`,
       Accept: "application/vnd.github+json",
       "Content-Type": "application/json",
-      ...(options.headers || {})
-    }
+      ...(options.headers || {}),
+    },
   });
 
   const data = await res.json().catch(() => ({}));
@@ -172,14 +176,14 @@ async function putRepoFile(filePath, content, message, sha) {
   const body = {
     message,
     content: Buffer.from(content, "utf8").toString("base64"),
-    branch
+    branch,
   };
 
   if (sha) body.sha = sha;
 
   return githubRequest(url, {
     method: "PUT",
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
   });
 }
 
@@ -187,7 +191,7 @@ async function readUsersFromRepo() {
   const file = await getRepoFile(USERS_REPO_PATH);
   return {
     sha: file.sha,
-    users: JSON.parse(file.content || "[]")
+    users: JSON.parse(file.content || "[]"),
   };
 }
 
@@ -210,5 +214,5 @@ module.exports = {
   hashPassword,
   verifyPassword,
   readUsersFromRepo,
-  writeUsersToRepo
+  writeUsersToRepo,
 };

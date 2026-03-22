@@ -3,7 +3,7 @@ const {
   setSessionCookie,
   getClientIp,
   verifyPassword,
-  readUsersFromRepo
+  readUsersFromRepo,
 } = require("./utils");
 
 exports.handler = async (event) => {
@@ -17,7 +17,7 @@ exports.handler = async (event) => {
     const { users } = await readUsersFromRepo();
 
     const found = users.find(
-      x => x.username === username && x.active !== false
+      (x) => x.username === username && x.active !== false,
     );
 
     if (!found) {
@@ -37,14 +37,14 @@ exports.handler = async (event) => {
         ok: true,
         username: found.username,
         role: found.role || "user",
-        mustChangePassword: !!found.mustChangePassword
+        mustChangePassword: !!found.mustChangePassword,
       },
       {
         "Set-Cookie": setSessionCookie(found, {
           ip,
-          deviceInfo: String(deviceInfo || "").trim()
-        })
-      }
+          deviceInfo: String(deviceInfo || "").trim(),
+        }),
+      },
     );
   } catch (err) {
     return json(500, { error: err.message || "Login error" });
