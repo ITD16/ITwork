@@ -4,18 +4,18 @@
     {
       "text": "ĐANG LIVE TẠI Phòng 1",
       "startTime": "02:00",
-      "endTime": "06:00",
+      "endTime": "02:20",
       "enabled": true
     },
     {
       "text": "ĐANG LIVE TẠI Phòng 2",
-      "startTime": "06:00",
-      "endTime": "12:00",
+      "startTime": "02:20",
+      "endTime": "02:25",
       "enabled": true
     },
     {
       "text": "ĐANG LIVE TẠI Phòng 3",
-      "startTime": "12:00",
+      "startTime": "02:25",
       "endTime": "21:00",
       "enabled": true
     }
