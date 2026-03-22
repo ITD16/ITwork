@@ -55,6 +55,13 @@
         els.ticker.style.color = settings.textColor || "#ffffff";
       }
 
+      function applyLiveSettings(cfg) {
+        const settings = getSettings(cfg);
+
+        els.ticker.style.color = settings.textColor || "#ffffff";
+        els.ticker.style.fontSize = `${settings.fontSize}px`;
+      }
+
       function runOneMessage(text, settings, runToken) {
         return new Promise((resolve) => {
           if (!text) {
@@ -63,6 +70,8 @@
           }
 
           applyStyle(settings);
+          els.ticker.style.fontSize = `${settings.fontSize}px`;
+          els.ticker.style.color = settings.textColor || "#ffffff";
           els.ticker.textContent = text;
           els.ticker.classList.remove("hidden");
 
@@ -144,7 +153,7 @@
           console.error(err);
           activeTimer = setTimeout(() => {
             scheduleLoop();
-          }, 15000);
+          }, 30000);
         }
       }
 
@@ -152,20 +161,25 @@
         setInterval(async () => {
           try {
             const latest = await fetchConfig();
+
             const before = JSON.stringify(configCache || {});
             const after = JSON.stringify(latest || {});
 
             if (before !== after) {
               configCache = latest;
+
+              // apply ngay màu / cỡ chữ hiện tại
+              applyLiveSettings(latest);
+
+              // nếu muốn reset cả lịch chạy theo config mới:
               clearSchedule();
               activeRunToken += 1;
-              els.ticker.classList.add("hidden");
               scheduleLoop();
             }
           } catch (err) {
             console.error("watchConfigChanges:", err);
           }
-        }, 10000);
+        }, 15000); // 15 giây
       }
 
       window.addEventListener("resize", () => {
