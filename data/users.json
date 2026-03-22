@@ -35,7 +35,7 @@
     "mustChangePassword": false,
     "permissions": {
       "contentidol": true,
-      "contentidolSettings": false,
+      "contentidolSettings": true,
       "domains1b": false,
       "domains789": false,
       "domains0b": false
