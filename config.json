@@ -1,13 +1,14 @@
 {
   "enableFirework": true,
   "contentidol": [
-    "Vượt mức pickleball"
+    "Vượt mức pickleball",
+    "Say oh year"
   ],
   "contentidolSettings": {
     "enabled": true,
     "intervalMinutes": 2,
     "repeatCount": 10,
-    "speedPxPerSecond": 1400,
+    "speedPxPerSecond": 140,
     "fontSize": 32,
     "textColor": "#9c75b3"
   },
