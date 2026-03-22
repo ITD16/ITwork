@@ -40,5 +40,19 @@
       "domains789": false,
       "domains0b": false
     }
+  },
+  {
+    "username": "user2",
+    "passwordHash": "$2a$10$TSrpHg.W5A6wevGnjVGG1OT5642EIC2W/BoCwDhi1vLDu9ttz0o52",
+    "role": "user",
+    "active": true,
+    "mustChangePassword": true,
+    "permissions": {
+      "contentidol": true,
+      "contentidolSettings": true,
+      "domains1b": true,
+      "domains789": true,
+      "domains0b": true
+    }
   }
 ]
