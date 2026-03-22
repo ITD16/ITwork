@@ -8,10 +8,10 @@
   },
   {
     "username": "user1",
-    "passwordHash": "$2a$10$ViIvb8Of61ZO5HL2yekKg.8Hudq2f5envofLjv7nQiz8yvW/e4a9i",
+    "passwordHash": "$2a$10$o4QDxKq3sSLAf7CGgvhDpOimbmY2wZjLH9zRlab/sr2bksdDQxKo6",
     "role": "user",
     "active": true,
-    "mustChangePassword": true
+    "mustChangePassword": false
   },
   {
     "username": "ruth",
