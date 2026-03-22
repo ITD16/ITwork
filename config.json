@@ -19,7 +19,7 @@
     "intervalMinutes": 2,
     "repeatCount": 10,
     "speedPxPerSecond": 40,
-    "fontSize": 18,
+    "fontSize": 22,
     "copiesPerRun": 8,
     "copyGapSize": 24,
     "laneGapPx": 160,
