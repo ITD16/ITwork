@@ -256,3 +256,28 @@ input[type="color"] {
   background: #fff;
   cursor: pointer;
 }
+.color-field {
+  max-width: 360px;
+}
+
+.color-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.color-input-row input[type="color"] {
+  width: 64px;
+  height: 42px;
+  padding: 4px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+.color-input-row input[type="text"] {
+  width: 120px;
+  max-width: 120px;
+}

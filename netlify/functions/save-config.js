@@ -55,7 +55,7 @@ function normalizeNumber(value, fallback) {
 }
 function normalizeColor(value, fallback = "#ffffff") {
   const v = String(value || "").trim();
-  return /^#[0-9a-fA-F]{6}$/.test(v) ? v : fallback;
+  return /^#[0-9a-fA-F]{6}$/.test(v) ? v.toLowerCase() : fallback;
 }
 
 function isEqual(a, b) {

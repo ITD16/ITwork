@@ -18,6 +18,7 @@ const els = {
   ),
   contentidolFontSize: document.getElementById("contentidolFontSize"),
   contentidolTextColor: document.getElementById("contentidolTextColor"),
+  contentidolTextColorCode: document.getElementById("contentidolTextColorCode"),
   domains1bList: document.getElementById("domains1bList"),
   domains789List: document.getElementById("domains789List"),
   domains0bList: document.getElementById("domains0bList"),
@@ -63,6 +64,10 @@ function escapeHtml(value) {
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
+}
+function normalizeHexColor(value, fallback = "#ffffff") {
+  const v = String(value || "").trim();
+  return /^#[0-9a-fA-F]{6}$/.test(v) ? v.toLowerCase() : fallback;
 }
 
 function createDomainRow(value = "") {
@@ -121,7 +126,10 @@ function collectConfig() {
       repeatCount: Number(els.contentidolRepeatCount?.value || 10),
       speedPxPerSecond: Number(els.contentidolSpeedPxPerSecond?.value || 140),
       fontSize: Number(els.contentidolFontSize?.value || 48),
-      textColor: els.contentidolTextColor?.value || "#ffffff",
+      textColor: normalizeHexColor(
+        els.contentidolTextColorCode?.value || els.contentidolTextColor?.value,
+        "#ffffff",
+      ),
     },
     domains1b: getDomainList(els.domains1bList),
     domains789: getDomainList(els.domains789List),
@@ -148,8 +156,10 @@ function renderConfig(config) {
   if (els.contentidolSpeedPxPerSecond)
     els.contentidolSpeedPxPerSecond.value = s.speedPxPerSecond ?? 140;
   if (els.contentidolFontSize) els.contentidolFontSize.value = s.fontSize ?? 48;
-  if (els.contentidolTextColor)
-    els.contentidolTextColor.value = s.textColor || "#ffffff";
+
+  const color = normalizeHexColor(s.textColor || "#ffffff", "#ffffff");
+  if (els.contentidolTextColor) els.contentidolTextColor.value = color;
+  if (els.contentidolTextColorCode) els.contentidolTextColorCode.value = color;
 }
 
 function applyRoleUi() {
@@ -486,6 +496,33 @@ els.cancelAddUserBtn?.addEventListener("click", () => {
 els.logoutBtn?.addEventListener("click", async () => {
   await fetch("/api/logout", { method: "POST", credentials: "include" });
   window.location.href = "/";
+});
+
+els.contentidolTextColor?.addEventListener("input", () => {
+  const color = normalizeHexColor(els.contentidolTextColor.value, "#ffffff");
+  if (els.contentidolTextColorCode) {
+    els.contentidolTextColorCode.value = color;
+  }
+  resetIdleTimer();
+});
+
+els.contentidolTextColorCode?.addEventListener("input", () => {
+  const color = normalizeHexColor(els.contentidolTextColorCode.value, "");
+  if (color && els.contentidolTextColor) {
+    els.contentidolTextColor.value = color;
+  }
+  resetIdleTimer();
+});
+
+els.contentidolTextColorCode?.addEventListener("blur", () => {
+  const color = normalizeHexColor(
+    els.contentidolTextColorCode.value,
+    els.contentidolTextColor?.value || "#ffffff",
+  );
+  els.contentidolTextColorCode.value = color;
+  if (els.contentidolTextColor) {
+    els.contentidolTextColor.value = color;
+  }
 });
 
 els.passwordForm?.addEventListener("submit", async (e) => {
