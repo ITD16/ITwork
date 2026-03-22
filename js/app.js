@@ -145,23 +145,23 @@ function createContentIdolRow(item = {}) {
   const row = document.createElement("div");
   row.className = "contentidol-item";
 
-  const top = document.createElement("div");
-  top.className = "contentidol-top";
+  const wrap = document.createElement("div");
+  wrap.className = "contentidol-inline";
 
   const textInput = document.createElement("input");
   textInput.type = "text";
   textInput.placeholder = "Ví dụ: ĐANG LIVE TẠI Phòng 1";
   textInput.value = item.text || "";
   textInput.disabled = !canEditContentIdol();
+  textInput.className = "contentidol-text-input";
 
-  top.appendChild(textInput);
-
-  const bottom = document.createElement("div");
-  bottom.className = "contentidol-bottom";
+  const timeActions = document.createElement("div");
+  timeActions.className = "contentidol-time-actions";
 
   const startWrap = document.createElement("label");
+  startWrap.className = "time-inline-field";
   const startLabel = document.createElement("span");
-  startLabel.textContent = "Start Time";
+  startLabel.textContent = "Start";
   const startInput = document.createElement("input");
   startInput.type = "time";
   startInput.value = normalizeTimeValue(item.startTime, "12:00");
@@ -170,8 +170,9 @@ function createContentIdolRow(item = {}) {
   startWrap.appendChild(startInput);
 
   const endWrap = document.createElement("label");
+  endWrap.className = "time-inline-field";
   const endLabel = document.createElement("span");
-  endLabel.textContent = "End Time";
+  endLabel.textContent = "End";
   const endInput = document.createElement("input");
   endInput.type = "time";
   endInput.value = normalizeTimeValue(item.endTime, "15:00");
@@ -190,12 +191,14 @@ function createContentIdolRow(item = {}) {
     resetIdleTimer();
   });
 
-  bottom.appendChild(startWrap);
-  bottom.appendChild(endWrap);
-  bottom.appendChild(removeBtn);
+  timeActions.appendChild(startWrap);
+  timeActions.appendChild(endWrap);
+  timeActions.appendChild(removeBtn);
 
-  row.appendChild(top);
-  row.appendChild(bottom);
+  wrap.appendChild(textInput);
+  wrap.appendChild(timeActions);
+  row.appendChild(wrap);
+
   return row;
 }
 
