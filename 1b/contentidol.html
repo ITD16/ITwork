@@ -8,32 +8,25 @@
   </head>
   <body>
     <div id="stage" class="stage">
-      <div id="ticker" class="ticker hidden"></div>
+      <div id="tickerWrap" class="ticker-wrap hidden">
+        <div id="tickerTrack" class="ticker-track">
+          <div id="tickerLaneA" class="ticker-lane"></div>
+          <div id="tickerLaneB" class="ticker-lane"></div>
+        </div>
+      </div>
     </div>
 
     <script>
       const els = {
         stage: document.getElementById("stage"),
-        ticker: document.getElementById("ticker"),
+        tickerWrap: document.getElementById("tickerWrap"),
+        tickerTrack: document.getElementById("tickerTrack"),
+        tickerLaneA: document.getElementById("tickerLaneA"),
+        tickerLaneB: document.getElementById("tickerLaneB"),
       };
 
       let configCache = null;
-      let activeTimer = null;
-      let activeRunToken = 0;
-
-      function wait(ms) {
-        return new Promise((resolve) => setTimeout(resolve, ms));
-      }
-
-      function buildRepeatedText(text, count = 3, gapSize = 24) {
-        const gap = "\u00A0".repeat(gapSize);
-        return Array.from({ length: count }, () => text).join(gap);
-      }
-
-      function pickRandom(arr) {
-        if (!Array.isArray(arr) || !arr.length) return "";
-        return arr[Math.floor(Math.random() * arr.length)] || "";
-      }
+      let watchTimer = null;
 
       async function fetchConfig() {
         const res = await fetch("/config.json?ts=" + Date.now(), {
@@ -47,150 +40,104 @@
         const s = cfg?.contentidolSettings || {};
         return {
           enabled: s.enabled !== false,
-          intervalMinutes: Number(s.intervalMinutes || 5),
-          repeatCount: Number(s.repeatCount || 10),
           speedPxPerSecond: Number(s.speedPxPerSecond || 140),
           fontSize: Number(s.fontSize || 48),
           textColor: s.textColor || "#ffffff",
+          copiesPerRun: Number(s.copiesPerRun || 8),
+          copyGapSize: Number(s.copyGapSize || 20),
         };
       }
 
+      function pickRandom(arr) {
+        if (!Array.isArray(arr) || !arr.length) return "";
+        return arr[Math.floor(Math.random() * arr.length)] || "";
+      }
+
+      function buildRepeatedText(text, count = 8, gapSize = 20) {
+        const gap = "\u00A0".repeat(gapSize);
+        return Array.from({ length: count }, () => text).join(gap);
+      }
+
       function applyStyle(settings) {
-        els.ticker.style.fontSize = `${settings.fontSize}px`;
-        els.ticker.style.color = settings.textColor || "#ffffff";
+        els.tickerWrap.style.fontSize = `${settings.fontSize}px`;
+        els.tickerWrap.style.color = settings.textColor || "#ffffff";
       }
 
-      function applyLiveSettings(cfg) {
-        const settings = getSettings(cfg);
-
-        els.ticker.style.color = settings.textColor || "#ffffff";
-        els.ticker.style.fontSize = `${settings.fontSize}px`;
-      }
-
-      function runOneMessage(text, settings, runToken) {
-        return new Promise((resolve) => {
-          if (!text) {
-            resolve();
-            return;
-          }
-
-          applyStyle(settings);
-          els.ticker.textContent = buildRepeatedText(text, 3, 50);
-          els.ticker.classList.remove("hidden");
-
-          els.ticker.style.transition = "none";
-          els.ticker.style.transform = "translateX(100vw)";
-
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              const textWidth = els.ticker.offsetWidth;
-              const totalDistance = window.innerWidth + textWidth;
-              const durationSec = totalDistance / settings.speedPxPerSecond;
-
-              if (runToken !== activeRunToken) {
-                resolve();
-                return;
-              }
-
-              els.ticker.style.transition = `transform ${durationSec}s linear`;
-              els.ticker.style.transform = `translateX(-${textWidth + 20}px)`;
-
-              setTimeout(
-                () => {
-                  resolve();
-                },
-                Math.ceil(durationSec * 1000) + 100,
-              );
-            });
-          });
-        });
-      }
-
-      async function playBatch(cfg, runToken) {
+      function renderTicker(cfg) {
         const settings = getSettings(cfg);
         const list = Array.isArray(cfg.contentidol)
           ? cfg.contentidol.filter(Boolean)
           : [];
 
         if (!settings.enabled || !list.length) {
-          els.ticker.classList.add("hidden");
+          els.tickerWrap.classList.add("hidden");
+          els.tickerTrack.style.animation = "none";
           return;
         }
 
-        for (let i = 0; i < settings.repeatCount; i++) {
-          if (runToken !== activeRunToken) return;
-          const text = pickRandom(list);
-          await runOneMessage(text, settings, runToken);
-          await wait(400);
-        }
+        const text = pickRandom(list);
+        const repeated = buildRepeatedText(
+          text,
+          settings.copiesPerRun || 8,
+          settings.copyGapSize || 20,
+        );
 
-        els.ticker.classList.add("hidden");
+        applyStyle(settings);
+
+        els.tickerLaneA.textContent = repeated;
+        els.tickerLaneB.textContent = repeated;
+        els.tickerWrap.classList.remove("hidden");
+
+        requestAnimationFrame(() => {
+          const laneWidth = els.tickerLaneA.scrollWidth;
+          const speed = Math.max(20, settings.speedPxPerSecond || 140);
+          const duration = laneWidth / speed;
+
+          els.tickerTrack.style.setProperty("--lane-width", `${laneWidth}px`);
+          els.tickerTrack.style.animation = "none";
+
+          requestAnimationFrame(() => {
+            els.tickerTrack.style.animation = `tickerLoop ${duration}s linear infinite`;
+          });
+        });
       }
 
-      function clearSchedule() {
-        if (activeTimer) {
-          clearTimeout(activeTimer);
-          activeTimer = null;
-        }
-      }
-
-      async function scheduleLoop() {
-        clearSchedule();
-        activeRunToken += 1;
-        const runToken = activeRunToken;
-
+      async function initTicker() {
         try {
           const cfg = await fetchConfig();
           configCache = cfg;
-
-          await playBatch(cfg, runToken);
-
-          const settings = getSettings(cfg);
-          const delay = Math.max(1, settings.intervalMinutes) * 60 * 1000;
-
-          activeTimer = setTimeout(() => {
-            scheduleLoop();
-          }, delay);
+          renderTicker(cfg);
         } catch (err) {
           console.error(err);
-          activeTimer = setTimeout(() => {
-            scheduleLoop();
-          }, 30000);
         }
       }
 
       async function watchConfigChanges() {
-        setInterval(async () => {
+        if (watchTimer) clearInterval(watchTimer);
+
+        watchTimer = setInterval(async () => {
           try {
             const latest = await fetchConfig();
-
             const before = JSON.stringify(configCache || {});
             const after = JSON.stringify(latest || {});
 
             if (before !== after) {
               configCache = latest;
-
-              // apply ngay màu / cỡ chữ hiện tại
-              applyLiveSettings(latest);
-
-              // nếu muốn reset cả lịch chạy theo config mới:
-              clearSchedule();
-              activeRunToken += 1;
-              scheduleLoop();
+              renderTicker(latest);
             }
           } catch (err) {
             console.error("watchConfigChanges:", err);
           }
-        }, 15000); // 15 giây
+        }, 15000);
       }
 
       window.addEventListener("resize", () => {
         if (configCache) {
-          // lần kế tiếp sẽ dùng size mới
+          renderTicker(configCache);
         }
       });
 
-      scheduleLoop();
+      initTicker();
       watchConfigChanges();
     </script>
   </body>

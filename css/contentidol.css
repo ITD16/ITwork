@@ -20,23 +20,46 @@ body {
   overflow: hidden;
 }
 
-.ticker {
+.ticker-wrap {
   position: absolute;
   top: 50%;
   left: 0;
-  transform: translateX(100vw);
+  width: 100%;
+  transform: translateY(-50%);
+  overflow: hidden;
   white-space: nowrap;
-  color: #ffffff;
+  pointer-events: none;
+  user-select: none;
   font-weight: 700;
   line-height: 1;
   text-shadow:
     0 0 2px rgba(0, 0, 0, 0.9),
     0 0 8px rgba(0, 0, 0, 0.6);
+}
+
+.ticker-track {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
   will-change: transform;
-  pointer-events: none;
-  user-select: none;
+}
+
+.ticker-lane {
+  flex: 0 0 auto;
+  display: inline-block;
+  white-space: nowrap;
+  padding-right: 0;
 }
 
 .hidden {
-  display: none;
+  display: none !important;
+}
+
+@keyframes tickerLoop {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-1 * var(--lane-width)));
+  }
 }
