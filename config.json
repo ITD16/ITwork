@@ -5,7 +5,7 @@
   ],
   "contentidolSettings": {
     "enabled": true,
-    "intervalMinutes": 5,
+    "intervalMinutes": 2,
     "repeatCount": 10,
     "speedPxPerSecond": 140,
     "fontSize": 32,
