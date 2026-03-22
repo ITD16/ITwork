@@ -15,7 +15,7 @@
     "permissions": {
       "contentidol": false,
       "contentidolSettings": false,
-      "domains1b": false,
+      "domains1b": true,
       "domains789": false,
       "domains0b": false
     }
