@@ -3,8 +3,8 @@
   "contentidol": [
     {
       "text": "ĐANG LIVE TẠI Phòng 1",
-      "startTime": "12:00",
-      "endTime": "15:00",
+      "startTime": "02:00",
+      "endTime": "06:00",
       "enabled": true
     },
     {
@@ -26,9 +26,20 @@
     "repeatCount": 10,
     "speedPxPerSecond": 80,
     "fontSize": 24,
+    "copiesPerRun": 8,
+    "copyGapSize": 24,
+    "laneGapPx": 160,
     "textColor": "#223772"
   },
-  "domains1b": ["SUNWIN.AG", "GEMWIN.SO"],
-  "domains789": ["789CLUB.US"],
-  "domains0b": ["HITCLUB.SC", "GO88.BH"]
+  "domains1b": [
+    "SUNWIN.AG",
+    "GEMWIN.SO"
+  ],
+  "domains789": [
+    "789CLUB.US"
+  ],
+  "domains0b": [
+    "HITCLUB.SC",
+    "GO88.BH"
+  ]
 }
