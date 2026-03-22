@@ -5,9 +5,9 @@
   ],
   "contentidolSettings": {
     "enabled": true,
-    "intervalMinutes": 5,
-    "repeatCount": 10,
-    "speedPxPerSecond": 140,
+    "intervalMinutes": 2,
+    "repeatCount": 5,
+    "speedPxPerSecond": 150,
     "fontSize": 32
   },
   "domains1b": [
