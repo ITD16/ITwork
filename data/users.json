@@ -22,9 +22,9 @@
   },
   {
     "username": "zoro",
-    "passwordHash": "$2a$10$qdKFAkfUnzezozbnyUUnUeE4SbOuvlmUUo1HdN/ehXQeaEQ0cC9mq",
+    "passwordHash": "$2a$10$/ikbIaVvwLRUBe4yvQFF.ea5zPmkz12Jguj7LXRpryzbtX1q7wU0K",
     "role": "user",
     "active": true,
-    "mustChangePassword": true
+    "mustChangePassword": false
   }
 ]
