@@ -1,25 +1,6 @@
 {
   "enableFirework": true,
-  "contentidol": [
-    {
-      "text": "ĐANG LIVE TẠI Phòng 1",
-      "startTime": "02:00",
-      "endTime": "02:20",
-      "enabled": true
-    },
-    {
-      "text": "ĐANG LIVE TẠI Phòng 2",
-      "startTime": "02:20",
-      "endTime": "02:25",
-      "enabled": true
-    },
-    {
-      "text": "ĐANG LIVE TẠI Phòng 3",
-      "startTime": "02:25",
-      "endTime": "21:00",
-      "enabled": true
-    }
-  ],
+  "contentidol": [],
   "contentidolSettings": {
     "enabled": true,
     "intervalMinutes": 2,
