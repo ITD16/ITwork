@@ -23,9 +23,16 @@
   {
     "username": "ruth",
     "passwordHash": "$2a$10$uzr8jeQtjOB4kvMwxC05hORLM7vJiouvzm0lOIVJTHDKNpiklq1fm",
-    "role": "admin",
+    "role": "user",
     "active": true,
-    "mustChangePassword": true
+    "mustChangePassword": true,
+     "permissions": {
+      "contentidol": true,
+      "contentidolSettings": true,
+      "domains1b": false,
+      "domains789": false,
+      "domains0b": false
+    }
   },
   {
     "username": "zoro",
