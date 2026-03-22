@@ -4,7 +4,7 @@
     "Em đang live tại Sun Rồng..."
   ],
   "contentidolSettings": {
-    "enabled": true,
+    "enabled": false,
     "intervalMinutes": 2,
     "repeatCount": 10,
     "speedPxPerSecond": 140,
