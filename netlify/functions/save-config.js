@@ -107,14 +107,7 @@ exports.handler = async (event) => {
 
     let after;
 
-    if ((auth.session.role || "user") === "admin") {
-      after = normalizeConfig(incomingConfig);
-    } else {
-      after = {
-        ...before,
-        contentidol: normalizeContentIdol(incomingConfig.contentidol),
-      };
-    }
+    after = normalizeConfig(incomingConfig);
 
     const changes = buildDiff(before, after);
 

@@ -65,12 +65,16 @@ function roleName() {
 }
 
 function canEditAll() {
-  return roleName() === "admin";
+  const role = currentMe?.role || "user";
+  return role === "admin" || role === "user";
+}
+
+function isAdmin() {
+  return (currentMe?.role || "user") === "admin";
 }
 
 function canEditContentIdol() {
-  const role = roleName();
-  return role === "admin" || role === "user";
+  return canEditAll();
 }
 
 function escapeHtml(value) {
@@ -109,16 +113,16 @@ function createDomainRow(value = "") {
   input.type = "text";
   input.value = value;
   input.placeholder = "Example: SUNWIN.AG";
-  input.disabled = !canEditAll();
+  input.disabled = false; // không disable user
 
   const btn = document.createElement("button");
   btn.type = "button";
   btn.className = "danger";
   btn.textContent = "X";
-  btn.style.display = canEditAll() ? "" : "none";
+  btn.style.display = isAdmin() ? "" : "none";
 
   btn.addEventListener("click", () => {
-    if (!canEditAll()) return;
+    if (!isAdmin()) return;
     row.remove();
     resetIdleTimer();
   });
@@ -152,8 +156,7 @@ function createContentIdolRow(item = {}) {
   textInput.type = "text";
   textInput.placeholder = "Ví dụ: ĐANG LIVE TẠI Phòng 1";
   textInput.value = item.text || "";
-  textInput.disabled = !canEditContentIdol();
-  textInput.className = "contentidol-text-input";
+  textInput.disabled = false;
 
   const timeActions = document.createElement("div");
   timeActions.className = "contentidol-time-actions";
@@ -165,7 +168,7 @@ function createContentIdolRow(item = {}) {
   const startInput = document.createElement("input");
   startInput.type = "time";
   startInput.value = normalizeTimeValue(item.startTime, "12:00");
-  startInput.disabled = !canEditContentIdol();
+  startInput.disabled = false;
   startWrap.appendChild(startLabel);
   startWrap.appendChild(startInput);
 
@@ -176,7 +179,7 @@ function createContentIdolRow(item = {}) {
   const endInput = document.createElement("input");
   endInput.type = "time";
   endInput.value = normalizeTimeValue(item.endTime, "15:00");
-  endInput.disabled = !canEditContentIdol();
+  endInput.disabled = false;
   endWrap.appendChild(endLabel);
   endWrap.appendChild(endInput);
 
@@ -185,6 +188,7 @@ function createContentIdolRow(item = {}) {
   removeBtn.className = "danger";
   removeBtn.textContent = "X";
   removeBtn.style.display = canEditContentIdol() ? "" : "none";
+
   removeBtn.addEventListener("click", () => {
     if (!canEditContentIdol()) return;
     row.remove();
@@ -286,13 +290,15 @@ function renderConfig(config) {
 }
 
 function applyRoleUi() {
-  const admin = canEditAll();
-  const contentidolEditor = canEditContentIdol();
+  const admin = isAdmin();
+  const canEdit = canEditAll();
 
+  // Content Idol: user + admin đều được add
   document.querySelectorAll('[data-add="contentidol"]').forEach((btn) => {
-    btn.style.display = contentidolEditor ? "" : "none";
+    btn.style.display = canEdit ? "" : "none";
   });
 
+  // Các nút Add domain: chỉ admin
   document
     .querySelectorAll(
       '[data-add="domains1b"], [data-add="domains789"], [data-add="domains0b"]',
@@ -301,21 +307,25 @@ function applyRoleUi() {
       btn.style.display = admin ? "" : "none";
     });
 
+  // Nút X của domain: chỉ admin
   document.querySelectorAll(".domain-row button.danger").forEach((btn) => {
     btn.style.display = admin ? "" : "none";
   });
 
+  // Nút X của contentidol: user + admin đều có
   document
     .querySelectorAll(".contentidol-item button.danger")
     .forEach((btn) => {
-      btn.style.display = contentidolEditor ? "" : "none";
+      btn.style.display = canEdit ? "" : "none";
     });
 
+  // User management: chỉ admin
   if (els.userCard) {
     els.userCard.style.display = admin ? "" : "none";
   }
 
-  if (els.enableFirework) els.enableFirework.disabled = !admin;
+  // KHÔNG disable các input config
+  if (els.enableFirework) els.enableFirework.disabled = false;
 
   [
     els.contentidolEnabled,
@@ -329,23 +339,20 @@ function applyRoleUi() {
     els.contentidolTextColor,
     els.contentidolTextColorCode,
   ].forEach((el) => {
-    if (el) el.disabled = !admin;
+    if (el) el.disabled = false;
   });
 
-  [els.domains1bList, els.domains789List, els.domains0bList].forEach(
-    (container) => {
-      if (!container) return;
-      container.querySelectorAll("input").forEach((input) => {
-        input.disabled = !admin;
-      });
-    },
-  );
-
-  if (els.contentidolList) {
-    els.contentidolList.querySelectorAll("input").forEach((input) => {
-      input.disabled = !contentidolEditor;
+  [
+    els.domains1bList,
+    els.domains789List,
+    els.domains0bList,
+    els.contentidolList,
+  ].forEach((container) => {
+    if (!container) return;
+    container.querySelectorAll("input").forEach((input) => {
+      input.disabled = false;
     });
-  }
+  });
 }
 
 async function doAutoLogout() {
@@ -618,6 +625,7 @@ document.querySelectorAll("[data-add]").forEach((btn) => {
 
     if (key === "contentidol") {
       if (!canEditContentIdol()) return;
+
       els.contentidolList?.appendChild(
         createContentIdolRow({
           text: "",
@@ -630,7 +638,7 @@ document.querySelectorAll("[data-add]").forEach((btn) => {
       return;
     }
 
-    if (!canEditAll()) return;
+    if (!isAdmin()) return;
 
     const map = {
       domains1b: els.domains1bList,
