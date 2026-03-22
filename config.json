@@ -1,6 +1,13 @@
 {
   "enableFirework": true,
   "contentidol": ["Em đang kéo cầu game Tài xỉu mini, mấy anh ghé chơi"],
+  "contentidolSettings": {
+    "enabled": true,
+    "intervalMinutes": 5,
+    "repeatCount": 10,
+    "speedPxPerSecond": 140,
+    "fontSize": 48
+  },
   "domains1b": ["SUNWIN.AG", "GEMWIN.SO"],
   "domains789": ["789CLUB.US"],
   "domains0b": ["HITCLUB.SC", "GO88.BH"]

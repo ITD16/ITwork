@@ -8,6 +8,15 @@ const els = {
   meBox: document.getElementById("meBox"),
   enableFirework: document.getElementById("enableFirework"),
   contentidolList: document.getElementById("contentidolList"),
+  contentidolEnabled: document.getElementById("contentidolEnabled"),
+  contentidolIntervalMinutes: document.getElementById(
+    "contentidolIntervalMinutes",
+  ),
+  contentidolRepeatCount: document.getElementById("contentidolRepeatCount"),
+  contentidolSpeedPxPerSecond: document.getElementById(
+    "contentidolSpeedPxPerSecond",
+  ),
+  contentidolFontSize: document.getElementById("contentidolFontSize"),
   domains1bList: document.getElementById("domains1bList"),
   domains789List: document.getElementById("domains789List"),
   domains0bList: document.getElementById("domains0bList"),
@@ -98,6 +107,13 @@ function collectConfig() {
   return {
     enableFirework: !!els.enableFirework?.checked,
     contentidol: getDomainList(els.contentidolList),
+    contentidolSettings: {
+      enabled: !!els.contentidolEnabled?.checked,
+      intervalMinutes: Number(els.contentidolIntervalMinutes?.value || 5),
+      repeatCount: Number(els.contentidolRepeatCount?.value || 10),
+      speedPxPerSecond: Number(els.contentidolSpeedPxPerSecond?.value || 140),
+      fontSize: Number(els.contentidolFontSize?.value || 48),
+    },
     domains1b: getDomainList(els.domains1bList),
     domains789: getDomainList(els.domains789List),
     domains0b: getDomainList(els.domains0bList),
@@ -106,10 +122,23 @@ function collectConfig() {
 
 function renderConfig(config) {
   if (els.enableFirework) els.enableFirework.checked = !!config.enableFirework;
+
   renderDomainList(els.contentidolList, config.contentidol || []);
   renderDomainList(els.domains1bList, config.domains1b || []);
   renderDomainList(els.domains789List, config.domains789 || []);
   renderDomainList(els.domains0bList, config.domains0b || []);
+
+  const s = config.contentidolSettings || {};
+
+  if (els.contentidolEnabled)
+    els.contentidolEnabled.checked = s.enabled !== false;
+  if (els.contentidolIntervalMinutes)
+    els.contentidolIntervalMinutes.value = s.intervalMinutes ?? 5;
+  if (els.contentidolRepeatCount)
+    els.contentidolRepeatCount.value = s.repeatCount ?? 10;
+  if (els.contentidolSpeedPxPerSecond)
+    els.contentidolSpeedPxPerSecond.value = s.speedPxPerSecond ?? 140;
+  if (els.contentidolFontSize) els.contentidolFontSize.value = s.fontSize ?? 48;
 }
 
 function applyRoleUi() {

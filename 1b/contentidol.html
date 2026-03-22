@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Content Idol</title>
+    <link rel="stylesheet" href="/css/contentidol.css" />
+  </head>
+  <body>
+    <div id="stage" class="stage">
+      <div id="ticker" class="ticker hidden"></div>
+    </div>
+
+    <script>
+      const els = {
+        stage: document.getElementById("stage"),
+        ticker: document.getElementById("ticker"),
+      };
+
+      let configCache = null;
+      let activeTimer = null;
+      let activeRunToken = 0;
+
+      function wait(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      function pickRandom(arr) {
+        if (!Array.isArray(arr) || !arr.length) return "";
+        return arr[Math.floor(Math.random() * arr.length)] || "";
+      }
+
+      async function fetchConfig() {
+        const res = await fetch("/config.json?ts=" + Date.now(), {
+          cache: "no-store",
+        });
+        if (!res.ok) throw new Error("Cannot load config.json");
+        return res.json();
+      }
+
+      function getSettings(cfg) {
+        const s = cfg?.contentidolSettings || {};
+        return {
+          enabled: s.enabled !== false,
+          intervalMinutes: Number(s.intervalMinutes || 5),
+          repeatCount: Number(s.repeatCount || 10),
+          speedPxPerSecond: Number(s.speedPxPerSecond || 140),
+          fontSize: Number(s.fontSize || 48),
+        };
+      }
+
+      function applyStyle(settings) {
+        els.ticker.style.fontSize = `${settings.fontSize}px`;
+      }
+
+      function runOneMessage(text, settings, runToken) {
+        return new Promise((resolve) => {
+          if (!text) {
+            resolve();
+            return;
+          }
+
+          applyStyle(settings);
+          els.ticker.textContent = text;
+          els.ticker.classList.remove("hidden");
+
+          // reset vị trí trước khi đo
+          els.ticker.style.transition = "none";
+          els.ticker.style.transform = "translateX(100vw)";
+
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              const textWidth = els.ticker.offsetWidth;
+              const totalDistance = window.innerWidth + textWidth;
+              const durationSec = totalDistance / settings.speedPxPerSecond;
+
+              if (runToken !== activeRunToken) {
+                resolve();
+                return;
+              }
+
+              els.ticker.style.transition = `transform ${durationSec}s linear`;
+              els.ticker.style.transform = `translateX(-${textWidth + 20}px)`;
+
+              setTimeout(
+                () => {
+                  resolve();
+                },
+                Math.ceil(durationSec * 1000) + 100,
+              );
+            });
+          });
+        });
+      }
+
+      async function playBatch(cfg, runToken) {
+        const settings = getSettings(cfg);
+        const list = Array.isArray(cfg.contentidol)
+          ? cfg.contentidol.filter(Boolean)
+          : [];
+
+        if (!settings.enabled || !list.length) {
+          els.ticker.classList.add("hidden");
+          return;
+        }
+
+        for (let i = 0; i < settings.repeatCount; i++) {
+          if (runToken !== activeRunToken) return;
+          const text = pickRandom(list);
+          await runOneMessage(text, settings, runToken);
+          await wait(400);
+        }
+
+        els.ticker.classList.add("hidden");
+      }
+
+      function clearSchedule() {
+        if (activeTimer) {
+          clearTimeout(activeTimer);
+          activeTimer = null;
+        }
+      }
+
+      async function scheduleLoop() {
+        clearSchedule();
+        activeRunToken += 1;
+        const runToken = activeRunToken;
+
+        try {
+          const cfg = await fetchConfig();
+          configCache = cfg;
+
+          await playBatch(cfg, runToken);
+
+          const settings = getSettings(cfg);
+          const delay = Math.max(1, settings.intervalMinutes) * 60 * 1000;
+
+          activeTimer = setTimeout(() => {
+            scheduleLoop();
+          }, delay);
+        } catch (err) {
+          console.error(err);
+          activeTimer = setTimeout(() => {
+            scheduleLoop();
+          }, 15000);
+        }
+      }
+
+      async function watchConfigChanges() {
+        setInterval(async () => {
+          try {
+            const latest = await fetchConfig();
+            const before = JSON.stringify(configCache || {});
+            const after = JSON.stringify(latest || {});
+
+            if (before !== after) {
+              configCache = latest;
+              clearSchedule();
+              activeRunToken += 1;
+              els.ticker.classList.add("hidden");
+              scheduleLoop();
+            }
+          } catch (err) {
+            console.error("watchConfigChanges:", err);
+          }
+        }, 10000);
+      }
+
+      window.addEventListener("resize", () => {
+        if (configCache) {
+          // lần kế tiếp sẽ dùng size mới
+        }
+      });
+
+      scheduleLoop();
+      watchConfigChanges();
+    </script>
+  </body>
+</html>
