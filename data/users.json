@@ -29,9 +29,6 @@
     "permissions": {
       "contentidol": true,
       "contentidolSettings": true,
-      "domains1b": false,
-      "domains789": false,
-      "domains0b": false,
       "domains1b": true,
       "domains789": true,
       "domains0b": true
@@ -59,7 +56,7 @@
     "mustChangePassword": false,
     "permissions": {
       "contentidol": true,
-      "contentidolSettings": false,
+      "contentidolSettings": true,
       "domains1b": true,
       "domains789": true,
       "domains0b": true
