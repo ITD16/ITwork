@@ -1,7 +1,24 @@
 {
   "enableFirework": true,
   "contentidol": [
-    "ĐANG LIVE TẠI XÓC ĐĨA TỨ LINH"
+    {
+      "text": "ĐANG LIVE TẠI Phòng 1",
+      "startTime": "12:00",
+      "endTime": "15:00",
+      "enabled": true
+    },
+    {
+      "text": "ĐANG LIVE TẠI Phòng 2",
+      "startTime": "15:00",
+      "endTime": "18:00",
+      "enabled": true
+    },
+    {
+      "text": "ĐANG LIVE TẠI Phòng 3",
+      "startTime": "18:00",
+      "endTime": "21:00",
+      "enabled": true
+    }
   ],
   "contentidolSettings": {
     "enabled": true,
@@ -11,15 +28,7 @@
     "fontSize": 24,
     "textColor": "#223772"
   },
-  "domains1b": [
-    "SUNWIN.AG",
-    "GEMWIN.SO"
-  ],
-  "domains789": [
-    "789CLUB.US"
-  ],
-  "domains0b": [
-    "HITCLUB.SC",
-    "GO88.BH"
-  ]
+  "domains1b": ["SUNWIN.AG", "GEMWIN.SO"],
+  "domains789": ["789CLUB.US"],
+  "domains0b": ["HITCLUB.SC", "GO88.BH"]
 }
