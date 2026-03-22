@@ -26,10 +26,10 @@
     "role": "user",
     "active": true,
     "mustChangePassword": true,
-     "permissions": {
+    "permissions": {
       "contentidol": true,
       "contentidolSettings": true,
-      "domains1b": false,
+      "domains1b": true,
       "domains789": false,
       "domains0b": false
     }
