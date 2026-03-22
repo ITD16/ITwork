@@ -37,8 +37,8 @@ body {
   line-height: 1;
   box-shadow: 1px 7px 30px -4px #000000;
   text-shadow:
-    0 0 2px rgba(0, 0, 0, 0.9),
-    0 0 3px rgba(0, 0, 0, 0.6);
+    1px 7px 30px -4px #000000,
+    2px 2px 12px 0px rgba(0, 0, 0, 0.8) inset;
 }
 
 .ticker-track {
