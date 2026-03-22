@@ -8,7 +8,7 @@
   },
   {
     "username": "user1",
-    "passwordHash": "$2a$10$pe0rapkTnq2DKk7B53YvDefIQhXvJUBt/TwNTOt4eIvmGvt0mQ37G",
+    "passwordHash": "$2a$10$o4QDxKq3sSLAf7CGgvhDpOimbmY2wZjLH9zRlab/sr2bksdDQxKo6",
     "role": "user",
     "active": true,
     "mustChangePassword": false
@@ -16,7 +16,7 @@
   {
     "username": "ruth",
     "passwordHash": "$2a$10$uzr8jeQtjOB4kvMwxC05hORLM7vJiouvzm0lOIVJTHDKNpiklq1fm",
-    "role": "user",
+    "role": "admin",
     "active": true,
     "mustChangePassword": true
   }
