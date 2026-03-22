@@ -32,14 +32,10 @@ body {
   user-select: none;
 
   background: #ffffff;
-  padding: 12px 0;
+  padding: 8px 0px;
   font-weight: 700;
   line-height: 1;
-
-  border-top: 1px solid rgba(0, 0, 0, 0.18);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.18);
-
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
+  box-shadow: 1px 7px 30px -4px #000000;
 }
 
 .ticker-track {
