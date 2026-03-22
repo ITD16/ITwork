@@ -19,5 +19,12 @@
     "role": "admin",
     "active": true,
     "mustChangePassword": true
+  },
+  {
+    "username": "zoro",
+    "passwordHash": "$2a$10$qdKFAkfUnzezozbnyUUnUeE4SbOuvlmUUo1HdN/ehXQeaEQ0cC9mq",
+    "role": "user",
+    "active": true,
+    "mustChangePassword": true
   }
 ]
