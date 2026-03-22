@@ -6,8 +6,8 @@
   ],
   "contentidolSettings": {
     "enabled": true,
-    "intervalMinutes": 2,
-    "repeatCount": 2,
+    "intervalMinutes": 1,
+    "repeatCount": 60,
     "speedPxPerSecond": 300,
     "fontSize": 32,
     "textColor": "#9c75b3"
