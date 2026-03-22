@@ -5,7 +5,7 @@
     "Say oh year"
   ],
   "contentidolSettings": {
-    "enabled": true,
+    "enabled": false,
     "intervalMinutes": 1,
     "repeatCount": 60,
     "speedPxPerSecond": 300,
