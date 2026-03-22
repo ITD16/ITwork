@@ -35,6 +35,9 @@ body {
   text-shadow:
     0 0 2px rgba(0, 0, 0, 0.9),
     0 0 8px rgba(0, 0, 0, 0.6);
+  padding: 8px 0px;
+  box-shadow: 1px 7px 30px -4px #000000;
+  background: #fff;
 }
 
 .ticker-track {
