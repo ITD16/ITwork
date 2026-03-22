@@ -46,7 +46,7 @@
                 + Add
               </button>
             </div>
-            <div id="contentidolList" class="domain-list"></div>
+            <div id="contentidolList" class="contentidol-list"></div>
           </div>
 
           <div class="group-box">
@@ -79,6 +79,22 @@
                 <span>Font Size</span>
                 <input id="contentidolFontSize" type="text" />
               </label>
+
+              <label class="compact-field">
+                <span>Copies Per Run</span>
+                <input id="contentidolCopiesPerRun" type="text" />
+              </label>
+
+              <label class="compact-field">
+                <span>Copy Gap Size</span>
+                <input id="contentidolCopyGapSize" type="text" />
+              </label>
+
+              <label class="compact-field">
+                <span>Lane Gap Px</span>
+                <input id="contentidolLaneGapPx" type="text" />
+              </label>
+
               <label class="compact-field color-field">
                 <span>Text Color</span>
                 <div class="color-input-row">
@@ -166,7 +182,6 @@
       </section>
     </main>
 
-    <!-- Change Password Modal -->
     <div id="passwordModal" class="modal-backdrop hidden">
       <div class="modal-card">
         <h2>Change Password</h2>
@@ -217,7 +232,6 @@
       </div>
     </div>
 
-    <!-- Add User Modal -->
     <div id="addUserModal" class="modal-backdrop hidden">
       <div class="modal-card">
         <h2>Add User</h2>

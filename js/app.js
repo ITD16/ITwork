@@ -7,6 +7,7 @@ let idleTimer = null;
 const els = {
   meBox: document.getElementById("meBox"),
   enableFirework: document.getElementById("enableFirework"),
+
   contentidolList: document.getElementById("contentidolList"),
   contentidolEnabled: document.getElementById("contentidolEnabled"),
   contentidolIntervalMinutes: document.getElementById(
@@ -17,11 +18,16 @@ const els = {
     "contentidolSpeedPxPerSecond",
   ),
   contentidolFontSize: document.getElementById("contentidolFontSize"),
+  contentidolCopiesPerRun: document.getElementById("contentidolCopiesPerRun"),
+  contentidolCopyGapSize: document.getElementById("contentidolCopyGapSize"),
+  contentidolLaneGapPx: document.getElementById("contentidolLaneGapPx"),
   contentidolTextColor: document.getElementById("contentidolTextColor"),
   contentidolTextColorCode: document.getElementById("contentidolTextColorCode"),
+
   domains1bList: document.getElementById("domains1bList"),
   domains789List: document.getElementById("domains789List"),
   domains0bList: document.getElementById("domains0bList"),
+
   saveMessage: document.getElementById("saveMessage"),
   saveError: document.getElementById("saveError"),
   logsBox: document.getElementById("logsBox"),
@@ -54,8 +60,17 @@ const els = {
   addUserOk: document.getElementById("addUserOk"),
 };
 
-function isAdmin() {
-  return (currentMe?.role || "user") === "admin";
+function roleName() {
+  return currentMe?.role || "user";
+}
+
+function canEditAll() {
+  return roleName() === "admin";
+}
+
+function canEditContentIdol() {
+  const role = roleName();
+  return role === "admin" || role === "user";
 }
 
 function escapeHtml(value) {
@@ -65,9 +80,25 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
 }
+
 function normalizeHexColor(value, fallback = "#ffffff") {
   const v = String(value || "").trim();
   return /^#[0-9a-fA-F]{6}$/.test(v) ? v.toLowerCase() : fallback;
+}
+
+function normalizeTimeValue(value, fallback = "00:00") {
+  const v = String(value || "").trim();
+  return /^\d{2}:\d{2}$/.test(v) ? v : fallback;
+}
+
+function formatDateTimeVN(value) {
+  if (!value) return "";
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return String(value);
+  return d.toLocaleString("vi-VN", {
+    timeZone: "Asia/Ho_Chi_Minh",
+    hour12: false,
+  });
 }
 
 function createDomainRow(value = "") {
@@ -78,15 +109,16 @@ function createDomainRow(value = "") {
   input.type = "text";
   input.value = value;
   input.placeholder = "Example: SUNWIN.AG";
+  input.disabled = !canEditAll();
 
   const btn = document.createElement("button");
   btn.type = "button";
   btn.className = "danger";
   btn.textContent = "X";
-  btn.style.display = isAdmin() ? "" : "none";
+  btn.style.display = canEditAll() ? "" : "none";
 
   btn.addEventListener("click", () => {
-    if (!isAdmin()) return;
+    if (!canEditAll()) return;
     row.remove();
     resetIdleTimer();
   });
@@ -109,32 +141,105 @@ function getDomainList(container) {
     .filter(Boolean);
 }
 
-function getTextList(container) {
+function createContentIdolRow(item = {}) {
+  const row = document.createElement("div");
+  row.className = "contentidol-item";
+
+  const top = document.createElement("div");
+  top.className = "contentidol-top";
+
+  const textInput = document.createElement("input");
+  textInput.type = "text";
+  textInput.placeholder = "Ví dụ: ĐANG LIVE TẠI Phòng 1";
+  textInput.value = item.text || "";
+  textInput.disabled = !canEditContentIdol();
+
+  top.appendChild(textInput);
+
+  const bottom = document.createElement("div");
+  bottom.className = "contentidol-bottom";
+
+  const startWrap = document.createElement("label");
+  const startLabel = document.createElement("span");
+  startLabel.textContent = "Start Time";
+  const startInput = document.createElement("input");
+  startInput.type = "time";
+  startInput.value = normalizeTimeValue(item.startTime, "12:00");
+  startInput.disabled = !canEditContentIdol();
+  startWrap.appendChild(startLabel);
+  startWrap.appendChild(startInput);
+
+  const endWrap = document.createElement("label");
+  const endLabel = document.createElement("span");
+  endLabel.textContent = "End Time";
+  const endInput = document.createElement("input");
+  endInput.type = "time";
+  endInput.value = normalizeTimeValue(item.endTime, "15:00");
+  endInput.disabled = !canEditContentIdol();
+  endWrap.appendChild(endLabel);
+  endWrap.appendChild(endInput);
+
+  const removeBtn = document.createElement("button");
+  removeBtn.type = "button";
+  removeBtn.className = "danger";
+  removeBtn.textContent = "X";
+  removeBtn.style.display = canEditContentIdol() ? "" : "none";
+  removeBtn.addEventListener("click", () => {
+    if (!canEditContentIdol()) return;
+    row.remove();
+    resetIdleTimer();
+  });
+
+  bottom.appendChild(startWrap);
+  bottom.appendChild(endWrap);
+  bottom.appendChild(removeBtn);
+
+  row.appendChild(top);
+  row.appendChild(bottom);
+  return row;
+}
+
+function renderContentIdolList(container, items) {
+  if (!container) return;
+  container.innerHTML = "";
+  (items || []).forEach((item) => {
+    container.appendChild(createContentIdolRow(item));
+  });
+}
+
+function getContentIdolList(container) {
   if (!container) return [];
-  return Array.from(container.querySelectorAll("input"))
-    .map((x) => x.value.trim())
-    .filter(Boolean);
-}
 
-function canEditAll() {
-  return (currentMe?.role || "user") === "admin";
-}
+  return Array.from(container.querySelectorAll(".contentidol-item"))
+    .map((row) => {
+      const inputs = row.querySelectorAll("input");
+      const text = inputs[0]?.value?.trim() || "";
+      const startTime = normalizeTimeValue(inputs[1]?.value || "", "00:00");
+      const endTime = normalizeTimeValue(inputs[2]?.value || "", "23:59");
 
-function canEditContentIdol() {
-  const role = currentMe?.role || "user";
-  return role === "admin" || role === "user";
+      return {
+        text,
+        startTime,
+        endTime,
+        enabled: true,
+      };
+    })
+    .filter((item) => item.text);
 }
 
 function collectConfig() {
   return {
     enableFirework: !!els.enableFirework?.checked,
-    contentidol: getTextList(els.contentidolList),
+    contentidol: getContentIdolList(els.contentidolList),
     contentidolSettings: {
       enabled: !!els.contentidolEnabled?.checked,
       intervalMinutes: Number(els.contentidolIntervalMinutes?.value || 5),
       repeatCount: Number(els.contentidolRepeatCount?.value || 10),
       speedPxPerSecond: Number(els.contentidolSpeedPxPerSecond?.value || 140),
       fontSize: Number(els.contentidolFontSize?.value || 48),
+      copiesPerRun: Number(els.contentidolCopiesPerRun?.value || 8),
+      copyGapSize: Number(els.contentidolCopyGapSize?.value || 24),
+      laneGapPx: Number(els.contentidolLaneGapPx?.value || 160),
       textColor: normalizeHexColor(
         els.contentidolTextColorCode?.value || els.contentidolTextColor?.value,
         "#ffffff",
@@ -149,7 +254,7 @@ function collectConfig() {
 function renderConfig(config) {
   if (els.enableFirework) els.enableFirework.checked = !!config.enableFirework;
 
-  renderDomainList(els.contentidolList, config.contentidol || []);
+  renderContentIdolList(els.contentidolList, config.contentidol || []);
   renderDomainList(els.domains1bList, config.domains1b || []);
   renderDomainList(els.domains789List, config.domains789 || []);
   renderDomainList(els.domains0bList, config.domains0b || []);
@@ -165,6 +270,12 @@ function renderConfig(config) {
   if (els.contentidolSpeedPxPerSecond)
     els.contentidolSpeedPxPerSecond.value = s.speedPxPerSecond ?? 140;
   if (els.contentidolFontSize) els.contentidolFontSize.value = s.fontSize ?? 48;
+  if (els.contentidolCopiesPerRun)
+    els.contentidolCopiesPerRun.value = s.copiesPerRun ?? 8;
+  if (els.contentidolCopyGapSize)
+    els.contentidolCopyGapSize.value = s.copyGapSize ?? 24;
+  if (els.contentidolLaneGapPx)
+    els.contentidolLaneGapPx.value = s.laneGapPx ?? 160;
 
   const color = normalizeHexColor(s.textColor || "#ffffff", "#ffffff");
   if (els.contentidolTextColor) els.contentidolTextColor.value = color;
@@ -172,18 +283,65 @@ function renderConfig(config) {
 }
 
 function applyRoleUi() {
-  const admin = isAdmin();
+  const admin = canEditAll();
+  const contentidolEditor = canEditContentIdol();
 
-  document.querySelectorAll("[data-add]").forEach((btn) => {
-    btn.style.display = admin ? "" : "none";
+  document.querySelectorAll('[data-add="contentidol"]').forEach((btn) => {
+    btn.style.display = contentidolEditor ? "" : "none";
   });
+
+  document
+    .querySelectorAll(
+      '[data-add="domains1b"], [data-add="domains789"], [data-add="domains0b"]',
+    )
+    .forEach((btn) => {
+      btn.style.display = admin ? "" : "none";
+    });
 
   document.querySelectorAll(".domain-row button.danger").forEach((btn) => {
     btn.style.display = admin ? "" : "none";
   });
 
+  document
+    .querySelectorAll(".contentidol-item button.danger")
+    .forEach((btn) => {
+      btn.style.display = contentidolEditor ? "" : "none";
+    });
+
   if (els.userCard) {
     els.userCard.style.display = admin ? "" : "none";
+  }
+
+  if (els.enableFirework) els.enableFirework.disabled = !admin;
+
+  [
+    els.contentidolEnabled,
+    els.contentidolIntervalMinutes,
+    els.contentidolRepeatCount,
+    els.contentidolSpeedPxPerSecond,
+    els.contentidolFontSize,
+    els.contentidolCopiesPerRun,
+    els.contentidolCopyGapSize,
+    els.contentidolLaneGapPx,
+    els.contentidolTextColor,
+    els.contentidolTextColorCode,
+  ].forEach((el) => {
+    if (el) el.disabled = !admin;
+  });
+
+  [els.domains1bList, els.domains789List, els.domains0bList].forEach(
+    (container) => {
+      if (!container) return;
+      container.querySelectorAll("input").forEach((input) => {
+        input.disabled = !admin;
+      });
+    },
+  );
+
+  if (els.contentidolList) {
+    els.contentidolList.querySelectorAll("input").forEach((input) => {
+      input.disabled = !contentidolEditor;
+    });
   }
 }
 
@@ -225,11 +383,10 @@ async function ensureMe() {
     return;
   }
 
-  const data = await res.json();
-  currentMe = data;
+  currentMe = await res.json();
 
   if (els.meBox) {
-    els.meBox.textContent = `User: ${data.username}`;
+    els.meBox.textContent = `User: ${currentMe.username}`;
   }
 
   applyRoleUi();
@@ -276,7 +433,7 @@ async function loadLogs() {
     return;
   }
 
-  const admin = isAdmin();
+  const admin = canEditAll();
 
   els.logsBox.innerHTML = logs
     .map((log) => {
@@ -327,6 +484,7 @@ async function saveConfig() {
   if (els.saveMessage) els.saveMessage.textContent = "";
 
   const config = collectConfig();
+
   const res = await fetch("/api/config/save", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -341,30 +499,20 @@ async function saveConfig() {
     return;
   }
 
-  originalConfig = config;
+  originalConfig = data.config || config;
 
   if (els.saveMessage) {
     els.saveMessage.textContent =
       data.message || `Saved ok. Commit: ${data.commitSha || ""}`;
   }
 
+  await loadConfig();
   await loadLogs();
   resetIdleTimer();
 }
 
-function formatDateTimeVN(value) {
-  if (!value) return "";
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return String(value);
-
-  return d.toLocaleString("vi-VN", {
-    timeZone: "Asia/Ho_Chi_Minh",
-    hour12: false,
-  });
-}
-
 async function loadUsers() {
-  if (!isAdmin() || !els.usersBox) return;
+  if (!canEditAll() || !els.usersBox) return;
 
   els.usersBox.innerHTML = "Loading...";
   const res = await fetch("/api/users", { credentials: "include" });
@@ -433,7 +581,6 @@ async function loadUsers() {
 
 function openForcePasswordModal() {
   if (!els.passwordModal) return;
-
   els.passwordError.textContent = "";
   els.passwordOk.textContent = "";
   els.currentPasswordWrap.classList.add("hidden");
@@ -464,11 +611,25 @@ function closeAddUserModal() {
 
 document.querySelectorAll("[data-add]").forEach((btn) => {
   btn.addEventListener("click", () => {
-    if (!isAdmin()) return;
-
     const key = btn.getAttribute("data-add");
+
+    if (key === "contentidol") {
+      if (!canEditContentIdol()) return;
+      els.contentidolList?.appendChild(
+        createContentIdolRow({
+          text: "",
+          startTime: "12:00",
+          endTime: "15:00",
+          enabled: true,
+        }),
+      );
+      resetIdleTimer();
+      return;
+    }
+
+    if (!canEditAll()) return;
+
     const map = {
-      contentidol: els.contentidolList,
       domains1b: els.domains1bList,
       domains789: els.domains789List,
       domains0b: els.domains0bList,
@@ -503,7 +664,7 @@ els.reloadUsersBtn?.addEventListener("click", async () => {
 });
 
 els.addUserBtn?.addEventListener("click", () => {
-  if (!isAdmin()) return;
+  if (!canEditAll()) return;
   openAddUserModal();
   resetIdleTimer();
 });
