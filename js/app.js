@@ -116,6 +116,15 @@ function getTextList(container) {
     .filter(Boolean);
 }
 
+function canEditAll() {
+  return (currentMe?.role || "user") === "admin";
+}
+
+function canEditContentIdol() {
+  const role = currentMe?.role || "user";
+  return role === "admin" || role === "user";
+}
+
 function collectConfig() {
   return {
     enableFirework: !!els.enableFirework?.checked,
