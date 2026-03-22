@@ -1,15 +1,15 @@
 {
   "enableFirework": true,
   "contentidol": [
-    "Em đang kéo cầu mấy anh ghé chơi nha."
+    "Vượt mức pickleball"
   ],
   "contentidolSettings": {
     "enabled": true,
     "intervalMinutes": 2,
     "repeatCount": 10,
-    "speedPxPerSecond": 140,
+    "speedPxPerSecond": 1400,
     "fontSize": 32,
-    "textColor": "#f10404"
+    "textColor": "#9c75b3"
   },
   "domains1b": [
     "SUNWIN.AG",
