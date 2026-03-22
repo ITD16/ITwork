@@ -44,23 +44,27 @@
           fontSize: Number(s.fontSize || 48),
           textColor: s.textColor || "#ffffff",
           copiesPerRun: Number(s.copiesPerRun || 8),
-          copyGapSize: Number(s.copyGapSize || 20),
+          copyGapSize: Number(s.copyGapSize || 24),
+          laneGapPx: Number(s.laneGapPx || 160),
         };
       }
 
-      function pickRandom(arr) {
-        if (!Array.isArray(arr) || !arr.length) return "";
-        return arr[Math.floor(Math.random() * arr.length)] || "";
+      function hhmmToMinutes(value) {
+        const [hh, mm] = String(value || "00:00")
+          .split(":")
+          .map(Number);
+        return (hh || 0) * 60 + (mm || 0);
       }
 
-      function buildRepeatedText(text, count = 8, gapSize = 20) {
-        const gap = "\u00A0".repeat(gapSize);
-        return Array.from({ length: count }, () => text).join(gap);
-      }
+      function getNowMinutesGMT7() {
+        const vn = new Intl.DateTimeFormat("en-GB", {
+          timeZone: "Asia/Ho_Chi_Minh",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        }).format(new Date());
 
-      function applyStyle(settings) {
-        els.tickerWrap.style.fontSize = `${settings.fontSize}px`;
-        els.tickerWrap.style.color = settings.textColor || "#ffffff";
+        return hhmmToMinutes(vn);
       }
 
       function isInTimeRange(startTime, endTime, nowMinutes) {
@@ -78,10 +82,39 @@
         return nowMinutes === start;
       }
 
+      function buildRepeatedText(text, count = 8, gapSize = 24) {
+        const gap = "\u00A0".repeat(gapSize);
+        return Array.from({ length: count }, () => text).join(gap);
+      }
+
+      function applyStyle(settings) {
+        els.tickerWrap.style.fontSize = `${settings.fontSize}px`;
+        els.tickerWrap.style.color = settings.textColor || "#ffffff";
+      }
+
+      function getActiveContentItem(list) {
+        const nowMinutes = getNowMinutesGMT7();
+
+        const activeItems = list.filter(
+          (item) =>
+            item &&
+            item.enabled !== false &&
+            item.text &&
+            isInTimeRange(item.startTime, item.endTime, nowMinutes),
+        );
+
+        if (activeItems.length) {
+          return activeItems[0];
+        }
+
+        // Không có item nào đúng giờ -> lấy item cuối cùng
+        return list.length ? list[list.length - 1] : null;
+      }
+
       function renderTicker(cfg) {
         const settings = getSettings(cfg);
         const list = Array.isArray(cfg.contentidol)
-          ? cfg.contentidol.filter(Boolean)
+          ? cfg.contentidol.filter((item) => item && item.text)
           : [];
 
         if (!settings.enabled || !list.length) {
@@ -90,14 +123,24 @@
           return;
         }
 
-        const text = pickRandom(list);
+        const activeItem = getActiveContentItem(list);
+
+        if (!activeItem || !activeItem.text) {
+          els.tickerWrap.classList.add("hidden");
+          els.tickerTrack.style.animation = "none";
+          return;
+        }
+
         const repeated = buildRepeatedText(
-          text,
+          activeItem.text,
           settings.copiesPerRun || 8,
-          settings.copyGapSize || 20,
+          settings.copyGapSize || 24,
         );
 
         applyStyle(settings);
+
+        els.tickerLaneA.style.paddingRight = `${settings.laneGapPx || 160}px`;
+        els.tickerLaneB.style.paddingRight = `${settings.laneGapPx || 160}px`;
 
         els.tickerLaneA.textContent = repeated;
         els.tickerLaneB.textContent = repeated;
@@ -136,8 +179,11 @@
             const before = JSON.stringify(configCache || {});
             const after = JSON.stringify(latest || {});
 
+            // render lại luôn để đổi theo giờ hiện tại
+            configCache = latest;
+            renderTicker(latest);
+
             if (before !== after) {
-              configCache = latest;
               renderTicker(latest);
             }
           } catch (err) {
