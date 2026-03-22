@@ -7,8 +7,8 @@
     "enabled": true,
     "intervalMinutes": 2,
     "repeatCount": 10,
-    "speedPxPerSecond": 140,
-    "fontSize": 32,
+    "speedPxPerSecond": 80,
+    "fontSize": 24,
     "textColor": "#223772"
   },
   "domains1b": [
