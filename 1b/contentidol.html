@@ -25,6 +25,10 @@
         return new Promise((resolve) => setTimeout(resolve, ms));
       }
 
+      function buildRepeatedText(text, count = 3, gap = "        ") {
+        return Array.from({ length: count }, () => text).join(gap);
+      }
+
       function pickRandom(arr) {
         if (!Array.isArray(arr) || !arr.length) return "";
         return arr[Math.floor(Math.random() * arr.length)] || "";
@@ -72,7 +76,11 @@
           applyStyle(settings);
           els.ticker.style.fontSize = `${settings.fontSize}px`;
           els.ticker.style.color = settings.textColor || "#ffffff";
-          els.ticker.textContent = text;
+          els.ticker.textContent = buildRepeatedText(
+            text,
+            3,
+            "                ",
+          );
           els.ticker.classList.remove("hidden");
 
           // reset vị trí trước khi đo
