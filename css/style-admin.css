@@ -332,3 +332,18 @@ input[type="color"] {
     justify-content: flex-start;
   }
 }
+.user-perm-table th,
+.user-perm-table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.user-perm-table th:first-child,
+.user-perm-table td:first-child {
+  text-align: left;
+}
+.user-perm-table td button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
