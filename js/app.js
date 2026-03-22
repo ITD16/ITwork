@@ -7,6 +7,7 @@ let idleTimer = null;
 const els = {
   meBox: document.getElementById("meBox"),
   enableFirework: document.getElementById("enableFirework"),
+  contentidolList: document.getElementById("contentidolList"),
   domains1bList: document.getElementById("domains1bList"),
   domains789List: document.getElementById("domains789List"),
   domains0bList: document.getElementById("domains0bList"),
@@ -96,6 +97,7 @@ function getDomainList(container) {
 function collectConfig() {
   return {
     enableFirework: !!els.enableFirework?.checked,
+    contentidol: getDomainList(els.contentidolList),
     domains1b: getDomainList(els.domains1bList),
     domains789: getDomainList(els.domains789List),
     domains0b: getDomainList(els.domains0bList),
@@ -104,6 +106,7 @@ function collectConfig() {
 
 function renderConfig(config) {
   if (els.enableFirework) els.enableFirework.checked = !!config.enableFirework;
+  renderDomainList(els.contentidolList, config.contentidol || []);
   renderDomainList(els.domains1bList, config.domains1b || []);
   renderDomainList(els.domains789List, config.domains789 || []);
   renderDomainList(els.domains0bList, config.domains0b || []);
@@ -395,6 +398,7 @@ document.querySelectorAll("[data-add]").forEach((btn) => {
 
     const key = btn.getAttribute("data-add");
     const map = {
+      contentidol: els.contentidolList,
       domains1b: els.domains1bList,
       domains789: els.domains789List,
       domains0b: els.domains0bList,
