@@ -53,3 +53,7 @@
   from = "/api/users/add"
   to = "/.netlify/functions/add-user"
   status = 200
+  [[redirects]]
+  from = "/api/users/update-permissions"
+  to = "/.netlify/functions/update-user-permissions"
+  status = 200

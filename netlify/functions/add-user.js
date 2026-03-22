@@ -181,6 +181,13 @@ exports.handler = async (event) => {
       role: "user",
       active: true,
       mustChangePassword: true,
+      permissions: {
+        contentidol: true,
+        contentidolSettings: true,
+        domains1b: true,
+        domains789: true,
+        domains0b: true,
+      },
     });
 
     await writeUsersToRepo(

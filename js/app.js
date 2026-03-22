@@ -8,6 +8,14 @@ const els = {
   meBox: document.getElementById("meBox"),
   enableFirework: document.getElementById("enableFirework"),
 
+  contentidolSection: document.getElementById("contentidolSection"),
+  contentidolSettingsSection: document.getElementById(
+    "contentidolSettingsSection",
+  ),
+  domains1bSection: document.getElementById("domains1bSection"),
+  domains789Section: document.getElementById("domains789Section"),
+  domains0bSection: document.getElementById("domains0bSection"),
+
   contentidolList: document.getElementById("contentidolList"),
   contentidolEnabled: document.getElementById("contentidolEnabled"),
   contentidolIntervalMinutes: document.getElementById(
@@ -64,17 +72,28 @@ function roleName() {
   return currentMe?.role || "user";
 }
 
-function canEditAll() {
-  const role = currentMe?.role || "user";
-  return role === "admin" || role === "user";
+function isAdmin() {
+  return roleName() === "admin";
 }
 
-function isAdmin() {
-  return (currentMe?.role || "user") === "admin";
+function canEditAll() {
+  const role = roleName();
+  return role === "admin" || role === "user";
 }
 
 function canEditContentIdol() {
   return canEditAll();
+}
+
+function getPermissions() {
+  const perms = currentMe?.permissions || {};
+  return {
+    contentidol: perms.contentidol !== false,
+    contentidolSettings: perms.contentidolSettings !== false,
+    domains1b: perms.domains1b !== false,
+    domains789: perms.domains789 !== false,
+    domains0b: perms.domains0b !== false,
+  };
 }
 
 function escapeHtml(value) {
@@ -113,7 +132,7 @@ function createDomainRow(value = "") {
   input.type = "text";
   input.value = value;
   input.placeholder = "Example: SUNWIN.AG";
-  input.disabled = false; // không disable user
+  input.disabled = false;
 
   const btn = document.createElement("button");
   btn.type = "button";
@@ -292,13 +311,31 @@ function renderConfig(config) {
 function applyRoleUi() {
   const admin = isAdmin();
   const canEdit = canEditAll();
+  const perms = getPermissions();
 
-  // Content Idol: user + admin đều được add
+  if (els.contentidolSection) {
+    els.contentidolSection.style.display =
+      admin || perms.contentidol ? "" : "none";
+  }
+  if (els.contentidolSettingsSection) {
+    els.contentidolSettingsSection.style.display =
+      admin || perms.contentidolSettings ? "" : "none";
+  }
+  if (els.domains1bSection) {
+    els.domains1bSection.style.display = admin || perms.domains1b ? "" : "none";
+  }
+  if (els.domains789Section) {
+    els.domains789Section.style.display =
+      admin || perms.domains789 ? "" : "none";
+  }
+  if (els.domains0bSection) {
+    els.domains0bSection.style.display = admin || perms.domains0b ? "" : "none";
+  }
+
   document.querySelectorAll('[data-add="contentidol"]').forEach((btn) => {
     btn.style.display = canEdit ? "" : "none";
   });
 
-  // Các nút Add domain: chỉ admin
   document
     .querySelectorAll(
       '[data-add="domains1b"], [data-add="domains789"], [data-add="domains0b"]',
@@ -307,24 +344,20 @@ function applyRoleUi() {
       btn.style.display = admin ? "" : "none";
     });
 
-  // Nút X của domain: chỉ admin
   document.querySelectorAll(".domain-row button.danger").forEach((btn) => {
     btn.style.display = admin ? "" : "none";
   });
 
-  // Nút X của contentidol: user + admin đều có
   document
     .querySelectorAll(".contentidol-item button.danger")
     .forEach((btn) => {
       btn.style.display = canEdit ? "" : "none";
     });
 
-  // User management: chỉ admin
   if (els.userCard) {
     els.userCard.style.display = admin ? "" : "none";
   }
 
-  // KHÔNG disable các input config
   if (els.enableFirework) els.enableFirework.disabled = false;
 
   [
@@ -521,8 +554,121 @@ async function saveConfig() {
   resetIdleTimer();
 }
 
+function renderPermissionsTable(users) {
+  const makeCheckbox = (username, field, checked, disabled = false) => {
+    return `<input type="checkbox" data-perm-user="${escapeHtml(username)}" data-perm-field="${escapeHtml(field)}" ${checked ? "checked" : ""} ${disabled ? "disabled" : ""} />`;
+  };
+
+  return `
+    <div class="user-perm-table-wrap">
+      <table class="user-perm-table">
+        <thead>
+          <tr>
+            <th>Name User</th>
+            <th>Role</th>
+            <th>Active</th>
+            <th>Must change password</th>
+            <th>Reset password</th>
+            <th>Content Idol</th>
+            <th>Content Idol setting</th>
+            <th>Domain 1B</th>
+            <th>Domain 789</th>
+            <th>Domain 0B</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${users
+            .map((user) => {
+              const perms = user.permissions || {};
+              const disabled = (user.role || "user") === "admin";
+              return `
+              <tr>
+                <td>${escapeHtml(user.username)}</td>
+                <td>${escapeHtml(user.role || "user")}</td>
+                <td>${user.active ? "Yes" : "No"}</td>
+                <td>${user.mustChangePassword ? "Yes" : "No"}</td>
+                <td>
+                  <button type="button" class="secondary small" data-reset-user="${escapeHtml(user.username)}">
+                    Reset Password
+                  </button>
+                </td>
+                <td>${makeCheckbox(user.username, "contentidol", perms.contentidol !== false, disabled)}</td>
+                <td>${makeCheckbox(user.username, "contentidolSettings", perms.contentidolSettings !== false, disabled)}</td>
+                <td>${makeCheckbox(user.username, "domains1b", perms.domains1b !== false, disabled)}</td>
+                <td>${makeCheckbox(user.username, "domains789", perms.domains789 !== false, disabled)}</td>
+                <td>${makeCheckbox(user.username, "domains0b", perms.domains0b !== false, disabled)}</td>
+              </tr>
+            `;
+            })
+            .join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+async function bindPermissionCheckboxes() {
+  document
+    .querySelectorAll("[data-perm-user][data-perm-field]")
+    .forEach((checkbox) => {
+      checkbox.addEventListener("change", async () => {
+        const username = checkbox.getAttribute("data-perm-user");
+        const field = checkbox.getAttribute("data-perm-field");
+        if (!username || !field) return;
+
+        const rowChecks = Array.from(
+          document.querySelectorAll(`[data-perm-user="${username}"]`),
+        );
+        const permissions = {
+          contentidol:
+            rowChecks.find(
+              (x) => x.getAttribute("data-perm-field") === "contentidol",
+            )?.checked ?? true,
+          contentidolSettings:
+            rowChecks.find(
+              (x) =>
+                x.getAttribute("data-perm-field") === "contentidolSettings",
+            )?.checked ?? true,
+          domains1b:
+            rowChecks.find(
+              (x) => x.getAttribute("data-perm-field") === "domains1b",
+            )?.checked ?? true,
+          domains789:
+            rowChecks.find(
+              (x) => x.getAttribute("data-perm-field") === "domains789",
+            )?.checked ?? true,
+          domains0b:
+            rowChecks.find(
+              (x) => x.getAttribute("data-perm-field") === "domains0b",
+            )?.checked ?? true,
+        };
+
+        try {
+          const res = await fetch("/api/users/update-permissions", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ username, permissions }),
+          });
+
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) {
+            alert(data.error || "Update permissions failed");
+            await loadUsers();
+            return;
+          }
+
+          resetIdleTimer();
+        } catch (err) {
+          alert(err.message || "Update permissions failed");
+          await loadUsers();
+        }
+      });
+    });
+}
+
 async function loadUsers() {
-  if (!canEditAll() || !els.usersBox) return;
+  if (!isAdmin() || !els.usersBox) return;
 
   els.usersBox.innerHTML = "Loading...";
   const res = await fetch("/api/users", { credentials: "include" });
@@ -540,23 +686,7 @@ async function loadUsers() {
     return;
   }
 
-  els.usersBox.innerHTML = users
-    .map(
-      (user) => `
-        <div class="user-row">
-          <div class="user-meta">
-            <strong>${escapeHtml(user.username)}</strong>
-            <div class="muted">Role: ${escapeHtml(user.role || "user")}</div>
-            <div class="muted">Active: ${user.active ? "Yes" : "No"}</div>
-            <div class="muted">Must change password: ${user.mustChangePassword ? "Yes" : "No"}</div>
-          </div>
-          <div class="row-actions">
-            <button type="button" class="secondary" data-reset-user="${escapeHtml(user.username)}">Reset Password</button>
-          </div>
-        </div>
-      `,
-    )
-    .join("");
+  els.usersBox.innerHTML = renderPermissionsTable(users);
 
   document.querySelectorAll("[data-reset-user]").forEach((btn) => {
     btn.addEventListener("click", async () => {
@@ -587,6 +717,8 @@ async function loadUsers() {
       }
     });
   });
+
+  await bindPermissionCheckboxes();
 }
 
 function openForcePasswordModal() {
@@ -675,7 +807,7 @@ els.reloadUsersBtn?.addEventListener("click", async () => {
 });
 
 els.addUserBtn?.addEventListener("click", () => {
-  if (!canEditAll()) return;
+  if (!isAdmin()) return;
   openAddUserModal();
   resetIdleTimer();
 });

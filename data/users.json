@@ -11,7 +11,14 @@
     "passwordHash": "$2a$10$o4QDxKq3sSLAf7CGgvhDpOimbmY2wZjLH9zRlab/sr2bksdDQxKo6",
     "role": "user",
     "active": true,
-    "mustChangePassword": false
+    "mustChangePassword": false,
+    "permissions": {
+      "contentidol": false,
+      "contentidolSettings": false,
+      "domains1b": true,
+      "domains789": true,
+      "domains0b": true
+    }
   },
   {
     "username": "ruth",
@@ -25,6 +32,13 @@
     "passwordHash": "$2a$10$/ikbIaVvwLRUBe4yvQFF.ea5zPmkz12Jguj7LXRpryzbtX1q7wU0K",
     "role": "user",
     "active": true,
-    "mustChangePassword": false
+    "mustChangePassword": false,
+    "permissions": {
+      "contentidol": false,
+      "contentidolSettings": false,
+      "domains1b": true,
+      "domains789": true,
+      "domains0b": true
+    }
   }
 ]
