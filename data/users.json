@@ -34,11 +34,25 @@
     "active": true,
     "mustChangePassword": false,
     "permissions": {
-      "contentidol": false,
-      "contentidolSettings": false,
-      "domains1b": true,
-      "domains789": true,
-      "domains0b": true
+      "contentidol": true,
+      "contentidolSettings": true,
+      "domains1b": false,
+      "domains789": false,
+      "domains0b": false
+    }
+  },
+  {
+    "username": "user2",
+    "passwordHash": "$2a$10$JHGKu241ya7uJyh9jtcAkuLns7K9GfFwuTQGp4DFOmP7Y0hDlCgB2",
+    "role": "user",
+    "active": true,
+    "mustChangePassword": false,
+    "permissions": {
+      "contentidol": true,
+      "contentidolSettings": true,
+      "domains1b": false,
+      "domains789": false,
+      "domains0b": false
     }
   }
 ]
