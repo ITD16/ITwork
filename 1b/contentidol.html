@@ -63,6 +63,21 @@
         els.tickerWrap.style.color = settings.textColor || "#ffffff";
       }
 
+      function isInTimeRange(startTime, endTime, nowMinutes) {
+        const start = hhmmToMinutes(startTime);
+        const end = hhmmToMinutes(endTime);
+
+        if (start < end) {
+          return nowMinutes >= start && nowMinutes < end;
+        }
+
+        if (start > end) {
+          return nowMinutes >= start || nowMinutes < end;
+        }
+
+        return nowMinutes === start;
+      }
+
       function renderTicker(cfg) {
         const settings = getSettings(cfg);
         const list = Array.isArray(cfg.contentidol)
