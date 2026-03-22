@@ -103,10 +103,17 @@ function getDomainList(container) {
     .filter(Boolean);
 }
 
+function getTextList(container) {
+  if (!container) return [];
+  return Array.from(container.querySelectorAll("input"))
+    .map((x) => x.value.trim())
+    .filter(Boolean);
+}
+
 function collectConfig() {
   return {
     enableFirework: !!els.enableFirework?.checked,
-    contentidol: getDomainList(els.contentidolList),
+    contentidol: getTextList(els.contentidolList),
     contentidolSettings: {
       enabled: !!els.contentidolEnabled?.checked,
       intervalMinutes: Number(els.contentidolIntervalMinutes?.value || 5),

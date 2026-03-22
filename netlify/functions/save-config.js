@@ -29,11 +29,6 @@ function normalizeTexts(arr) {
   );
 }
 
-function normalizeNumber(value, fallback) {
-  const n = Number(value);
-  return Number.isFinite(n) ? n : fallback;
-}
-
 function normalizeConfig(config) {
   const s = config.contentidolSettings || {};
 
@@ -42,15 +37,20 @@ function normalizeConfig(config) {
     contentidol: normalizeTexts(config.contentidol),
     contentidolSettings: {
       enabled: s.enabled !== false,
-      intervalMinutes: normalizeNumber(s.intervalMinutes, 5),
-      repeatCount: normalizeNumber(s.repeatCount, 10),
-      speedPxPerSecond: normalizeNumber(s.speedPxPerSecond, 140),
-      fontSize: normalizeNumber(s.fontSize, 48),
+      intervalMinutes: Number(s.intervalMinutes || 5),
+      repeatCount: Number(s.repeatCount || 10),
+      speedPxPerSecond: Number(s.speedPxPerSecond || 140),
+      fontSize: Number(s.fontSize || 48),
     },
     domains1b: normalizeDomains(config.domains1b),
     domains789: normalizeDomains(config.domains789),
     domains0b: normalizeDomains(config.domains0b),
   };
+}
+
+function normalizeNumber(value, fallback) {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : fallback;
 }
 
 function isEqual(a, b) {
