@@ -7,7 +7,7 @@
     "enabled": true,
     "intervalMinutes": 2,
     "repeatCount": 10,
-    "speedPxPerSecond": 120,
+    "speedPxPerSecond": 80,
     "fontSize": 24,
     "textColor": "#223772"
   },
