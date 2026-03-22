@@ -589,7 +589,7 @@ function renderPermissionsTable(users) {
                 <td>${user.mustChangePassword ? "Yes" : "No"}</td>
                 <td>
                   <button type="button" class="secondary small" data-reset-user="${escapeHtml(user.username)}">
-                    Reset Password
+                    Reset
                   </button>
                 </td>
                 <td>${makeCheckbox(user.username, "contentidol", perms.contentidol !== false, disabled)}</td>
