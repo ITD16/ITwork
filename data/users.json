@@ -30,7 +30,7 @@
       "contentidol": true,
       "contentidolSettings": true,
       "domains1b": true,
-      "domains789": false,
+      "domains789": true,
       "domains0b": false
     }
   },
