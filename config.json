@@ -1,6 +1,13 @@
 {
   "enableFirework": true,
-  "contentidol": [],
+  "contentidol": [
+    {
+      "text": "ĐANG LIVE TẠI PHÒNG 1",
+      "startTime": "02:20",
+      "endTime": "02:45",
+      "enabled": true
+    }
+  ],
   "contentidolSettings": {
     "enabled": true,
     "intervalMinutes": 2,
