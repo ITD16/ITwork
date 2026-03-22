@@ -1,8 +1,6 @@
 {
   "enableFirework": true,
-  "contentidol": [
-    "ĐANG LIVE TẠI XÓC ĐĨA TỨ LINH"
-  ],
+  "contentidol": [],
   "contentidolSettings": {
     "enabled": true,
     "intervalMinutes": 2,
