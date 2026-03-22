@@ -25,7 +25,8 @@
         return new Promise((resolve) => setTimeout(resolve, ms));
       }
 
-      function buildRepeatedText(text, count = 3, gap = "        ") {
+      function buildRepeatedText(text, count = 3, gapSize = 24) {
+        const gap = "\u00A0".repeat(gapSize);
         return Array.from({ length: count }, () => text).join(gap);
       }
 
@@ -74,16 +75,9 @@
           }
 
           applyStyle(settings);
-          els.ticker.style.fontSize = `${settings.fontSize}px`;
-          els.ticker.style.color = settings.textColor || "#ffffff";
-          els.ticker.textContent = buildRepeatedText(
-            text,
-            3,
-            "                ",
-          );
+          els.ticker.textContent = buildRepeatedText(text, 3, 50);
           els.ticker.classList.remove("hidden");
 
-          // reset vị trí trước khi đo
           els.ticker.style.transition = "none";
           els.ticker.style.transform = "translateX(100vw)";
 
