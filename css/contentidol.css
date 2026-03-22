@@ -67,3 +67,25 @@ body {
     transform: translateX(calc(-1 * var(--lane-width)));
   }
 }
+.ticker-wrap {
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateY(-50%) translateZ(0);
+}
+
+.ticker-track {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+
+.ticker-lane {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.ticker-lane,
+.ticker-track,
+.ticker-wrap {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeSpeed;
+}

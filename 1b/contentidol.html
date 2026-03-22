@@ -27,6 +27,7 @@
 
       let configCache = null;
       let watchTimer = null;
+      let currentActiveKey = "";
 
       async function fetchConfig() {
         const res = await fetch("/config.json?ts=" + Date.now(), {
@@ -103,12 +104,15 @@
             isInTimeRange(item.startTime, item.endTime, nowMinutes),
         );
 
-        if (activeItems.length) {
-          return activeItems[0];
-        }
+        if (activeItems.length) return activeItems[0];
 
         // Không có item nào đúng giờ -> lấy item cuối cùng
         return list.length ? list[list.length - 1] : null;
+      }
+
+      function getActiveKey(item) {
+        if (!item) return "";
+        return `${item.text}__${item.startTime}__${item.endTime}__${item.enabled}`;
       }
 
       function renderTicker(cfg) {
@@ -120,6 +124,7 @@
         if (!settings.enabled || !list.length) {
           els.tickerWrap.classList.add("hidden");
           els.tickerTrack.style.animation = "none";
+          currentActiveKey = "";
           return;
         }
 
@@ -128,8 +133,11 @@
         if (!activeItem || !activeItem.text) {
           els.tickerWrap.classList.add("hidden");
           els.tickerTrack.style.animation = "none";
+          currentActiveKey = "";
           return;
         }
+
+        currentActiveKey = getActiveKey(activeItem);
 
         const repeated = buildRepeatedText(
           activeItem.text,
@@ -148,16 +156,33 @@
 
         requestAnimationFrame(() => {
           const laneWidth = els.tickerLaneA.scrollWidth;
-          const speed = Math.max(20, settings.speedPxPerSecond || 140);
+          const speed = Math.max(40, settings.speedPxPerSecond || 140);
           const duration = laneWidth / speed;
 
           els.tickerTrack.style.setProperty("--lane-width", `${laneWidth}px`);
           els.tickerTrack.style.animation = "none";
 
           requestAnimationFrame(() => {
-            els.tickerTrack.style.animation = `tickerLoop ${duration}s linear infinite`;
+            requestAnimationFrame(() => {
+              els.tickerTrack.style.animation = `tickerLoop ${duration}s linear infinite`;
+            });
           });
         });
+      }
+
+      function checkActiveSlotOnly() {
+        if (!configCache) return;
+
+        const list = Array.isArray(configCache.contentidol)
+          ? configCache.contentidol.filter((item) => item && item.text)
+          : [];
+
+        const activeItem = getActiveContentItem(list);
+        const nextKey = getActiveKey(activeItem);
+
+        if (nextKey !== currentActiveKey) {
+          renderTicker(configCache);
+        }
       }
 
       async function initTicker() {
@@ -179,12 +204,11 @@
             const before = JSON.stringify(configCache || {});
             const after = JSON.stringify(latest || {});
 
-            // render lại luôn để đổi theo giờ hiện tại
-            configCache = latest;
-            renderTicker(latest);
-
             if (before !== after) {
+              configCache = latest;
               renderTicker(latest);
+            } else {
+              checkActiveSlotOnly();
             }
           } catch (err) {
             console.error("watchConfigChanges:", err);
