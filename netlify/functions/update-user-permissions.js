@@ -15,6 +15,40 @@ function normalizePermissions(perms = {}) {
   };
 }
 
+async function applyPermissionsOnce(username, permissions, actor) {
+  const { sha, users } = await readUsersFromRepo();
+  const user = users.find((u) => u.username === username);
+
+  if (!user) {
+    return { ok: false, status: 404, body: { error: "User not found" } };
+  }
+
+  if ((user.role || "user") === "admin") {
+    return {
+      ok: false,
+      status: 400,
+      body: { error: "Cannot change admin permissions" },
+    };
+  }
+
+  user.permissions = normalizePermissions(permissions);
+
+  await writeUsersToRepo(
+    users,
+    sha,
+    `update permissions for ${username} by ${actor}`,
+  );
+
+  return {
+    ok: true,
+    body: {
+      ok: true,
+      username,
+      permissions: user.permissions,
+    },
+  };
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return json(405, { error: "Method not allowed" });
@@ -31,30 +65,37 @@ exports.handler = async (event) => {
       return json(400, { error: "Missing username" });
     }
 
-    const { sha, users } = await readUsersFromRepo();
-    const user = users.find((u) => u.username === cleanUsername);
+    try {
+      const result = await applyPermissionsOnce(
+        cleanUsername,
+        permissions,
+        auth.session.username,
+      );
 
-    if (!user) {
-      return json(404, { error: "User not found" });
+      if (!result.ok) {
+        return json(result.status, result.body);
+      }
+
+      return json(200, result.body);
+    } catch (err) {
+      const msg = String(err.message || "");
+
+      if (msg.includes("does not match")) {
+        const retryResult = await applyPermissionsOnce(
+          cleanUsername,
+          permissions,
+          auth.session.username,
+        );
+
+        if (!retryResult.ok) {
+          return json(retryResult.status, retryResult.body);
+        }
+
+        return json(200, retryResult.body);
+      }
+
+      throw err;
     }
-
-    if ((user.role || "user") === "admin") {
-      return json(400, { error: "Cannot change admin permissions" });
-    }
-
-    user.permissions = normalizePermissions(permissions);
-
-    await writeUsersToRepo(
-      users,
-      sha,
-      `update permissions for ${cleanUsername} by ${auth.session.username}`,
-    );
-
-    return json(200, {
-      ok: true,
-      username: cleanUsername,
-      permissions: user.permissions,
-    });
   } catch (err) {
     return json(500, { error: err.message || "Update permissions failed" });
   }
