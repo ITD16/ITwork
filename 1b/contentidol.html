@@ -46,11 +46,13 @@
           repeatCount: Number(s.repeatCount || 10),
           speedPxPerSecond: Number(s.speedPxPerSecond || 140),
           fontSize: Number(s.fontSize || 48),
+          textColor: s.textColor || "#ffffff",
         };
       }
 
       function applyStyle(settings) {
         els.ticker.style.fontSize = `${settings.fontSize}px`;
+        els.ticker.style.color = settings.textColor || "#ffffff";
       }
 
       function runOneMessage(text, settings, runToken) {

@@ -37,10 +37,11 @@ function normalizeConfig(config) {
     contentidol: normalizeTexts(config.contentidol),
     contentidolSettings: {
       enabled: s.enabled !== false,
-      intervalMinutes: Number(s.intervalMinutes || 5),
-      repeatCount: Number(s.repeatCount || 10),
-      speedPxPerSecond: Number(s.speedPxPerSecond || 140),
-      fontSize: Number(s.fontSize || 48),
+      intervalMinutes: normalizeNumber(s.intervalMinutes, 5),
+      repeatCount: normalizeNumber(s.repeatCount, 10),
+      speedPxPerSecond: normalizeNumber(s.speedPxPerSecond, 140),
+      fontSize: normalizeNumber(s.fontSize, 48),
+      textColor: normalizeColor(s.textColor, "#ffffff"),
     },
     domains1b: normalizeDomains(config.domains1b),
     domains789: normalizeDomains(config.domains789),
@@ -51,6 +52,10 @@ function normalizeConfig(config) {
 function normalizeNumber(value, fallback) {
   const n = Number(value);
   return Number.isFinite(n) ? n : fallback;
+}
+function normalizeColor(value, fallback = "#ffffff") {
+  const v = String(value || "").trim();
+  return /^#[0-9a-fA-F]{6}$/.test(v) ? v : fallback;
 }
 
 function isEqual(a, b) {

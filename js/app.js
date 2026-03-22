@@ -17,6 +17,7 @@ const els = {
     "contentidolSpeedPxPerSecond",
   ),
   contentidolFontSize: document.getElementById("contentidolFontSize"),
+  contentidolTextColor: document.getElementById("contentidolTextColor"),
   domains1bList: document.getElementById("domains1bList"),
   domains789List: document.getElementById("domains789List"),
   domains0bList: document.getElementById("domains0bList"),
@@ -120,6 +121,7 @@ function collectConfig() {
       repeatCount: Number(els.contentidolRepeatCount?.value || 10),
       speedPxPerSecond: Number(els.contentidolSpeedPxPerSecond?.value || 140),
       fontSize: Number(els.contentidolFontSize?.value || 48),
+      textColor: els.contentidolTextColor?.value || "#ffffff",
     },
     domains1b: getDomainList(els.domains1bList),
     domains789: getDomainList(els.domains789List),
@@ -146,6 +148,8 @@ function renderConfig(config) {
   if (els.contentidolSpeedPxPerSecond)
     els.contentidolSpeedPxPerSecond.value = s.speedPxPerSecond ?? 140;
   if (els.contentidolFontSize) els.contentidolFontSize.value = s.fontSize ?? 48;
+  if (els.contentidolTextColor)
+    els.contentidolTextColor.value = s.textColor || "#ffffff";
 }
 
 function applyRoleUi() {

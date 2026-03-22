@@ -247,3 +247,12 @@ pre {
     max-width: 100%;
   }
 }
+input[type="color"] {
+  width: 70px;
+  height: 42px;
+  padding: 4px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+}
