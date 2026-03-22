@@ -9,13 +9,13 @@
     },
     {
       "text": "ĐANG LIVE TẠI Phòng 2",
-      "startTime": "15:00",
-      "endTime": "18:00",
+      "startTime": "06:00",
+      "endTime": "12:00",
       "enabled": true
     },
     {
       "text": "ĐANG LIVE TẠI Phòng 3",
-      "startTime": "18:00",
+      "startTime": "12:00",
       "endTime": "21:00",
       "enabled": true
     }
