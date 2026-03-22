@@ -303,7 +303,7 @@ async function loadLogs() {
           <div class="log-meta">
             <strong>${escapeHtml(log.user || "unknown")}</strong>
             (${escapeHtml(log.role || "user")})
-            - ${escapeHtml(log.time || "")}
+            - ${escapeHtml(formatDateTimeVN(log.time))}
           </div>
           ${adminMeta}
           ${changesHtml || `<div class="muted">No detail</div>`}
@@ -341,6 +341,17 @@ async function saveConfig() {
 
   await loadLogs();
   resetIdleTimer();
+}
+
+function formatDateTimeVN(value) {
+  if (!value) return "";
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return String(value);
+
+  return d.toLocaleString("vi-VN", {
+    timeZone: "Asia/Ho_Chi_Minh",
+    hour12: false,
+  });
 }
 
 async function loadUsers() {
