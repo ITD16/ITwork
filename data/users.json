@@ -43,10 +43,10 @@
   },
   {
     "username": "user2",
-    "passwordHash": "$2a$10$TSrpHg.W5A6wevGnjVGG1OT5642EIC2W/BoCwDhi1vLDu9ttz0o52",
+    "passwordHash": "$2a$10$JHGKu241ya7uJyh9jtcAkuLns7K9GfFwuTQGp4DFOmP7Y0hDlCgB2",
     "role": "user",
     "active": true,
-    "mustChangePassword": true,
+    "mustChangePassword": false,
     "permissions": {
       "contentidol": true,
       "contentidolSettings": true,
