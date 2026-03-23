@@ -78,10 +78,10 @@
   },
   {
     "username": "louis",
-    "passwordHash": "$2a$10$cFhDy.XcHfTYpJbul8pMr.Kcs2BsJ0LW2wXDxV9qFH0bp/8yIy/O6",
+    "passwordHash": "$2a$10$0ZXrmK2EmGwxY80jfviHwuIupW0ZpvQTolIekXP7ctGHK49HIiTra",
     "role": "admin",
     "active": true,
-    "mustChangePassword": true,
+    "mustChangePassword": false,
     "permissions": {
       "contentidol": true,
       "contentidolSettings": true,
