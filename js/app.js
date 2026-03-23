@@ -429,7 +429,7 @@ async function ensureMe() {
   currentMe = await res.json();
 
   if (els.meBox) {
-    els.meBox.textContent = `User: ${currentMe.username}`;
+    els.meBox.innerHTML = `User: <span class="me-name">${escapeHtml(currentMe.username)}</span>`;
   }
 
   applyRoleUi();

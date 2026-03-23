@@ -84,6 +84,10 @@ button.small {
   background: #eef2ff;
   border-radius: 999px;
   font-size: 13px;
+  font-weight: 400;
+  color: #111827;
+}
+.me-name {
   font-weight: 700;
   color: #2563eb;
 }
