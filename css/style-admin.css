@@ -141,7 +141,7 @@ button.small {
 }
   */
 #changeLogsCard {
-  height: calc(100vh - 200px);
+  height: calc(150vh - 10px);
   display: flex;
   flex-direction: column;
 }
