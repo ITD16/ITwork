@@ -2,15 +2,15 @@
   "enableFirework": true,
   "contentidol": [
     {
-      "text": "ĐANG LIVE TẠI PHÒNG 1",
-      "startTime": "02:20",
-      "endTime": "03:01",
+      "text": "IDOL HÔ CẦU BÀN TÀI XỈU MINI & XÓC ĐĨA TỨ LINH",
+      "startTime": "12:00",
+      "endTime": "18:00",
       "enabled": true
     },
     {
-      "text": "ĐANG LIVE TẠI PHÒNG 2",
-      "startTime": "15:01",
-      "endTime": "15:04",
+      "text": "IDOL HÔ CẦU BÀN TÀI XỈU MINI & RỒNG HỔ SUN",
+      "startTime": "18:01",
+      "endTime": "00:00",
       "enabled": true
     }
   ],
