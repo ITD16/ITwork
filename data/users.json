@@ -13,7 +13,7 @@
     "active": true,
     "mustChangePassword": false,
     "permissions": {
-      "contentidol": false,
+      "contentidol": true,
       "contentidolSettings": false,
       "domains1b": true,
       "domains789": true,
