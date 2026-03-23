@@ -28,8 +28,11 @@
       let configCache = null;
       let watchTimer = null;
       let visibilityTimer = null;
+      let hideFadeTimer = null;
       let currentActiveKey = "";
       let currentVisibilityKey = "";
+
+      const FADE_MS = 600; /*Chỉnh thời gian tan dần của content idol chỉnh thêm bên .css ticker.wrap transition */
 
       async function fetchConfig() {
         const res = await fetch("/config.json?ts=" + Date.now(), {
@@ -147,9 +150,31 @@
         return `${showMinutes}_${hideMinutes}_${state}`;
       }
 
-      function hideTickerCompletely() {
+      function showTickerWrap() {
+        if (hideFadeTimer) {
+          clearTimeout(hideFadeTimer);
+          hideFadeTimer = null;
+        }
+        els.tickerWrap.classList.remove("hidden");
+      }
+
+      function hideTickerWithFade() {
+        if (hideFadeTimer) {
+          clearTimeout(hideFadeTimer);
+          hideFadeTimer = null;
+        }
+
         els.tickerWrap.classList.add("hidden");
-        els.tickerTrack.style.animation = "none";
+
+        hideFadeTimer = setTimeout(() => {
+          if (els.tickerWrap.classList.contains("hidden")) {
+            els.tickerTrack.style.animation = "none";
+          }
+        }, FADE_MS);
+      }
+
+      function hideTickerCompletely() {
+        hideTickerWithFade();
       }
 
       function renderTicker(cfg) {
@@ -194,7 +219,8 @@
 
         els.tickerLaneA.textContent = repeated;
         els.tickerLaneB.textContent = repeated;
-        els.tickerWrap.classList.remove("hidden");
+
+        showTickerWrap();
 
         requestAnimationFrame(() => {
           const laneWidth = els.tickerLaneA.scrollWidth;
