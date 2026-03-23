@@ -64,10 +64,10 @@
   },
   {
     "username": "kend",
-    "passwordHash": "$2a$10$7M8p5M4HQ/RlJlBxYMWAKOgGy4ZIJiDclIVUeoFuc/54jGNWcOiw6",
+    "passwordHash": "$2a$10$rGYfuTnaRfl9CBRMjqxv/OVhnXSexDo9HpvU4hKSMKILCh4.AEKoC",
     "role": "user",
     "active": true,
-    "mustChangePassword": true,
+    "mustChangePassword": false,
     "permissions": {
       "contentidol": true,
       "contentidolSettings": true,
