@@ -1,5 +1,5 @@
 {
-  "enableFirework": true,
+  "enableFirework": false,
   "contentidol": [
     {
       "text": "IDOL HÔ CẦU BÀN TÀI XỈU MINI & XÓC ĐĨA TỨ LINH",
@@ -9,7 +9,7 @@
     },
     {
       "text": "IDOL HÔ CẦU BÀN TÀI XỈU MINI & RỒNG HỔ SUN",
-      "startTime": "18:01",
+      "startTime": "18:00",
       "endTime": "00:00",
       "enabled": true
     }
