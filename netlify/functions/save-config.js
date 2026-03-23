@@ -61,6 +61,8 @@ function normalizeConfig(config) {
       copiesPerRun: normalizeNumber(s.copiesPerRun, 8),
       copyGapSize: normalizeNumber(s.copyGapSize, 24),
       laneGapPx: normalizeNumber(s.laneGapPx, 160),
+      showMinutes: normalizeNumber(s.showMinutes, 0),
+      hideMinutes: normalizeNumber(s.hideMinutes, 0),
       textColor: normalizeColor(s.textColor, "#ffffff"),
     },
     domains1b: normalizeDomains(config.domains1b),
