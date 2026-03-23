@@ -502,23 +502,59 @@ async function loadLogs() {
   els.logsBox.innerHTML = logs
     .map((log) => {
       const changesHtml = Object.entries(log.changes || {})
-        .map(
-          ([key, value]) => `
-            <div class="log-change">
-              <div><strong>${escapeHtml(key)}</strong></div>
-              <div class="log-grid">
-                <div>
-                  <div class="muted">Before</div>
-                  <pre>${escapeHtml(JSON.stringify(value.before, null, 2))}</pre>
-                </div>
-                <div>
-                  <div class="muted">After</div>
-                  <pre>${escapeHtml(JSON.stringify(value.after, null, 2))}</pre>
-                </div>
-              </div>
+        .map(([key, value]) => {
+          const isDirectBeforeAfter =
+            value &&
+            typeof value === "object" &&
+            !Array.isArray(value) &&
+            Object.prototype.hasOwnProperty.call(value, "before") &&
+            Object.prototype.hasOwnProperty.call(value, "after");
+
+          if (isDirectBeforeAfter) {
+            return `
+        <div class="log-change">
+          <div><strong>${escapeHtml(key)}</strong></div>
+          <div class="log-grid">
+            <div>
+              <div class="muted">Before</div>
+              <pre>${escapeHtml(JSON.stringify(value.before, null, 2))}</pre>
             </div>
-          `,
-        )
+            <div>
+              <div class="muted">After</div>
+              <pre>${escapeHtml(JSON.stringify(value.after, null, 2))}</pre>
+            </div>
+          </div>
+        </div>
+      `;
+          }
+
+          const nestedHtml = Object.entries(value || {})
+            .map(
+              ([subKey, subVal]) => `
+        <div class="log-change nested-log-change">
+          <div><strong>${escapeHtml(subKey)}</strong></div>
+          <div class="log-grid">
+            <div>
+              <div class="muted">Before</div>
+              <pre>${escapeHtml(JSON.stringify(subVal?.before, null, 2))}</pre>
+            </div>
+            <div>
+              <div class="muted">After</div>
+              <pre>${escapeHtml(JSON.stringify(subVal?.after, null, 2))}</pre>
+            </div>
+          </div>
+        </div>
+      `,
+            )
+            .join("");
+
+          return `
+      <div class="log-change">
+        <div><strong>${escapeHtml(key)}</strong></div>
+        ${nestedHtml || `<div class="muted">No detail</div>`}
+      </div>
+    `;
+        })
         .join("");
 
       const adminMeta = admin
