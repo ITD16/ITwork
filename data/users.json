@@ -79,7 +79,7 @@
   {
     "username": "louis",
     "passwordHash": "$2a$10$cFhDy.XcHfTYpJbul8pMr.Kcs2BsJ0LW2wXDxV9qFH0bp/8yIy/O6",
-    "role": "user",
+    "role": "admin",
     "active": true,
     "mustChangePassword": true,
     "permissions": {
