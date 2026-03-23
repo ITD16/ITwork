@@ -29,6 +29,8 @@ const els = {
   contentidolCopiesPerRun: document.getElementById("contentidolCopiesPerRun"),
   contentidolCopyGapSize: document.getElementById("contentidolCopyGapSize"),
   contentidolLaneGapPx: document.getElementById("contentidolLaneGapPx"),
+  contentidolShowMinutes: document.getElementById("contentidolShowMinutes"),
+  contentidolHideMinutes: document.getElementById("contentidolHideMinutes"),
   contentidolTextColor: document.getElementById("contentidolTextColor"),
   contentidolTextColorCode: document.getElementById("contentidolTextColorCode"),
 
@@ -112,6 +114,11 @@ function normalizeHexColor(value, fallback = "#ffffff") {
 function normalizeTimeValue(value, fallback = "00:00") {
   const v = String(value || "").trim();
   return /^\d{2}:\d{2}$/.test(v) ? v : fallback;
+}
+
+function normalizeNumberInput(value, fallback) {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : fallback;
 }
 
 function formatDateTimeVN(value) {
@@ -266,6 +273,14 @@ function collectConfig() {
       copiesPerRun: Number(els.contentidolCopiesPerRun?.value || 8),
       copyGapSize: Number(els.contentidolCopyGapSize?.value || 24),
       laneGapPx: Number(els.contentidolLaneGapPx?.value || 160),
+      showMinutes: normalizeNumberInput(
+        els.contentidolShowMinutes?.value || 0,
+        0,
+      ),
+      hideMinutes: normalizeNumberInput(
+        els.contentidolHideMinutes?.value || 0,
+        0,
+      ),
       textColor: normalizeHexColor(
         els.contentidolTextColorCode?.value || els.contentidolTextColor?.value,
         "#ffffff",
@@ -302,6 +317,10 @@ function renderConfig(config) {
     els.contentidolCopyGapSize.value = s.copyGapSize ?? 24;
   if (els.contentidolLaneGapPx)
     els.contentidolLaneGapPx.value = s.laneGapPx ?? 160;
+  if (els.contentidolShowMinutes)
+    els.contentidolShowMinutes.value = s.showMinutes ?? 0;
+  if (els.contentidolHideMinutes)
+    els.contentidolHideMinutes.value = s.hideMinutes ?? 0;
 
   const color = normalizeHexColor(s.textColor || "#ffffff", "#ffffff");
   if (els.contentidolTextColor) els.contentidolTextColor.value = color;
@@ -369,6 +388,8 @@ function applyRoleUi() {
     els.contentidolCopiesPerRun,
     els.contentidolCopyGapSize,
     els.contentidolLaneGapPx,
+    els.contentidolShowMinutes,
+    els.contentidolHideMinutes,
     els.contentidolTextColor,
     els.contentidolTextColorCode,
   ].forEach((el) => {

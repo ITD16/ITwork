@@ -27,7 +27,9 @@
 
       let configCache = null;
       let watchTimer = null;
+      let visibilityTimer = null;
       let currentActiveKey = "";
+      let currentVisibilityKey = "";
 
       async function fetchConfig() {
         const res = await fetch("/config.json?ts=" + Date.now(), {
@@ -47,6 +49,8 @@
           copiesPerRun: Number(s.copiesPerRun || 8),
           copyGapSize: Number(s.copyGapSize || 24),
           laneGapPx: Number(s.laneGapPx || 160),
+          showMinutes: Number(s.showMinutes || 0),
+          hideMinutes: Number(s.hideMinutes || 0),
         };
       }
 
@@ -106,7 +110,6 @@
 
         if (activeItems.length) return activeItems[0];
 
-        // Không có item nào đúng giờ -> lấy item cuối cùng
         return list.length ? list[list.length - 1] : null;
       }
 
@@ -115,24 +118,63 @@
         return `${item.text}__${item.startTime}__${item.endTime}__${item.enabled}`;
       }
 
+      function shouldShowByCycle(settings) {
+        const showMinutes = Number(settings.showMinutes || 0);
+        const hideMinutes = Number(settings.hideMinutes || 0);
+
+        if (showMinutes <= 0 && hideMinutes <= 0) return true;
+        if (showMinutes > 0 && hideMinutes <= 0) return true;
+        if (showMinutes <= 0 && hideMinutes > 0) return false;
+
+        const cycleMs = (showMinutes + hideMinutes) * 60 * 1000;
+        if (cycleMs <= 0) return true;
+
+        const elapsed = Date.now() % cycleMs;
+        return elapsed < showMinutes * 60 * 1000;
+      }
+
+      function getVisibilityKey(settings) {
+        const showMinutes = Number(settings.showMinutes || 0);
+        const hideMinutes = Number(settings.hideMinutes || 0);
+
+        if (showMinutes <= 0 && hideMinutes <= 0) return "always-show";
+        if (showMinutes > 0 && hideMinutes <= 0) return "always-show";
+        if (showMinutes <= 0 && hideMinutes > 0) return "always-hide";
+
+        const cycleMs = (showMinutes + hideMinutes) * 60 * 1000;
+        const elapsed = Date.now() % cycleMs;
+        const state = elapsed < showMinutes * 60 * 1000 ? "show" : "hide";
+        return `${showMinutes}_${hideMinutes}_${state}`;
+      }
+
+      function hideTickerCompletely() {
+        els.tickerWrap.classList.add("hidden");
+        els.tickerTrack.style.animation = "none";
+      }
+
       function renderTicker(cfg) {
         const settings = getSettings(cfg);
         const list = Array.isArray(cfg.contentidol)
           ? cfg.contentidol.filter((item) => item && item.text)
           : [];
 
+        currentVisibilityKey = getVisibilityKey(settings);
+
         if (!settings.enabled || !list.length) {
-          els.tickerWrap.classList.add("hidden");
-          els.tickerTrack.style.animation = "none";
+          hideTickerCompletely();
           currentActiveKey = "";
+          return;
+        }
+
+        if (!shouldShowByCycle(settings)) {
+          hideTickerCompletely();
           return;
         }
 
         const activeItem = getActiveContentItem(list);
 
         if (!activeItem || !activeItem.text) {
-          els.tickerWrap.classList.add("hidden");
-          els.tickerTrack.style.animation = "none";
+          hideTickerCompletely();
           currentActiveKey = "";
           return;
         }
@@ -173,6 +215,16 @@
       function checkActiveSlotOnly() {
         if (!configCache) return;
 
+        const settings = getSettings(configCache);
+        const nextVisibilityKey = getVisibilityKey(settings);
+
+        if (nextVisibilityKey !== currentVisibilityKey) {
+          renderTicker(configCache);
+          return;
+        }
+
+        if (!shouldShowByCycle(settings)) return;
+
         const list = Array.isArray(configCache.contentidol)
           ? configCache.contentidol.filter((item) => item && item.text)
           : [];
@@ -207,13 +259,19 @@
             if (before !== after) {
               configCache = latest;
               renderTicker(latest);
-            } else {
-              checkActiveSlotOnly();
             }
           } catch (err) {
             console.error("watchConfigChanges:", err);
           }
         }, 30000);
+      }
+
+      function startVisibilityWatcher() {
+        if (visibilityTimer) clearInterval(visibilityTimer);
+
+        visibilityTimer = setInterval(() => {
+          checkActiveSlotOnly();
+        }, 5000);
       }
 
       window.addEventListener("resize", () => {
@@ -224,6 +282,7 @@
 
       initTicker();
       watchConfigChanges();
+      startVisibilityWatcher();
     </script>
   </body>
 </html>
