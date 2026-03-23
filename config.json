@@ -23,8 +23,8 @@
     "copiesPerRun": 8,
     "copyGapSize": 24,
     "laneGapPx": 160,
-    "showMinutes": 2,
-    "hideMinutes": 2,
+    "showMinutes": 0,
+    "hideMinutes": 0,
     "textColor": "#223772"
   },
   "domains1b": [
