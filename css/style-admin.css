@@ -347,3 +347,16 @@ input[type="color"] {
   align-items: center;
   justify-content: center;
 }
+.topbar-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.topbar-main-actions,
+.topbar-config-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
