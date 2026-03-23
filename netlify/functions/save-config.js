@@ -75,19 +75,56 @@ function isEqual(a, b) {
   return JSON.stringify(a) === JSON.stringify(b);
 }
 
+function isPlainObject(value) {
+  return value && typeof value === "object" && !Array.isArray(value);
+}
+
 function buildDiff(before, after) {
   const changed = {};
   const keys = Array.from(
     new Set([...Object.keys(before || {}), ...Object.keys(after || {})]),
   );
+
   for (const key of keys) {
-    if (!isEqual(before?.[key], after?.[key])) {
-      changed[key] = {
-        before: before?.[key],
-        after: after?.[key],
-      };
+    const beforeVal = before?.[key];
+    const afterVal = after?.[key];
+
+    if (isEqual(beforeVal, afterVal)) continue;
+
+    if (isPlainObject(beforeVal) && isPlainObject(afterVal)) {
+      const nested = {};
+      const nestedKeys = Array.from(
+        new Set([
+          ...Object.keys(beforeVal || {}),
+          ...Object.keys(afterVal || {}),
+        ]),
+      );
+
+      for (const nestedKey of nestedKeys) {
+        const nestedBefore = beforeVal?.[nestedKey];
+        const nestedAfter = afterVal?.[nestedKey];
+
+        if (!isEqual(nestedBefore, nestedAfter)) {
+          nested[nestedKey] = {
+            before: nestedBefore,
+            after: nestedAfter,
+          };
+        }
+      }
+
+      if (Object.keys(nested).length) {
+        changed[key] = nested;
+      }
+
+      continue;
     }
+
+    changed[key] = {
+      before: beforeVal,
+      after: afterVal,
+    };
   }
+
   return changed;
 }
 
@@ -107,10 +144,7 @@ exports.handler = async (event) => {
     const oldConfigFile = await getRepoFile(configPath);
     const before = JSON.parse(oldConfigFile.content || "{}");
 
-    let after;
-
-    after = normalizeConfig(incomingConfig);
-
+    const after = normalizeConfig(incomingConfig);
     const changes = buildDiff(before, after);
 
     if (!Object.keys(changes).length) {
