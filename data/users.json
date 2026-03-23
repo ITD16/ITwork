@@ -61,5 +61,19 @@
       "domains789": true,
       "domains0b": true
     }
+  },
+  {
+    "username": "kend",
+    "passwordHash": "$2a$10$7M8p5M4HQ/RlJlBxYMWAKOgGy4ZIJiDclIVUeoFuc/54jGNWcOiw6",
+    "role": "user",
+    "active": true,
+    "mustChangePassword": true,
+    "permissions": {
+      "contentidol": true,
+      "contentidolSettings": true,
+      "domains1b": true,
+      "domains789": true,
+      "domains0b": true
+    }
   }
 ]
