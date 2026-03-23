@@ -15,7 +15,7 @@
     }
   ],
   "contentidolSettings": {
-    "enabled": true,
+    "enabled": false,
     "intervalMinutes": 2,
     "repeatCount": 10,
     "speedPxPerSecond": 40,
