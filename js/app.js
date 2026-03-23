@@ -562,7 +562,7 @@ async function loadLogs() {
     return;
   }
 
-  const admin = canEditAll();
+  const admin = isAdmin();
 
   els.logsBox.innerHTML = logs
     .map((log) => {
