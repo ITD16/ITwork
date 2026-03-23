@@ -75,5 +75,19 @@
       "domains789": true,
       "domains0b": true
     }
+  },
+  {
+    "username": "louis",
+    "passwordHash": "$2a$10$cFhDy.XcHfTYpJbul8pMr.Kcs2BsJ0LW2wXDxV9qFH0bp/8yIy/O6",
+    "role": "user",
+    "active": true,
+    "mustChangePassword": true,
+    "permissions": {
+      "contentidol": true,
+      "contentidolSettings": true,
+      "domains1b": true,
+      "domains789": true,
+      "domains0b": true
+    }
   }
 ]
