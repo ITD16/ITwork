@@ -132,10 +132,25 @@ button.small {
 .toggle span {
   margin: 0;
 }
+/*
 .logs-box {
   display: grid;
   gap: 10px;
   max-height: 85vh;
+  overflow: auto;
+}
+  */
+#changeLogsCard {
+  height: calc(100vh - 170px);
+  display: flex;
+  flex-direction: column;
+}
+
+.logs-box {
+  display: grid;
+  gap: 10px;
+  flex: 1;
+  min-height: 0;
   overflow: auto;
 }
 .log-item,
