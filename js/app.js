@@ -131,6 +131,71 @@ function formatDateTimeVN(value) {
   });
 }
 
+function isDirectBeforeAfterObject(value) {
+  return (
+    value &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    Object.keys(value).length === 2 &&
+    Object.prototype.hasOwnProperty.call(value, "before") &&
+    Object.prototype.hasOwnProperty.call(value, "after")
+  );
+}
+
+function formatLogValue(value) {
+  if (value === undefined) return "-";
+  return escapeHtml(JSON.stringify(value, null, 2));
+}
+
+function renderLogChange(label, value) {
+  if (isDirectBeforeAfterObject(value)) {
+    return `
+      <div class="log-change">
+        <div><strong>${escapeHtml(label)}</strong></div>
+        <div class="log-grid">
+          <div>
+            <div class="muted">Before</div>
+            <pre>${formatLogValue(value.before)}</pre>
+          </div>
+          <div>
+            <div class="muted">After</div>
+            <pre>${formatLogValue(value.after)}</pre>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    const nestedHtml = Object.entries(value)
+      .map(([subKey, subVal]) => renderLogChange(subKey, subVal))
+      .join("");
+
+    return `
+      <div class="log-change">
+        <div><strong>${escapeHtml(label)}</strong></div>
+        ${nestedHtml || `<div class="muted">No detail</div>`}
+      </div>
+    `;
+  }
+
+  return `
+    <div class="log-change">
+      <div><strong>${escapeHtml(label)}</strong></div>
+      <div class="log-grid">
+        <div>
+          <div class="muted">Before</div>
+          <pre>-</pre>
+        </div>
+        <div>
+          <div class="muted">After</div>
+          <pre>${formatLogValue(value)}</pre>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function createDomainRow(value = "") {
   const row = document.createElement("div");
   row.className = "domain-row";
@@ -502,59 +567,7 @@ async function loadLogs() {
   els.logsBox.innerHTML = logs
     .map((log) => {
       const changesHtml = Object.entries(log.changes || {})
-        .map(([key, value]) => {
-          const isDirectBeforeAfter =
-            value &&
-            typeof value === "object" &&
-            !Array.isArray(value) &&
-            Object.prototype.hasOwnProperty.call(value, "before") &&
-            Object.prototype.hasOwnProperty.call(value, "after");
-
-          if (isDirectBeforeAfter) {
-            return `
-        <div class="log-change">
-          <div><strong>${escapeHtml(key)}</strong></div>
-          <div class="log-grid">
-            <div>
-              <div class="muted">Before</div>
-              <pre>${escapeHtml(JSON.stringify(value.before, null, 2))}</pre>
-            </div>
-            <div>
-              <div class="muted">After</div>
-              <pre>${escapeHtml(JSON.stringify(value.after, null, 2))}</pre>
-            </div>
-          </div>
-        </div>
-      `;
-          }
-
-          const nestedHtml = Object.entries(value || {})
-            .map(
-              ([subKey, subVal]) => `
-        <div class="log-change nested-log-change">
-          <div><strong>${escapeHtml(subKey)}</strong></div>
-          <div class="log-grid">
-            <div>
-              <div class="muted">Before</div>
-              <pre>${escapeHtml(JSON.stringify(subVal?.before, null, 2))}</pre>
-            </div>
-            <div>
-              <div class="muted">After</div>
-              <pre>${escapeHtml(JSON.stringify(subVal?.after, null, 2))}</pre>
-            </div>
-          </div>
-        </div>
-      `,
-            )
-            .join("");
-
-          return `
-      <div class="log-change">
-        <div><strong>${escapeHtml(key)}</strong></div>
-        ${nestedHtml || `<div class="muted">No detail</div>`}
-      </div>
-    `;
-        })
+        .map(([key, value]) => renderLogChange(key, value))
         .join("");
 
       const adminMeta = admin
