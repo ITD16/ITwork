@@ -89,5 +89,19 @@
       "domains789": true,
       "domains0b": true
     }
+  },
+  {
+    "username": "d2",
+    "passwordHash": "$2a$10$wbLS6Ymt1n5MPBqkrcDCf.StwwOyoixyFpyrCo45p7jZiKlRtsSgm",
+    "role": "user",
+    "active": true,
+    "mustChangePassword": true,
+    "permissions": {
+      "contentidol": true,
+      "contentidolSettings": true,
+      "domains1b": true,
+      "domains789": true,
+      "domains0b": true
+    }
   }
 ]
