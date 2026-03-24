@@ -100,7 +100,7 @@
       "contentidol": true,
       "contentidolSettings": true,
       "domains1b": false,
-      "domains789": true,
+      "domains789": false,
       "domains0b": true
     }
   }
