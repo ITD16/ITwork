@@ -13,8 +13,7 @@
 }
 
 body {
-  /* background: transparent; */
-  background: #d3d3d3;
+  background: transparent;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -41,6 +40,7 @@ ol {
   text-align: center;
   font-size: 2.5rem;
   font-weight: 600;
+  color: #f8f8f8;
 }
 
 .listphishing {
