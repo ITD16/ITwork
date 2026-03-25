@@ -15,9 +15,9 @@
     "permissions": {
       "contentidol": true,
       "contentidolSettings": true,
-      "domains1b": true,
-      "domains789": true,
-      "domains0b": true
+      "domains1b": false,
+      "domains789": false,
+      "domains0b": false
     }
   },
   {
@@ -88,6 +88,20 @@
       "domains1b": true,
       "domains789": true,
       "domains0b": true
+    }
+  },
+  {
+    "username": "d2",
+    "passwordHash": "$2a$10$hceSd9PSI5jVuvDBf7pt1ebZgUmIBL6X3uDfqID5Ti3U/00nGdj7C",
+    "role": "user",
+    "active": true,
+    "mustChangePassword": false,
+    "permissions": {
+      "contentidol": true,
+      "contentidolSettings": true,
+      "domains1b": false,
+      "domains789": false,
+      "domains0b": false
     }
   }
 ]

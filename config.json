@@ -16,14 +16,14 @@
   ],
   "contentidolSettings": {
     "enabled": true,
-    "intervalMinutes": 2,
+    "intervalMinutes": 5,
     "repeatCount": 10,
     "speedPxPerSecond": 40,
     "fontSize": 22,
     "copiesPerRun": 8,
     "copyGapSize": 24,
     "laneGapPx": 160,
-    "showMinutes": 2,
+    "showMinutes": 3,
     "hideMinutes": 2,
     "textColor": "#223772"
   },
