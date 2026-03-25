@@ -509,7 +509,14 @@ function applyRoleUi() {
   if (!perms.domains1b) removeElementCompletely(els.domains1bSection);
   if (!perms.domains789) removeElementCompletely(els.domains789Section);
   if (!perms.domains0b) removeElementCompletely(els.domains0bSection);
-  if (!isAdmin()) removeElementCompletely(els.userCard);
+
+  if (els.userCard) {
+    if (!isAdmin()) {
+      removeElementCompletely(els.userCard);
+    } else {
+      els.userCard.style.display = "";
+    }
+  }
 
   document.querySelectorAll('[data-add="contentidol"]').forEach((btn) => {
     btn.style.display = canEditContentIdol() ? "" : "none";
