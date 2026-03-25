@@ -64,7 +64,7 @@ h1.old {
   overflow: hidden;
 
   /* ✅ Gradient chữ: trên trắng - dưới xanh */
-  background: linear-gradient(to bottom, #ffffff 0%, #6694d0 100%);
+  background: linear-gradient(to bottom, #6fceee 0%, #a477f3 80%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
