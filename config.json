@@ -1,41 +1,20 @@
 {
   "enableFirework": true,
-  "contentidol": [
-    {
-      "text": "GHÉ BÀN TÀI XỈU MINI & XÓC ĐĨA TỨ LINH CÙNG IDOL VỀ BỜ",
-      "startTime": "12:00",
-      "endTime": "18:00",
-      "enabled": true
-    },
-    {
-      "text": "GHÉ BÀN BÀN TÀI XỈU MINI & RỒNG HỔ SUN CÙNG IDOL VỀ BỜ",
-      "startTime": "18:00",
-      "endTime": "00:00",
-      "enabled": true
-    }
-  ],
+  "contentidol": [],
   "contentidolSettings": {
     "enabled": true,
-    "intervalMinutes": 2,
+    "intervalMinutes": 5,
     "repeatCount": 10,
-    "speedPxPerSecond": 40,
-    "fontSize": 22,
+    "speedPxPerSecond": 140,
+    "fontSize": 48,
     "copiesPerRun": 8,
     "copyGapSize": 24,
     "laneGapPx": 160,
-    "showMinutes": 2,
-    "hideMinutes": 2,
-    "textColor": "#223772"
+    "showMinutes": 0,
+    "hideMinutes": 0,
+    "textColor": "#ffffff"
   },
-  "domains1b": [
-    "SUNWIN.AG",
-    "GEMWIN.SO"
-  ],
-  "domains789": [
-    "789CLUB.US"
-  ],
-  "domains0b": [
-    "HITCLUB.SC",
-    "GO88.BH"
-  ]
+  "domains1b": [],
+  "domains789": [],
+  "domains0b": []
 }
