@@ -78,15 +78,6 @@ function isAdmin() {
   return roleName() === "admin";
 }
 
-function canEditAll() {
-  const role = roleName();
-  return role === "admin" || role === "user";
-}
-
-function canEditContentIdol() {
-  return canEditAll();
-}
-
 function getPermissions() {
   const perms = currentMe?.permissions || {};
   return {
@@ -95,7 +86,39 @@ function getPermissions() {
     domains1b: perms.domains1b !== false,
     domains789: perms.domains789 !== false,
     domains0b: perms.domains0b !== false,
+    enableFirework: isAdmin(),
   };
+}
+
+function canEditContentIdol() {
+  return isAdmin() || getPermissions().contentidol;
+}
+
+function canEditContentIdolSettings() {
+  return isAdmin() || getPermissions().contentidolSettings;
+}
+
+function canEditDomains1b() {
+  return isAdmin() || getPermissions().domains1b;
+}
+
+function canEditDomains789() {
+  return isAdmin() || getPermissions().domains789;
+}
+
+function canEditDomains0b() {
+  return isAdmin() || getPermissions().domains0b;
+}
+
+function canEditAnything() {
+  return (
+    isAdmin() ||
+    canEditContentIdol() ||
+    canEditContentIdolSettings() ||
+    canEditDomains1b() ||
+    canEditDomains789() ||
+    canEditDomains0b()
+  );
 }
 
 function escapeHtml(value) {
@@ -196,7 +219,22 @@ function renderLogChange(label, value) {
   `;
 }
 
-function createDomainRow(value = "") {
+function removeElementCompletely(el) {
+  if (el && el.parentNode) {
+    el.parentNode.removeChild(el);
+  }
+}
+
+function setInputsDisabled(container, disabled) {
+  if (!container) return;
+  container
+    .querySelectorAll("input, select, textarea, button")
+    .forEach((el) => {
+      el.disabled = !!disabled;
+    });
+}
+
+function createDomainRow(value = "", allowEdit = false) {
   const row = document.createElement("div");
   row.className = "domain-row";
 
@@ -204,16 +242,17 @@ function createDomainRow(value = "") {
   input.type = "text";
   input.value = value;
   input.placeholder = "Example: SUNWIN.AG";
-  input.disabled = false;
+  input.disabled = !allowEdit;
 
   const btn = document.createElement("button");
   btn.type = "button";
   btn.className = "danger";
   btn.textContent = "X";
-  btn.style.display = isAdmin() ? "" : "none";
+  btn.style.display = allowEdit ? "" : "none";
+  btn.disabled = !allowEdit;
 
   btn.addEventListener("click", () => {
-    if (!isAdmin()) return;
+    if (!allowEdit) return;
     row.remove();
     resetIdleTimer();
   });
@@ -223,10 +262,12 @@ function createDomainRow(value = "") {
   return row;
 }
 
-function renderDomainList(container, items) {
+function renderDomainList(container, items, allowEdit = false) {
   if (!container) return;
   container.innerHTML = "";
-  (items || []).forEach((item) => container.appendChild(createDomainRow(item)));
+  (items || []).forEach((item) =>
+    container.appendChild(createDomainRow(item, allowEdit)),
+  );
 }
 
 function getDomainList(container) {
@@ -236,7 +277,7 @@ function getDomainList(container) {
     .filter(Boolean);
 }
 
-function createContentIdolRow(item = {}) {
+function createContentIdolRow(item = {}, allowEdit = false) {
   const row = document.createElement("div");
   row.className = "contentidol-item";
 
@@ -247,7 +288,7 @@ function createContentIdolRow(item = {}) {
   textInput.type = "text";
   textInput.placeholder = "Ví dụ: ĐANG LIVE TẠI Phòng 1";
   textInput.value = item.text || "";
-  textInput.disabled = false;
+  textInput.disabled = !allowEdit;
 
   const timeActions = document.createElement("div");
   timeActions.className = "contentidol-time-actions";
@@ -259,7 +300,7 @@ function createContentIdolRow(item = {}) {
   const startInput = document.createElement("input");
   startInput.type = "time";
   startInput.value = normalizeTimeValue(item.startTime, "12:00");
-  startInput.disabled = false;
+  startInput.disabled = !allowEdit;
   startWrap.appendChild(startLabel);
   startWrap.appendChild(startInput);
 
@@ -270,7 +311,7 @@ function createContentIdolRow(item = {}) {
   const endInput = document.createElement("input");
   endInput.type = "time";
   endInput.value = normalizeTimeValue(item.endTime, "15:00");
-  endInput.disabled = false;
+  endInput.disabled = !allowEdit;
   endWrap.appendChild(endLabel);
   endWrap.appendChild(endInput);
 
@@ -278,10 +319,11 @@ function createContentIdolRow(item = {}) {
   removeBtn.type = "button";
   removeBtn.className = "danger";
   removeBtn.textContent = "X";
-  removeBtn.style.display = canEditContentIdol() ? "" : "none";
+  removeBtn.style.display = allowEdit ? "" : "none";
+  removeBtn.disabled = !allowEdit;
 
   removeBtn.addEventListener("click", () => {
-    if (!canEditContentIdol()) return;
+    if (!allowEdit) return;
     row.remove();
     resetIdleTimer();
   });
@@ -297,11 +339,11 @@ function createContentIdolRow(item = {}) {
   return row;
 }
 
-function renderContentIdolList(container, items) {
+function renderContentIdolList(container, items, allowEdit = false) {
   if (!container) return;
   container.innerHTML = "";
   (items || []).forEach((item) => {
-    container.appendChild(createContentIdolRow(item));
+    container.appendChild(createContentIdolRow(item, allowEdit));
   });
 }
 
@@ -323,6 +365,33 @@ function getContentIdolList(container) {
       };
     })
     .filter((item) => item.text);
+}
+function sanitizeConfigForCurrentUser(config) {
+  const perms = getPermissions();
+  const safeConfig = {
+    enableFirework: !!config?.enableFirework,
+    contentidol: perms.contentidol ? [...(config?.contentidol || [])] : [],
+    contentidolSettings: perms.contentidolSettings
+      ? { ...(config?.contentidolSettings || {}) }
+      : {
+          enabled: false,
+          intervalMinutes: 5,
+          repeatCount: 10,
+          speedPxPerSecond: 140,
+          fontSize: 48,
+          copiesPerRun: 8,
+          copyGapSize: 24,
+          laneGapPx: 160,
+          showMinutes: 0,
+          hideMinutes: 0,
+          textColor: "#ffffff",
+        },
+    domains1b: perms.domains1b ? [...(config?.domains1b || [])] : [],
+    domains789: perms.domains789 ? [...(config?.domains789 || [])] : [],
+    domains0b: perms.domains0b ? [...(config?.domains0b || [])] : [],
+  };
+
+  return safeConfig;
 }
 
 function collectConfig() {
@@ -358,14 +427,36 @@ function collectConfig() {
 }
 
 function renderConfig(config) {
-  if (els.enableFirework) els.enableFirework.checked = !!config.enableFirework;
+  const perms = getPermissions();
+  const safeConfig = sanitizeConfigForCurrentUser(config || {});
 
-  renderContentIdolList(els.contentidolList, config.contentidol || []);
-  renderDomainList(els.domains1bList, config.domains1b || []);
-  renderDomainList(els.domains789List, config.domains789 || []);
-  renderDomainList(els.domains0bList, config.domains0b || []);
+  if (els.enableFirework) {
+    els.enableFirework.checked = !!safeConfig.enableFirework;
+    els.enableFirework.disabled = !perms.enableFirework;
+  }
 
-  const s = config.contentidolSettings || {};
+  renderContentIdolList(
+    els.contentidolList,
+    safeConfig.contentidol || [],
+    canEditContentIdol(),
+  );
+  renderDomainList(
+    els.domains1bList,
+    safeConfig.domains1b || [],
+    canEditDomains1b(),
+  );
+  renderDomainList(
+    els.domains789List,
+    safeConfig.domains789 || [],
+    canEditDomains789(),
+  );
+  renderDomainList(
+    els.domains0bList,
+    safeConfig.domains0b || [],
+    canEditDomains0b(),
+  );
+
+  const s = safeConfig.contentidolSettings || {};
 
   if (els.contentidolEnabled)
     els.contentidolEnabled.checked = s.enabled !== false;
@@ -390,59 +481,6 @@ function renderConfig(config) {
   const color = normalizeHexColor(s.textColor || "#ffffff", "#ffffff");
   if (els.contentidolTextColor) els.contentidolTextColor.value = color;
   if (els.contentidolTextColorCode) els.contentidolTextColorCode.value = color;
-}
-
-function applyRoleUi() {
-  const admin = isAdmin();
-  const canEdit = canEditAll();
-  const perms = getPermissions();
-
-  if (els.contentidolSection) {
-    els.contentidolSection.style.display =
-      admin || perms.contentidol ? "" : "none";
-  }
-  if (els.contentidolSettingsSection) {
-    els.contentidolSettingsSection.style.display =
-      admin || perms.contentidolSettings ? "" : "none";
-  }
-  if (els.domains1bSection) {
-    els.domains1bSection.style.display = admin || perms.domains1b ? "" : "none";
-  }
-  if (els.domains789Section) {
-    els.domains789Section.style.display =
-      admin || perms.domains789 ? "" : "none";
-  }
-  if (els.domains0bSection) {
-    els.domains0bSection.style.display = admin || perms.domains0b ? "" : "none";
-  }
-
-  document.querySelectorAll('[data-add="contentidol"]').forEach((btn) => {
-    btn.style.display = canEdit ? "" : "none";
-  });
-
-  document
-    .querySelectorAll(
-      '[data-add="domains1b"], [data-add="domains789"], [data-add="domains0b"]',
-    )
-    .forEach((btn) => {
-      btn.style.display = admin ? "" : "none";
-    });
-
-  document.querySelectorAll(".domain-row button.danger").forEach((btn) => {
-    btn.style.display = admin ? "" : "none";
-  });
-
-  document
-    .querySelectorAll(".contentidol-item button.danger")
-    .forEach((btn) => {
-      btn.style.display = canEdit ? "" : "none";
-    });
-
-  if (els.userCard) {
-    els.userCard.style.display = admin ? "" : "none";
-  }
-
-  if (els.enableFirework) els.enableFirework.disabled = false;
 
   [
     els.contentidolEnabled,
@@ -458,20 +496,55 @@ function applyRoleUi() {
     els.contentidolTextColor,
     els.contentidolTextColorCode,
   ].forEach((el) => {
-    if (el) el.disabled = false;
+    if (el) el.disabled = !canEditContentIdolSettings();
+  });
+}
+
+function applyRoleUi() {
+  const perms = getPermissions();
+
+  if (!perms.contentidol) removeElementCompletely(els.contentidolSection);
+  if (!perms.contentidolSettings)
+    removeElementCompletely(els.contentidolSettingsSection);
+  if (!perms.domains1b) removeElementCompletely(els.domains1bSection);
+  if (!perms.domains789) removeElementCompletely(els.domains789Section);
+  if (!perms.domains0b) removeElementCompletely(els.domains0bSection);
+  if (!isAdmin()) removeElementCompletely(els.userCard);
+
+  document.querySelectorAll('[data-add="contentidol"]').forEach((btn) => {
+    btn.style.display = canEditContentIdol() ? "" : "none";
+    btn.disabled = !canEditContentIdol();
   });
 
-  [
-    els.domains1bList,
-    els.domains789List,
-    els.domains0bList,
-    els.contentidolList,
-  ].forEach((container) => {
-    if (!container) return;
-    container.querySelectorAll("input").forEach((input) => {
-      input.disabled = false;
-    });
+  document.querySelectorAll('[data-add="domains1b"]').forEach((btn) => {
+    btn.style.display = canEditDomains1b() ? "" : "none";
+    btn.disabled = !canEditDomains1b();
   });
+
+  document.querySelectorAll('[data-add="domains789"]').forEach((btn) => {
+    btn.style.display = canEditDomains789() ? "" : "none";
+    btn.disabled = !canEditDomains789();
+  });
+
+  document.querySelectorAll('[data-add="domains0b"]').forEach((btn) => {
+    btn.style.display = canEditDomains0b() ? "" : "none";
+    btn.disabled = !canEditDomains0b();
+  });
+
+  if (els.saveBtn) {
+    els.saveBtn.style.display = canEditAnything() ? "" : "none";
+    els.saveBtn.disabled = !canEditAnything();
+  }
+
+  if (els.resetBtn) {
+    els.resetBtn.style.display = canEditAnything() ? "" : "none";
+    els.resetBtn.disabled = !canEditAnything();
+  }
+
+  setInputsDisabled(els.contentidolList, !canEditContentIdol());
+  setInputsDisabled(els.domains1bList, !canEditDomains1b());
+  setInputsDisabled(els.domains789List, !canEditDomains789());
+  setInputsDisabled(els.domains0bList, !canEditDomains0b());
 }
 
 async function doAutoLogout() {
@@ -537,7 +610,7 @@ async function loadConfig() {
   }
 
   const data = await res.json();
-  originalConfig = data.config || {};
+  originalConfig = sanitizeConfigForCurrentUser(data.config || {});
   renderConfig(originalConfig);
   applyRoleUi();
 }
@@ -593,32 +666,87 @@ async function loadLogs() {
 }
 
 async function saveConfig() {
+  if (!canEditAnything()) {
+    if (els.saveError) {
+      els.saveError.textContent = "Bạn không có quyền chỉnh sửa.";
+    }
+    return;
+  }
+
   if (els.saveError) els.saveError.textContent = "";
-  if (els.saveMessage) els.saveMessage.textContent = "";
+  if (els.saveMessage) els.saveMessage.textContent = "Saving...";
 
-  const config = collectConfig();
+  try {
+    const config = collectConfig();
 
-  const res = await fetch("/api/config/save", {
+    const res = await fetch("/api/config/save", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ config }),
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      throw new Error(data.error || "Save failed");
+    }
+
+    originalConfig = sanitizeConfigForCurrentUser(data.config || config);
+    renderConfig(originalConfig);
+    applyRoleUi();
+
+    if (els.saveMessage) {
+      els.saveMessage.textContent = "Saved successfully.";
+    }
+
+    resetIdleTimer();
+    await loadLogs();
+  } catch (err) {
+    if (els.saveMessage) els.saveMessage.textContent = "";
+    if (els.saveError) {
+      els.saveError.textContent = err.message || "Save failed";
+    }
+  }
+}
+
+async function changePassword(payload) {
+  const res = await fetch("/api/change-password", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
-    body: JSON.stringify({ config }),
+    body: JSON.stringify(payload),
   });
 
   const data = await res.json().catch(() => ({}));
 
   if (!res.ok) {
-    if (els.saveError) els.saveError.textContent = data.error || "Save failed";
-    return;
+    throw new Error(data.error || "Change password failed");
   }
 
-  originalConfig = data.config || config;
+  return data;
+}
 
-  if (els.saveMessage) {
-    els.saveMessage.textContent =
-      data.message || `Saved ok. Commit: ${data.commitSha || ""}`;
+async function createUser(username) {
+  const res = await fetch("/api/users/add", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ username }),
+  });
+
+  const data = await res.json().catch(() => ({}));
+
+  if (!res.ok) {
+    throw new Error(data.error || "Create user failed");
   }
 
+  return data;
+}
+
+async function init() {
+  bindIdleEvents();
+  await ensureMe();
   await loadConfig();
   await loadLogs();
   resetIdleTimer();
@@ -829,18 +957,27 @@ document.querySelectorAll("[data-add]").forEach((btn) => {
       if (!canEditContentIdol()) return;
 
       els.contentidolList?.appendChild(
-        createContentIdolRow({
-          text: "",
-          startTime: "12:00",
-          endTime: "15:00",
-          enabled: true,
-        }),
+        createContentIdolRow(
+          {
+            text: "",
+            startTime: "12:00",
+            endTime: "15:00",
+            enabled: true,
+          },
+          true,
+        ),
       );
       resetIdleTimer();
       return;
     }
 
-    if (!isAdmin()) return;
+    const domainPermissionMap = {
+      domains1b: canEditDomains1b(),
+      domains789: canEditDomains789(),
+      domains0b: canEditDomains0b(),
+    };
+
+    if (!domainPermissionMap[key]) return;
 
     const map = {
       domains1b: els.domains1bList,
@@ -848,7 +985,7 @@ document.querySelectorAll("[data-add]").forEach((btn) => {
       domains0b: els.domains0bList,
     };
 
-    map[key]?.appendChild(createDomainRow(""));
+    map[key]?.appendChild(createDomainRow("", true));
     resetIdleTimer();
   });
 });
@@ -875,7 +1012,6 @@ els.reloadUsersBtn?.addEventListener("click", async () => {
   await loadUsers();
   resetIdleTimer();
 });
-
 els.addUserBtn?.addEventListener("click", () => {
   if (!isAdmin()) return;
   openAddUserModal();
@@ -910,13 +1046,16 @@ els.contentidolTextColorCode?.addEventListener("input", () => {
 
 els.contentidolTextColorCode?.addEventListener("blur", () => {
   const color = normalizeHexColor(
-    els.contentidolTextColorCode.value,
-    els.contentidolTextColor?.value || "#ffffff",
+    els.contentidolTextColorCode?.value,
+    "#ffffff",
   );
-  els.contentidolTextColorCode.value = color;
+  if (els.contentidolTextColorCode) {
+    els.contentidolTextColorCode.value = color;
+  }
   if (els.contentidolTextColor) {
     els.contentidolTextColor.value = color;
   }
+  resetIdleTimer();
 });
 
 els.passwordForm?.addEventListener("submit", async (e) => {
@@ -925,36 +1064,50 @@ els.passwordForm?.addEventListener("submit", async (e) => {
   els.passwordError.textContent = "";
   els.passwordOk.textContent = "";
 
-  const payload = {
-    currentPassword: els.currentPassword?.value || "",
-    newPassword: els.newPassword?.value || "",
-    confirmPassword: els.confirmPassword?.value || "",
-  };
+  const currentPasswordVisible =
+    !els.currentPasswordWrap.classList.contains("hidden");
 
-  const res = await fetch("/api/change-password", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify(payload),
-  });
+  const currentPassword = els.currentPassword?.value || "";
+  const newPassword = els.newPassword?.value || "";
+  const confirmPassword = els.confirmPassword?.value || "";
 
-  const data = await res.json().catch(() => ({}));
-
-  if (!res.ok) {
-    els.passwordError.textContent = data.error || "Change password failed";
+  if (!newPassword || !confirmPassword) {
+    els.passwordError.textContent = "Vui lòng nhập đầy đủ thông tin.";
     return;
   }
 
-  els.passwordOk.textContent = "Password updated successfully";
-  currentMe.mustChangePassword = false;
+  if (newPassword !== confirmPassword) {
+    els.passwordError.textContent = "Xác nhận password không khớp.";
+    return;
+  }
 
-  setTimeout(() => {
-    closePasswordModal();
-  }, 500);
+  try {
+    await changePassword({
+      currentPassword: currentPasswordVisible ? currentPassword : undefined,
+      newPassword,
+    });
+
+    els.passwordOk.textContent = "Đổi password thành công.";
+    resetIdleTimer();
+
+    setTimeout(async () => {
+      closePasswordModal();
+      await ensureMe();
+
+      if (currentMe?.mustChangePassword) {
+        openForcePasswordModal();
+      }
+    }, 700);
+  } catch (err) {
+    els.passwordError.textContent =
+      err.message || "Đổi password không thành công.";
+  }
 });
 
 els.addUserForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
+
+  if (!isAdmin()) return;
 
   els.addUserError.textContent = "";
   els.addUserOk.textContent = "";
@@ -962,52 +1115,39 @@ els.addUserForm?.addEventListener("submit", async (e) => {
   const username = (els.addUsername?.value || "").trim();
 
   if (!username) {
-    els.addUserError.textContent = "Username is required";
+    els.addUserError.textContent = "Vui lòng nhập username.";
     return;
   }
 
   try {
-    const res = await fetch("/api/users/add", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ username }),
-    });
-
-    const data = await res.json().catch(() => ({}));
-
-    if (!res.ok) {
-      els.addUserError.textContent = data.error || "Add user failed";
-      return;
-    }
-
-    els.addUserOk.textContent = `Added user ${username}`;
-    alert(`Temporary password for ${username}: ${data.tempPassword}`);
-
+    const data = await createUser(username);
+    els.addUserOk.textContent = `Tạo user thành công. Password tạm: ${data.tempPassword}`;
     await loadUsers();
     resetIdleTimer();
 
     setTimeout(() => {
       closeAddUserModal();
-    }, 400);
+    }, 1200);
   } catch (err) {
-    els.addUserError.textContent = err.message || "Add user failed";
+    els.addUserError.textContent = err.message || "Tạo user thất bại.";
   }
 });
 
-(async function init() {
+window.addEventListener("load", async () => {
   try {
-    await ensureMe();
-    await loadConfig();
-    await loadLogs();
-    await loadUsers();
-    bindIdleEvents();
+    await init();
 
     if (currentMe?.mustChangePassword) {
       openForcePasswordModal();
     }
+
+    if (isAdmin()) {
+      await loadUsers();
+    }
   } catch (err) {
     console.error(err);
-    if (els.saveError) els.saveError.textContent = err.message || "Init failed";
+    if (els.saveError) {
+      els.saveError.textContent = err.message || "Init failed";
+    }
   }
-})();
+});

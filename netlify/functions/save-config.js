@@ -151,8 +151,33 @@ function getUserPermissions(user) {
     domains1b: p.domains1b !== false,
     domains789: p.domains789 !== false,
     domains0b: p.domains0b !== false,
-    enableFirework: false, // user KHÔNG được sửa công tắc tổng
+    enableFirework: false,
   };
+}
+
+function getUnauthorizedChangedFields(changes, perms) {
+  const unauthorized = [];
+
+  if (changes.enableFirework && !perms.enableFirework) {
+    unauthorized.push("enableFirework");
+  }
+  if (changes.contentidol && !perms.contentidol) {
+    unauthorized.push("contentidol");
+  }
+  if (changes.contentidolSettings && !perms.contentidolSettings) {
+    unauthorized.push("contentidolSettings");
+  }
+  if (changes.domains1b && !perms.domains1b) {
+    unauthorized.push("domains1b");
+  }
+  if (changes.domains789 && !perms.domains789) {
+    unauthorized.push("domains789");
+  }
+  if (changes.domains0b && !perms.domains0b) {
+    unauthorized.push("domains0b");
+  }
+
+  return unauthorized;
 }
 
 function applyPermissionFilteredConfig(before, incoming, perms) {
@@ -196,6 +221,18 @@ exports.handler = async (event) => {
     const { users } = await readUsersFromRepo();
     const currentUser = users.find((u) => u.username === auth.session.username);
     const perms = getUserPermissions(currentUser || auth.session);
+
+    const requestedChanges = buildDiff(before, normalizedIncoming);
+    const unauthorizedFields = getUnauthorizedChangedFields(
+      requestedChanges,
+      perms,
+    );
+
+    if (unauthorizedFields.length) {
+      return json(403, {
+        error: `You do not have permission to modify: ${unauthorizedFields.join(", ")}`,
+      });
+    }
 
     const after = applyPermissionFilteredConfig(
       before,
