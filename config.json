@@ -5,13 +5,13 @@
     "enabled": true,
     "intervalMinutes": 5,
     "repeatCount": 10,
-    "speedPxPerSecond": 140,
-    "fontSize": 48,
+    "speedPxPerSecond": 40,
+    "fontSize": 22,
     "copiesPerRun": 8,
     "copyGapSize": 24,
     "laneGapPx": 160,
-    "showMinutes": 0,
-    "hideMinutes": 0,
+    "showMinutes": 2,
+    "hideMinutes": 2,
     "textColor": "#223772"
   },
   "domains1b": [
