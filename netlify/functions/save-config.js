@@ -4,6 +4,7 @@ const {
   getRepoFile,
   putRepoFile,
   repoInfo,
+  readUsersFromRepo,
 } = require("./utils");
 
 function normalizeDomains(arr) {
@@ -128,6 +129,52 @@ function buildDiff(before, after) {
   return changed;
 }
 
+function getUserPermissions(user) {
+  if (!user || (user.role || "user") === "admin") {
+    return {
+      isAdmin: true,
+      contentidol: true,
+      contentidolSettings: true,
+      domains1b: true,
+      domains789: true,
+      domains0b: true,
+      enableFirework: true,
+    };
+  }
+
+  const p = user.permissions || {};
+
+  return {
+    isAdmin: false,
+    contentidol: p.contentidol !== false,
+    contentidolSettings: p.contentidolSettings !== false,
+    domains1b: p.domains1b !== false,
+    domains789: p.domains789 !== false,
+    domains0b: p.domains0b !== false,
+    enableFirework: false, // user KHÔNG được sửa công tắc tổng
+  };
+}
+
+function applyPermissionFilteredConfig(before, incoming, perms) {
+  return {
+    enableFirework: perms.enableFirework
+      ? incoming.enableFirework
+      : before.enableFirework,
+
+    contentidol: perms.contentidol ? incoming.contentidol : before.contentidol,
+
+    contentidolSettings: perms.contentidolSettings
+      ? incoming.contentidolSettings
+      : before.contentidolSettings,
+
+    domains1b: perms.domains1b ? incoming.domains1b : before.domains1b,
+
+    domains789: perms.domains789 ? incoming.domains789 : before.domains789,
+
+    domains0b: perms.domains0b ? incoming.domains0b : before.domains0b,
+  };
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return json(405, { error: "Method not allowed" });
@@ -144,7 +191,18 @@ exports.handler = async (event) => {
     const oldConfigFile = await getRepoFile(configPath);
     const before = JSON.parse(oldConfigFile.content || "{}");
 
-    const after = normalizeConfig(incomingConfig);
+    const normalizedIncoming = normalizeConfig(incomingConfig);
+
+    const { users } = await readUsersFromRepo();
+    const currentUser = users.find((u) => u.username === auth.session.username);
+    const perms = getUserPermissions(currentUser || auth.session);
+
+    const after = applyPermissionFilteredConfig(
+      before,
+      normalizedIncoming,
+      perms,
+    );
+
     const changes = buildDiff(before, after);
 
     if (!Object.keys(changes).length) {
