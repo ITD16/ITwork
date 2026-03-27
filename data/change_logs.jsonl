@@ -66,3 +66,5 @@
 {"time":"2026-03-27T22:34:30.077Z","user":"admin","role":"admin","ip":"108.165.93.70","deviceInfo":"Mac / Chrome","action":"update_vmix_config","target":"vmix-config","changes":{"triggerMinutes":{"before":[3,13,23,33,43,53],"after":[3,33]}}}
 {"time":"2026-03-27T22:39:33.612Z","user":"louis","role":"admin","ip":"142.111.69.190","deviceInfo":"Mac / Chrome","action":"update_vmix_config","target":"vmix-config","changes":{"triggerMinutes":{"before":[3,33],"after":[3,33,41]}}}
 {"time":"2026-03-27T22:45:58.114Z","user":"louis","role":"admin","ip":"142.111.69.190","deviceInfo":"Mac / Chrome","action":"update_vmix_config","target":"vmix-config","changes":{"triggerMinutes":{"before":[3,33,41],"after":[3,33]}}}
+{"time":"2026-03-27T23:21:32.155Z","user":"louis","role":"admin","ip":"142.111.69.190","deviceInfo":"Mac / Chrome","action":"update_vmix_config","target":"vmix-config","changes":{"triggerMinutes":{"before":[3,33],"after":[3,23]}}}
+{"time":"2026-03-27T23:21:49.944Z","user":"louis","role":"admin","ip":"142.111.69.190","deviceInfo":"Mac / Chrome","action":"update_vmix_config","target":"vmix-config","changes":{"triggerMinutes":{"before":[3,23],"after":[3,33]}}}
