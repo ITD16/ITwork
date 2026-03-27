@@ -7,113 +7,125 @@
     <link rel="stylesheet" href="/css/style-admin.css" />
     <link rel="icon" type="image/png" href="../logo/config.png?v=1" />
   </head>
-  
+
   <body class="login-page">
-    <div id="particles-js">
-    <div class="card login-card">
-      <h1>Dashboard Config</h1>
-      <p class="muted">Please call Ata to obtain access permissions.</p></br>
+    <div id="particles-js"></div>
 
-      <form id="loginForm" class="stack">
-        <label>
-          <input
-            id="username"
-            type="text"
-            autocomplete="username"
-            placeholder="Nhập username..."
-            required
-          />
-        </label>
-       <label>
-  <label>
-  <div class="password-wrap">
-    <input
-      id="password"
-      type="password"
-      autocomplete="current-password"
-      placeholder="Nhập password..."
-      required
-    />
+    <div class="login-shell">
+      <div class="card login-card">
+        <h1>Dashboard Config</h1>
+        <p class="muted">Please call Ata to obtain access permissions.</p>
 
-    <button
-      id="togglePasswordBtn"
-      type="button"
-      class="password-toggle"
-      aria-label="Show password"
-      title="Show password"
-    >
-      <span id="passwordEyeIcon" class="password-eye-icon">
-        <svg
-  id="eyeClosedSvg"
-  viewBox="0 0 24 24"
-  fill="none"
-  stroke="currentColor"
-  stroke-width="1.9"
-  stroke-linecap="round"
-  stroke-linejoin="round"
-  style="display: block"
->
-  <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"></path>
-  <path d="M4 4l16 16"></path>
-  <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path>
-</svg>
+        <form id="loginForm" class="stack">
+          <label>
+            <input
+              id="username"
+              type="text"
+              autocomplete="username"
+              placeholder="Nhập username..."
+              required
+            />
+          </label>
 
-        <svg
-          id="eyeOpenSvg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.9"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          style="display: none"
-        >
-          <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"></path>
-          <circle cx="12" cy="12" r="3"></circle>
-        </svg>
-      </span>
-    </button>
-  </div>
-</label>
-</label>
-        <button type="submit">Login</button>
-        <div id="loginError" class="error"></div>
-      </form>
+          <label>
+            <div class="password-wrap">
+              <input
+                id="password"
+                type="password"
+                autocomplete="current-password"
+                placeholder="Nhập password..."
+                required
+              />
+
+              <button
+                id="togglePasswordBtn"
+                type="button"
+                class="password-toggle"
+                aria-label="Show password"
+                title="Show password"
+              >
+                <span id="passwordEyeIcon" class="password-eye-icon">
+                  <svg
+                    id="eyeClosedSvg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.9"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    style="display: block"
+                  >
+                    <path
+                      d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"
+                    ></path>
+                    <path d="M4 4l16 16"></path>
+                    <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path>
+                  </svg>
+
+                  <svg
+                    id="eyeOpenSvg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.9"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    style="display: none"
+                  >
+                    <path
+                      d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"
+                    ></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </span>
+              </button>
+            </div>
+          </label>
+
+          <button type="submit">Login</button>
+          <div id="loginError" class="error"></div>
+        </form>
+      </div>
     </div>
-</div>  
+
     <script src="/js/login.js"></script>
+
     <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const passwordInput = document.getElementById("password");
-    const togglePasswordBtn = document.getElementById("togglePasswordBtn");
-    const eyeClosedSvg = document.getElementById("eyeClosedSvg");
-    const eyeOpenSvg = document.getElementById("eyeOpenSvg");
+      document.addEventListener("DOMContentLoaded", function () {
+        const passwordInput = document.getElementById("password");
+        const togglePasswordBtn = document.getElementById("togglePasswordBtn");
+        const eyeClosedSvg = document.getElementById("eyeClosedSvg");
+        const eyeOpenSvg = document.getElementById("eyeOpenSvg");
 
-    if (!passwordInput || !togglePasswordBtn || !eyeClosedSvg || !eyeOpenSvg) {
-      return;
-    }
+        if (
+          !passwordInput ||
+          !togglePasswordBtn ||
+          !eyeClosedSvg ||
+          !eyeOpenSvg
+        ) {
+          return;
+        }
 
-    togglePasswordBtn.addEventListener("click", function () {
-      const isPassword = passwordInput.type === "password";
+        togglePasswordBtn.addEventListener("click", function () {
+          const isPassword = passwordInput.type === "password";
 
-      passwordInput.type = isPassword ? "text" : "password";
-      eyeClosedSvg.style.display = isPassword ? "none" : "block";
-      eyeOpenSvg.style.display = isPassword ? "block" : "none";
+          passwordInput.type = isPassword ? "text" : "password";
+          eyeClosedSvg.style.display = isPassword ? "none" : "block";
+          eyeOpenSvg.style.display = isPassword ? "block" : "none";
 
-      togglePasswordBtn.setAttribute(
-        "aria-label",
-        isPassword ? "Hide password" : "Show password"
-      );
-      togglePasswordBtn.setAttribute(
-        "title",
-        isPassword ? "Hide password" : "Show password"
-      );
-    });
-  });
-</script>
+          togglePasswordBtn.setAttribute(
+            "aria-label",
+            isPassword ? "Hide password" : "Show password",
+          );
+          togglePasswordBtn.setAttribute(
+            "title",
+            isPassword ? "Hide password" : "Show password",
+          );
+        });
+      });
+    </script>
 
-<script src="http://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script> <!-- stats.js lib --> 
-<script src="http://threejs.org/examples/js/libs/stats.min.js"></script> 
-<script src="js/backgound.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="/js/backgound.js"></script>
   </body>
 </html>
