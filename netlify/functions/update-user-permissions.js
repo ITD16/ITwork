@@ -12,6 +12,7 @@ function normalizePermissions(perms = {}) {
     domains1b: perms.domains1b !== false,
     domains789: perms.domains789 !== false,
     domains0b: perms.domains0b !== false,
+    vmixConfig: perms.vmixConfig !== false,
   };
 }
 

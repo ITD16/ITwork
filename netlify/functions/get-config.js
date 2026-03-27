@@ -16,6 +16,7 @@ function getUserPermissions(user) {
       domains789: true,
       domains0b: true,
       enableFirework: true,
+      vmixConfig: true,
     };
   }
 
@@ -29,6 +30,7 @@ function getUserPermissions(user) {
     domains789: p.domains789 !== false,
     domains0b: p.domains0b !== false,
     enableFirework: false,
+    vmixConfig: p.vmixConfig !== false,
   };
 }
 
@@ -59,22 +61,53 @@ function filterConfigByPermissions(config, perms) {
   };
 }
 
+function normalizeVmixConfig(config) {
+  return {
+    holdLayer2Ms: Number(config?.holdLayer2Ms) || 60000,
+    holdLayer3Ms: Number(config?.holdLayer3Ms) || 120000,
+    triggerMinutes: Array.isArray(config?.triggerMinutes)
+      ? config.triggerMinutes
+          .map((x) => Number(x))
+          .filter((x) => Number.isInteger(x) && x >= 0 && x <= 59)
+      : [],
+    enabled: !!config?.enabled,
+  };
+}
+
 exports.handler = async (event) => {
   const auth = authRequired(event);
   if (!auth.ok) return auth.response;
 
   try {
-    const { configPath } = repoInfo();
-    const file = await getRepoFile(configPath);
-    const config = JSON.parse(file.content || "{}");
+    const qs = event.queryStringParameters || {};
+    const target =
+      String(qs.target || "config").trim() === "vmix-config"
+        ? "vmix-config"
+        : "config";
 
+    const { configPath, vmixConfigPath } = repoInfo();
     const { users } = await readUsersFromRepo();
     const currentUser = users.find((u) => u.username === auth.session.username);
     const perms = getUserPermissions(currentUser || auth.session);
 
+    if (target === "vmix-config") {
+      if (!perms.vmixConfig) {
+        return json(403, { error: "Forbidden" });
+      }
+
+      const file = await getRepoFile(vmixConfigPath);
+      const config = JSON.parse(file.content || "{}");
+      return json(200, {
+        target: "vmix-config",
+        config: normalizeVmixConfig(config),
+      });
+    }
+
+    const file = await getRepoFile(configPath);
+    const config = JSON.parse(file.content || "{}");
     const safeConfig = filterConfigByPermissions(config, perms);
 
-    return json(200, { config: safeConfig });
+    return json(200, { target: "config", config: safeConfig });
   } catch (err) {
     return json(500, { error: err.message || "Cannot load config" });
   }

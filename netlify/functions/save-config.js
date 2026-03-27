@@ -72,6 +72,28 @@ function normalizeConfig(config) {
   };
 }
 
+function normalizeVmixConfig(config) {
+  const triggerMinutesRaw = Array.isArray(config?.triggerMinutes)
+    ? config.triggerMinutes
+    : String(config?.triggerMinutes || "")
+        .split(",")
+        .map((x) => x.trim())
+        .filter(Boolean);
+
+  return {
+    holdLayer2Ms: normalizeNumber(config?.holdLayer2Ms, 60000),
+    holdLayer3Ms: normalizeNumber(config?.holdLayer3Ms, 120000),
+    triggerMinutes: Array.from(
+      new Set(
+        triggerMinutesRaw
+          .map((x) => Number(x))
+          .filter((x) => Number.isInteger(x) && x >= 0 && x <= 59),
+      ),
+    ).sort((a, b) => a - b),
+    enabled: !!config?.enabled,
+  };
+}
+
 function isEqual(a, b) {
   return JSON.stringify(a) === JSON.stringify(b);
 }
@@ -139,6 +161,7 @@ function getUserPermissions(user) {
       domains789: true,
       domains0b: true,
       enableFirework: true,
+      vmixConfig: true,
     };
   }
 
@@ -152,6 +175,7 @@ function getUserPermissions(user) {
     domains789: p.domains789 !== false,
     domains0b: p.domains0b !== false,
     enableFirework: false,
+    vmixConfig: p.vmixConfig !== false,
   };
 }
 
@@ -200,6 +224,41 @@ function applyPermissionFilteredConfig(before, incoming, perms) {
   };
 }
 
+async function appendLog(logPath, auth, action, target, changes) {
+  let oldLogSha = null;
+  let oldLogs = "";
+
+  try {
+    const logFile = await getRepoFile(logPath);
+    oldLogSha = logFile.sha;
+    oldLogs = logFile.content || "";
+  } catch (err) {
+    oldLogs = "";
+  }
+
+  const logLine = JSON.stringify({
+    time: new Date().toISOString(),
+    user: auth.session.username,
+    role: auth.session.role || "user",
+    ip: auth.session.ip || "",
+    deviceInfo: auth.session.deviceInfo || "",
+    action,
+    target,
+    changes,
+  });
+
+  const newLogs = oldLogs
+    ? `${oldLogs.trimEnd()}\n${logLine}\n`
+    : `${logLine}\n`;
+
+  await putRepoFile(
+    logPath,
+    newLogs,
+    `append ${target} log by ${auth.session.username}`,
+    oldLogSha || undefined,
+  );
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return json(405, { error: "Method not allowed" });
@@ -211,16 +270,66 @@ exports.handler = async (event) => {
   try {
     const body = JSON.parse(event.body || "{}");
     const incomingConfig = body.config || {};
+    const target =
+      String(body.target || "config").trim() === "vmix-config"
+        ? "vmix-config"
+        : "config";
 
-    const { configPath, logPath } = repoInfo();
-    const oldConfigFile = await getRepoFile(configPath);
-    const before = JSON.parse(oldConfigFile.content || "{}");
-
-    const normalizedIncoming = normalizeConfig(incomingConfig);
-
+    const { configPath, vmixConfigPath, logPath } = repoInfo();
     const { users } = await readUsersFromRepo();
     const currentUser = users.find((u) => u.username === auth.session.username);
     const perms = getUserPermissions(currentUser || auth.session);
+
+    if (target === "vmix-config") {
+      if (!perms.vmixConfig) {
+        return json(403, {
+          error: "You do not have permission to modify: vmix-config",
+        });
+      }
+
+      const oldConfigFile = await getRepoFile(vmixConfigPath);
+      const before = JSON.parse(oldConfigFile.content || "{}");
+      const normalizedIncoming = normalizeVmixConfig(incomingConfig);
+      const changes = buildDiff(before, normalizedIncoming);
+
+      if (!Object.keys(changes).length) {
+        return json(200, {
+          ok: true,
+          message: "No changes",
+          target: "vmix-config",
+          changes: {},
+          config: normalizedIncoming,
+        });
+      }
+
+      const configContent = JSON.stringify(normalizedIncoming, null, 2) + "\n";
+      const configResult = await putRepoFile(
+        vmixConfigPath,
+        configContent,
+        `update vmix-config by ${auth.session.username}`,
+        oldConfigFile.sha,
+      );
+
+      await appendLog(
+        logPath,
+        auth,
+        "update_vmix_config",
+        "vmix-config",
+        changes,
+      );
+
+      return json(200, {
+        ok: true,
+        commitSha: configResult.commit?.sha || "",
+        target: "vmix-config",
+        changes,
+        config: normalizedIncoming,
+      });
+    }
+
+    const oldConfigFile = await getRepoFile(configPath);
+    const before = JSON.parse(oldConfigFile.content || "{}");
+    const normalizedIncoming = normalizeConfig(incomingConfig);
 
     const requestedChanges = buildDiff(before, normalizedIncoming);
     const unauthorizedFields = getUnauthorizedChangedFields(
@@ -246,6 +355,7 @@ exports.handler = async (event) => {
       return json(200, {
         ok: true,
         message: "No changes",
+        target: "config",
         changes: {},
         config: after,
       });
@@ -259,41 +369,12 @@ exports.handler = async (event) => {
       oldConfigFile.sha,
     );
 
-    let oldLogSha = null;
-    let oldLogs = "";
-
-    try {
-      const logFile = await getRepoFile(logPath);
-      oldLogSha = logFile.sha;
-      oldLogs = logFile.content || "";
-    } catch (err) {
-      oldLogs = "";
-    }
-
-    const logLine = JSON.stringify({
-      time: new Date().toISOString(),
-      user: auth.session.username,
-      role: auth.session.role || "user",
-      ip: auth.session.ip || "",
-      deviceInfo: auth.session.deviceInfo || "",
-      action: "update_config",
-      changes,
-    });
-
-    const newLogs = oldLogs
-      ? `${oldLogs.trimEnd()}\n${logLine}\n`
-      : `${logLine}\n`;
-
-    await putRepoFile(
-      logPath,
-      newLogs,
-      `append config log by ${auth.session.username}`,
-      oldLogSha || undefined,
-    );
+    await appendLog(logPath, auth, "update_config", "config", changes);
 
     return json(200, {
       ok: true,
       commitSha: configResult.commit?.sha || "",
+      target: "config",
       changes,
       config: after,
     });

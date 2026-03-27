@@ -26,6 +26,8 @@ exports.handler = async (event) => {
             u.role === "admin" ? true : u.permissions?.domains789 !== false,
           domains0b:
             u.role === "admin" ? true : u.permissions?.domains0b !== false,
+          vmixConfig:
+            u.role === "admin" ? true : u.permissions?.vmixConfig !== false,
         },
       })),
     });

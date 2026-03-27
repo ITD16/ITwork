@@ -8,6 +8,7 @@ function normalizePermissions(user) {
       domains1b: true,
       domains789: true,
       domains0b: true,
+      vmixConfig: true,
     };
   }
 
@@ -17,6 +18,7 @@ function normalizePermissions(user) {
     domains1b: user?.permissions?.domains1b !== false,
     domains789: user?.permissions?.domains789 !== false,
     domains0b: user?.permissions?.domains0b !== false,
+    vmixConfig: user?.permissions?.vmixConfig !== false,
   };
 }
 

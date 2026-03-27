@@ -95,18 +95,15 @@ button.small {
 .brand-title-row h1 {
   margin: 0;
 }
-
 .brand-copy {
   margin: 0;
   font-size: 15px;
 }
-
 .brand-menu-row {
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
 }
-
 .topbar-actions {
   display: flex;
   flex-direction: column;
@@ -368,7 +365,6 @@ input[type="color"] {
   position: relative;
   display: inline-block;
 }
-
 .menu-toggle-btn {
   width: 56px;
   height: 48px;
@@ -382,7 +378,6 @@ input[type="color"] {
   justify-content: center;
   gap: 5px;
 }
-
 .hamburger-line {
   display: block;
   width: 24px;
@@ -418,19 +413,16 @@ input[type="color"] {
   cursor: pointer;
   font-weight: 600;
 }
-
 .menu-item:hover {
   background: #ffffff;
   color: #2563eb;
   border-color: #2563eb;
 }
-
 .menu-item.active {
   border-color: #2563eb;
   background: #eff6ff;
   color: #1d4ed8;
 }
-
 .config-main {
   min-width: 0;
 }
@@ -460,6 +452,15 @@ input[type="color"] {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+}
+.vmix-trigger-field {
+  max-width: 360px;
+}
+.vmix-trigger-field small {
+  display: block;
+  margin-top: 4px;
+  margin-bottom: 0;
+  font-size: 12px;
 }
 @media (max-width: 980px) {
   .layout {

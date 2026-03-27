@@ -150,13 +150,14 @@ function repoInfo() {
   const repo = process.env.GITHUB_REPO;
   const branch = process.env.GITHUB_BRANCH || "main";
   const configPath = process.env.CONFIG_PATH || "config.json";
+  const vmixConfigPath = process.env.VMIX_CONFIG_PATH || "vmix-config.json";
   const logPath = process.env.LOG_PATH || "data/change_logs.jsonl";
 
   if (!owner || !repo) {
     throw new Error("Missing GITHUB_OWNER or GITHUB_REPO");
   }
 
-  return { owner, repo, branch, configPath, logPath };
+  return { owner, repo, branch, configPath, vmixConfigPath, logPath };
 }
 
 async function getRepoFile(filePath) {

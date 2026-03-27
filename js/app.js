@@ -1,9 +1,21 @@
 let originalConfig = null;
+let originalVmixConfig = null;
 let currentMe = null;
 let currentPanelId = null;
 
 const IDLE_LIMIT_MS = 5 * 60 * 1000;
 let idleTimer = null;
+
+const CONFIG_PANEL_IDS = [
+  "generalPanel",
+  "contentidolPanel",
+  "contentidolSettingsPanel",
+  "domains1bPanel",
+  "domains789Panel",
+  "domains0bPanel",
+];
+
+const VMIX_PANEL_ID = "vmixConfigPanel";
 
 const els = {
   meBox: document.getElementById("meBox"),
@@ -21,6 +33,7 @@ const els = {
   domains1bPanel: document.getElementById("domains1bPanel"),
   domains789Panel: document.getElementById("domains789Panel"),
   domains0bPanel: document.getElementById("domains0bPanel"),
+  vmixConfigPanel: document.getElementById("vmixConfigPanel"),
 
   userManagementCard: document.getElementById("userManagementCard"),
 
@@ -31,6 +44,7 @@ const els = {
   domains1bSection: document.getElementById("domains1bSection"),
   domains789Section: document.getElementById("domains789Section"),
   domains0bSection: document.getElementById("domains0bSection"),
+  vmixConfigSection: document.getElementById("vmixConfigSection"),
 
   contentidolList: document.getElementById("contentidolList"),
   contentidolEnabled: document.getElementById("contentidolEnabled"),
@@ -53,6 +67,11 @@ const els = {
   domains1bList: document.getElementById("domains1bList"),
   domains789List: document.getElementById("domains789List"),
   domains0bList: document.getElementById("domains0bList"),
+
+  vmixEnabled: document.getElementById("vmixEnabled"),
+  vmixHoldLayer2Ms: document.getElementById("vmixHoldLayer2Ms"),
+  vmixHoldLayer3Ms: document.getElementById("vmixHoldLayer3Ms"),
+  vmixTriggerMinutes: document.getElementById("vmixTriggerMinutes"),
 
   saveMessage: document.getElementById("saveMessage"),
   saveError: document.getElementById("saveError"),
@@ -101,6 +120,7 @@ function getPermissions() {
     domains1b: perms.domains1b !== false,
     domains789: perms.domains789 !== false,
     domains0b: perms.domains0b !== false,
+    vmixConfig: perms.vmixConfig !== false,
     enableFirework: isAdmin(),
   };
 }
@@ -125,6 +145,10 @@ function canEditDomains0b() {
   return isAdmin() || getPermissions().domains0b;
 }
 
+function canEditVmixConfig() {
+  return isAdmin() || getPermissions().vmixConfig;
+}
+
 function canEditAnything() {
   return (
     isAdmin() ||
@@ -132,7 +156,8 @@ function canEditAnything() {
     canEditContentIdolSettings() ||
     canEditDomains1b() ||
     canEditDomains789() ||
-    canEditDomains0b()
+    canEditDomains0b() ||
+    canEditVmixConfig()
   );
 }
 
@@ -157,6 +182,27 @@ function normalizeTimeValue(value, fallback = "00:00") {
 function normalizeNumberInput(value, fallback) {
   const n = Number(value);
   return Number.isFinite(n) ? n : fallback;
+}
+
+function normalizeTriggerMinutesInput(value) {
+  if (Array.isArray(value)) {
+    return Array.from(
+      new Set(
+        value
+          .map((x) => Number(x))
+          .filter((x) => Number.isInteger(x) && x >= 0 && x <= 59),
+      ),
+    ).sort((a, b) => a - b);
+  }
+
+  return Array.from(
+    new Set(
+      String(value || "")
+        .split(",")
+        .map((x) => Number(String(x).trim()))
+        .filter((x) => Number.isInteger(x) && x >= 0 && x <= 59),
+    ),
+  ).sort((a, b) => a - b);
 }
 
 function formatDateTimeVN(value) {
@@ -403,6 +449,15 @@ function sanitizeConfigForCurrentUser(config) {
   };
 }
 
+function sanitizeVmixConfig(config) {
+  return {
+    holdLayer2Ms: normalizeNumberInput(config?.holdLayer2Ms, 60000),
+    holdLayer3Ms: normalizeNumberInput(config?.holdLayer3Ms, 120000),
+    triggerMinutes: normalizeTriggerMinutesInput(config?.triggerMinutes || []),
+    enabled: !!config?.enabled,
+  };
+}
+
 function collectConfig() {
   return {
     enableFirework: !!els.enableFirework?.checked,
@@ -432,6 +487,17 @@ function collectConfig() {
     domains1b: getDomainList(els.domains1bList),
     domains789: getDomainList(els.domains789List),
     domains0b: getDomainList(els.domains0bList),
+  };
+}
+
+function collectVmixConfig() {
+  return {
+    enabled: !!els.vmixEnabled?.checked,
+    holdLayer2Ms: normalizeNumberInput(els.vmixHoldLayer2Ms?.value, 60000),
+    holdLayer3Ms: normalizeNumberInput(els.vmixHoldLayer3Ms?.value, 120000),
+    triggerMinutes: normalizeTriggerMinutesInput(
+      els.vmixTriggerMinutes?.value || "",
+    ),
   };
 }
 
@@ -509,6 +575,28 @@ function renderConfig(config) {
   });
 }
 
+function renderVmixConfig(config) {
+  const safeConfig = sanitizeVmixConfig(config || {});
+  originalVmixConfig = safeConfig;
+
+  if (els.vmixEnabled) els.vmixEnabled.checked = !!safeConfig.enabled;
+  if (els.vmixHoldLayer2Ms)
+    els.vmixHoldLayer2Ms.value = safeConfig.holdLayer2Ms;
+  if (els.vmixHoldLayer3Ms)
+    els.vmixHoldLayer3Ms.value = safeConfig.holdLayer3Ms;
+  if (els.vmixTriggerMinutes)
+    els.vmixTriggerMinutes.value = (safeConfig.triggerMinutes || []).join(",");
+
+  [
+    els.vmixEnabled,
+    els.vmixHoldLayer2Ms,
+    els.vmixHoldLayer3Ms,
+    els.vmixTriggerMinutes,
+  ].forEach((el) => {
+    if (el) el.disabled = !canEditVmixConfig();
+  });
+}
+
 function getAllPanels() {
   return [
     els.generalPanel,
@@ -517,6 +605,7 @@ function getAllPanels() {
     els.domains1bPanel,
     els.domains789Panel,
     els.domains0bPanel,
+    els.vmixConfigPanel,
   ].filter(Boolean);
 }
 
@@ -529,38 +618,59 @@ function getPanelMeta() {
       label: "General",
       subtitle: "General config",
       visible: perms.enableFirework,
+      target: "config",
     },
     {
       id: "contentidolPanel",
       label: "Content Idol",
       subtitle: "Manage content idol list",
       visible: perms.contentidol,
+      target: "config",
     },
     {
       id: "contentidolSettingsPanel",
       label: "Content Idol Settings",
       subtitle: "Manage content idol settings",
       visible: perms.contentidolSettings,
+      target: "config",
     },
     {
       id: "domains1bPanel",
       label: "Change Dom 1B",
       subtitle: "Manage domain list 1B",
       visible: perms.domains1b,
+      target: "config",
     },
     {
       id: "domains789Panel",
       label: "Change Dom 789",
       subtitle: "Manage domain list 789",
       visible: perms.domains789,
+      target: "config",
     },
     {
       id: "domains0bPanel",
       label: "Change Dom 0B",
       subtitle: "Manage domain list 0B",
       visible: perms.domains0b,
+      target: "config",
+    },
+    {
+      id: "vmixConfigPanel",
+      label: "vMix Config",
+      subtitle: "Manage vmix-config.json",
+      visible: perms.vmixConfig,
+      target: "vmix-config",
     },
   ];
+}
+
+function getCurrentPanelMeta() {
+  return getPanelMeta().find((x) => x.id === currentPanelId) || null;
+}
+
+function isVmixPanel(panelId = currentPanelId) {
+  return panelId === VMIX_PANEL_ID;
 }
 
 function showPanel(panelId) {
@@ -685,6 +795,15 @@ function applyRoleUi() {
     if (el) el.disabled = !canEditContentIdolSettings();
   });
 
+  [
+    els.vmixEnabled,
+    els.vmixHoldLayer2Ms,
+    els.vmixHoldLayer3Ms,
+    els.vmixTriggerMinutes,
+  ].forEach((el) => {
+    if (el) el.disabled = !canEditVmixConfig();
+  });
+
   if (els.enableFirework) {
     els.enableFirework.disabled = !perms.enableFirework;
   }
@@ -740,10 +859,9 @@ async function ensureMe() {
 }
 
 async function loadConfig() {
-  if (els.saveError) els.saveError.textContent = "";
-  if (els.saveMessage) els.saveMessage.textContent = "";
-
-  const res = await fetch("/api/config", { credentials: "include" });
+  const res = await fetch("/api/config?target=config", {
+    credentials: "include",
+  });
 
   if (!res.ok) {
     if (res.status === 401) {
@@ -757,6 +875,44 @@ async function loadConfig() {
   const data = await res.json();
   originalConfig = sanitizeConfigForCurrentUser(data.config || {});
   renderConfig(originalConfig);
+}
+
+async function loadVmixConfig() {
+  if (!getPermissions().vmixConfig) {
+    originalVmixConfig = null;
+    renderVmixConfig({});
+    return;
+  }
+
+  const res = await fetch("/api/config?target=vmix-config", {
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    if (res.status === 401) {
+      window.location.href = "/";
+      return;
+    }
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || "Cannot load vmix config");
+  }
+
+  const data = await res.json();
+  renderVmixConfig(data.config || {});
+}
+
+async function loadAllConfigs() {
+  if (els.saveError) els.saveError.textContent = "";
+  if (els.saveMessage) els.saveMessage.textContent = "";
+
+  await loadConfig();
+
+  if (getPermissions().vmixConfig) {
+    await loadVmixConfig();
+  } else {
+    renderVmixConfig({});
+  }
+
   applyRoleUi();
 }
 
@@ -795,6 +951,10 @@ async function loadLogs() {
         `
         : "";
 
+      const targetMeta = log.target
+        ? `<div class="muted">Target: ${escapeHtml(log.target)}</div>`
+        : "";
+
       return `
         <div class="log-item">
           <div class="log-meta">
@@ -802,6 +962,7 @@ async function loadLogs() {
             (${escapeHtml(log.role || "user")})
             - ${escapeHtml(formatDateTimeVN(log.time))}
           </div>
+          ${targetMeta}
           ${adminMeta}
           ${changesHtml || `<div class="muted">No detail</div>`}
         </div>
@@ -822,13 +983,26 @@ async function saveConfig() {
   if (els.saveMessage) els.saveMessage.textContent = "Saving...";
 
   try {
-    const config = collectConfig();
+    const currentMeta = getCurrentPanelMeta();
+    const target = currentMeta?.target || "config";
+
+    let payloadConfig;
+    if (target === "vmix-config") {
+      payloadConfig = collectVmixConfig();
+    } else {
+      payloadConfig = collectConfig();
+    }
+
+    const body =
+      target === "config"
+        ? { config: payloadConfig, target: "config" }
+        : { config: payloadConfig, target: "vmix-config" };
 
     const res = await fetch("/api/config/save", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify({ config }),
+      body: JSON.stringify(body),
     });
 
     const data = await res.json().catch(() => ({}));
@@ -837,8 +1011,16 @@ async function saveConfig() {
       throw new Error(data.error || "Save failed");
     }
 
-    originalConfig = sanitizeConfigForCurrentUser(data.config || config);
-    renderConfig(originalConfig);
+    if (target === "vmix-config") {
+      originalVmixConfig = sanitizeVmixConfig(data.config || payloadConfig);
+      renderVmixConfig(originalVmixConfig);
+    } else {
+      originalConfig = sanitizeConfigForCurrentUser(
+        data.config || payloadConfig,
+      );
+      renderConfig(originalConfig);
+    }
+
     applyRoleUi();
 
     if (els.saveMessage) {
@@ -909,6 +1091,7 @@ function renderPermissionsTable(users) {
             <th>Domain 1B</th>
             <th>Domain 789</th>
             <th>Domain 0B</th>
+            <th>vMix Config</th>
           </tr>
         </thead>
         <tbody>
@@ -932,6 +1115,7 @@ function renderPermissionsTable(users) {
                 <td>${makeCheckbox(user.username, "domains1b", perms.domains1b !== false, disabled)}</td>
                 <td>${makeCheckbox(user.username, "domains789", perms.domains789 !== false, disabled)}</td>
                 <td>${makeCheckbox(user.username, "domains0b", perms.domains0b !== false, disabled)}</td>
+                <td>${makeCheckbox(user.username, "vmixConfig", perms.vmixConfig !== false, disabled)}</td>
               </tr>
             `;
             })
@@ -975,6 +1159,10 @@ async function bindPermissionCheckboxes() {
           domains0b:
             rowChecks.find(
               (x) => x.getAttribute("data-perm-field") === "domains0b",
+            )?.checked ?? true,
+          vmixConfig:
+            rowChecks.find(
+              (x) => x.getAttribute("data-perm-field") === "vmixConfig",
             )?.checked ?? true,
         };
 
@@ -1162,13 +1350,17 @@ document.querySelectorAll("[data-add]").forEach((btn) => {
 els.saveBtn?.addEventListener("click", saveConfig);
 
 els.resetBtn?.addEventListener("click", () => {
-  if (originalConfig) renderConfig(originalConfig);
+  if (isVmixPanel()) {
+    renderVmixConfig(originalVmixConfig || {});
+  } else {
+    renderConfig(originalConfig || {});
+  }
   applyRoleUi();
   resetIdleTimer();
 });
 
 els.reloadBtn?.addEventListener("click", async () => {
-  await loadConfig();
+  await loadAllConfigs();
   resetIdleTimer();
 });
 
@@ -1307,7 +1499,7 @@ async function init() {
   bindIdleEvents();
   bindMenuUi();
   await ensureMe();
-  await loadConfig();
+  await loadAllConfigs();
   await loadLogs();
   if (isAdmin()) {
     await loadUsers();

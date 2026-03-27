@@ -79,6 +79,14 @@
                   >
                     Change Dom 0B
                   </button>
+
+                  <button
+                    type="button"
+                    class="menu-item"
+                    data-panel-id="vmixConfigPanel"
+                  >
+                    vMix Config
+                  </button>
                 </div>
               </div>
             </div>
@@ -260,6 +268,43 @@
                   </button>
                 </div>
                 <div id="domains0bList" class="domain-list"></div>
+              </div>
+            </div>
+
+            <div id="vmixConfigPanel" class="group-box config-panel">
+              <div id="vmixConfigSection" class="group-box panel-inner-box">
+                <div class="group-head">
+                  <h3>vMix Config</h3>
+                </div>
+
+                <label class="toggle compact-toggle">
+                  <input id="vmixEnabled" type="checkbox" />
+                  <span>Enable vMix Script</span>
+                </label>
+
+                <div class="settings-grid">
+                  <label class="compact-field">
+                    <span>Hold Layer 2 (ms)</span>
+                    <input id="vmixHoldLayer2Ms" type="text" />
+                  </label>
+
+                  <label class="compact-field">
+                    <span>Hold Layer 3 (ms)</span>
+                    <input id="vmixHoldLayer3Ms" type="text" />
+                  </label>
+
+                  <label class="compact-field vmix-trigger-field">
+                    <span>Trigger Minutes</span>
+                    <input
+                      id="vmixTriggerMinutes"
+                      type="text"
+                      placeholder="Ví dụ: 3,33"
+                    />
+                    <small class="muted"
+                      >Nhập phút, cách nhau bằng dấu phẩy</small
+                    >
+                  </label>
+                </div>
               </div>
             </div>
 
