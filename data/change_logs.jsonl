@@ -63,3 +63,4 @@
 {"time":"2026-03-25T09:26:59.946Z","user":"user1","role":"user","ip":"142.111.69.190","deviceInfo":"Mac / Chrome","action":"update_config","changes":{"contentidolSettings":{"showMinutes":{"before":2,"after":3}}}}
 {"time":"2026-03-27T20:42:42.019Z","user":"admin","role":"admin","ip":"108.165.93.70","deviceInfo":"Mac / Chrome","action":"update_vmix_config","target":"vmix-config","changes":{"triggerMinutes":{"before":[50,58],"after":[45,52]}}}
 {"time":"2026-03-27T20:52:29.270Z","user":"louis","role":"admin","ip":"142.111.69.190","deviceInfo":"Mac / Chrome","action":"update_vmix_config","target":"vmix-config","changes":{"triggerMinutes":{"before":[45,52],"after":[3,13,23,33,43,53]}}}
+{"time":"2026-03-27T22:34:30.077Z","user":"admin","role":"admin","ip":"108.165.93.70","deviceInfo":"Mac / Chrome","action":"update_vmix_config","target":"vmix-config","changes":{"triggerMinutes":{"before":[3,13,23,33,43,53],"after":[3,33]}}}
