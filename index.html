@@ -7,32 +7,7 @@
     <link rel="stylesheet" href="/css/style-admin.css" />
     <link rel="icon" type="image/png" href="../logo/config.png?v=1" />
   </head>
-  <script>
-  const passwordInput = document.getElementById("password");
-  const togglePasswordBtn = document.getElementById("togglePasswordBtn");
-  const eyeClosedSvg = document.getElementById("eyeClosedSvg");
-  const eyeOpenSvg = document.getElementById("eyeOpenSvg");
-
-  if (passwordInput && togglePasswordBtn && eyeClosedSvg && eyeOpenSvg) {
-    togglePasswordBtn.addEventListener("click", () => {
-      const isHidden = passwordInput.type === "password";
-
-      passwordInput.type = isHidden ? "text" : "password";
-
-      eyeClosedSvg.classList.toggle("hidden", isHidden);
-      eyeOpenSvg.classList.toggle("hidden", !isHidden);
-
-      togglePasswordBtn.setAttribute(
-        "aria-label",
-        isHidden ? "Hide password" : "Show password"
-      );
-      togglePasswordBtn.setAttribute(
-        "title",
-        isHidden ? "Hide password" : "Show password"
-      );
-    });
-  }
-</script>
+  
   <body class="login-page">
     <div class="card login-card">
       <h1>Dashboard Config</h1>
@@ -49,6 +24,7 @@
           />
         </label>
        <label>
+  <label>
   <div class="password-wrap">
     <input
       id="password"
@@ -65,24 +41,20 @@
       aria-label="Show password"
       title="Show password"
     >
-      <span id="passwordEyeIcon" class="password-eye-icon" aria-hidden="true">
+      <span id="passwordEyeIcon" class="password-eye-icon">
         <svg
           id="eyeClosedSvg"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          stroke-width="2.2"
+          stroke-width="1.9"
           stroke-linecap="round"
           stroke-linejoin="round"
         >
           <path d="M3 3l18 18"></path>
-          <path d="M10.58 10.58a2 2 0 0 0 2.84 2.84"></path>
-          <path
-            d="M9.88 4.24A10.94 10.94 0 0 1 12 4c5 0 9.27 3.11 11 8-0.56 1.57-1.46 3-2.62 4.18"
-          ></path>
-          <path
-            d="M6.61 6.61C4.62 7.95 3.12 9.79 2 12c1.73 4.89 6 8 10 8 1.61 0 3.16-.36 4.56-1.02"
-          ></path>
+          <path d="M10.7 10.7a2 2 0 0 0 2.6 2.6"></path>
+          <path d="M9.2 4.6A10.4 10.4 0 0 1 12 4.2c5 0 8.9 3.1 10 7.8a11 11 0 0 1-2.8 4.2"></path>
+          <path d="M6.4 6.4C4.4 7.8 2.9 9.7 2 12c1.7 4.6 5.7 7.8 10 7.8 1.7 0 3.3-.5 4.7-1.2"></path>
         </svg>
 
         <svg
@@ -90,17 +62,18 @@
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          stroke-width="2.2"
+          stroke-width="1.9"
           stroke-linecap="round"
           stroke-linejoin="round"
-          class="hidden"
+          style="display: none"
         >
-          <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"></path>
+          <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"></path>
           <circle cx="12" cy="12" r="3"></circle>
         </svg>
       </span>
     </button>
   </div>
+</label>
 </label>
         <button type="submit">Login</button>
         <div id="loginError" class="error"></div>
@@ -108,5 +81,34 @@
     </div>
 
     <script src="/js/login.js"></script>
+    <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const passwordInput = document.getElementById("password");
+    const togglePasswordBtn = document.getElementById("togglePasswordBtn");
+    const eyeClosedSvg = document.getElementById("eyeClosedSvg");
+    const eyeOpenSvg = document.getElementById("eyeOpenSvg");
+
+    if (!passwordInput || !togglePasswordBtn || !eyeClosedSvg || !eyeOpenSvg) {
+      return;
+    }
+
+    togglePasswordBtn.addEventListener("click", function () {
+      const isPassword = passwordInput.type === "password";
+
+      passwordInput.type = isPassword ? "text" : "password";
+      eyeClosedSvg.style.display = isPassword ? "none" : "block";
+      eyeOpenSvg.style.display = isPassword ? "block" : "none";
+
+      togglePasswordBtn.setAttribute(
+        "aria-label",
+        isPassword ? "Hide password" : "Show password"
+      );
+      togglePasswordBtn.setAttribute(
+        "title",
+        isPassword ? "Hide password" : "Show password"
+      );
+    });
+  });
+</script>
   </body>
 </html>
