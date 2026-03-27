@@ -3,7 +3,8 @@
   "holdLayer3Ms": 120000,
   "triggerMinutes": [
     3,
-    33
+    33,
+    41
   ],
   "enabled": true
 }
