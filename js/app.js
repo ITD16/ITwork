@@ -1447,6 +1447,7 @@ els.passwordForm?.addEventListener("submit", async (e) => {
     await changePassword({
       currentPassword: currentPasswordVisible ? currentPassword : undefined,
       newPassword,
+      confirmPassword,
     });
 
     els.passwordOk.textContent = "Đổi password thành công.";
