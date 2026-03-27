@@ -102,30 +102,19 @@
           !togglePasswordBtn ||
           !eyeClosedSvg ||
           !eyeOpenSvg
-        ) {
+        )
           return;
-        }
 
         togglePasswordBtn.addEventListener("click", function () {
           const isPassword = passwordInput.type === "password";
-
           passwordInput.type = isPassword ? "text" : "password";
           eyeClosedSvg.style.display = isPassword ? "none" : "block";
           eyeOpenSvg.style.display = isPassword ? "block" : "none";
-
-          togglePasswordBtn.setAttribute(
-            "aria-label",
-            isPassword ? "Hide password" : "Show password",
-          );
-          togglePasswordBtn.setAttribute(
-            "title",
-            isPassword ? "Hide password" : "Show password",
-          );
         });
       });
     </script>
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script src="/js/backgound.js"></script>
+    <script src="/js/background.js"></script>
   </body>
 </html>

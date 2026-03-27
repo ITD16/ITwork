@@ -7,12 +7,14 @@ body {
   background: #f5f7fb;
   color: #111827;
 }
+
 .login-page {
   min-height: 100vh;
   position: relative;
   overflow: hidden;
   background: #f5f7fb;
 }
+
 .login-shell {
   position: relative;
   z-index: 2;
@@ -555,10 +557,6 @@ input[type="color"] {
 
 /* end config con mắt */
 /* Start Background index.html */
-canvas {
-  display: block;
-  vertical-align: bottom;
-} /* ---- particles.js container ---- */
 #particles-js {
   position: fixed;
   inset: 0;
@@ -569,6 +567,11 @@ canvas {
   background-size: cover;
   background-position: 50% 50%;
   z-index: 0;
-} /* ---- stats.js ---- */
+}
+
+canvas {
+  display: block;
+  vertical-align: bottom;
+}
 
 /* End Background index.html */
