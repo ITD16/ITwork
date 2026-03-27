@@ -4,15 +4,79 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Config Admin</title>
-    <link rel="icon" type="image/png" href="../logo/config.png?v=1" />
     <link rel="stylesheet" href="/css/style-admin.css" />
   </head>
   <body>
     <header class="topbar">
-      <div>
-        <h1>Config Admin</h1>
-        <div class="muted">Copy Right © D16 IT Team</div>
+      <div class="topbar-brand">
+        <div>
+          <h1>Config Admin</h1>
+          <div class="muted">Copy Right © D16 IT Team</div>
+        </div>
+
+        <div class="menu-wrap">
+          <button
+            id="menuToggleBtn"
+            type="button"
+            class="secondary menu-toggle-btn"
+          >
+            Menu
+          </button>
+
+          <div id="menuDropdown" class="menu-dropdown hidden">
+            <div id="menuList" class="menu-list">
+              <button
+                type="button"
+                class="menu-item"
+                data-panel-id="generalPanel"
+              >
+                General
+              </button>
+
+              <button
+                type="button"
+                class="menu-item"
+                data-panel-id="contentidolPanel"
+              >
+                Content Idol
+              </button>
+
+              <button
+                type="button"
+                class="menu-item"
+                data-panel-id="contentidolSettingsPanel"
+              >
+                Content Idol Settings
+              </button>
+
+              <button
+                type="button"
+                class="menu-item"
+                data-panel-id="domains1bPanel"
+              >
+                Change Dom 1B
+              </button>
+
+              <button
+                type="button"
+                class="menu-item"
+                data-panel-id="domains789Panel"
+              >
+                Change Dom 789
+              </button>
+
+              <button
+                type="button"
+                class="menu-item"
+                data-panel-id="domains0bPanel"
+              >
+                Change Dom 0B
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
+
       <div class="topbar-actions">
         <div class="topbar-main-actions">
           <span id="meBox" class="chip"></span>
@@ -28,147 +92,190 @@
     </header>
 
     <main class="layout">
-      <section class="card">
-        <div class="section-head">
-          <h2>Config</h2>
-        </div>
-
-        <div class="stack">
-          <label class="toggle">
-            <input id="enableFirework" type="checkbox" />
-            <span>Enable Firework</span>
-          </label>
-
-          <div id="contentidolSection" class="group-box">
-            <div class="group-head">
-              <h3>Content Idol</h3>
-              <button
-                type="button"
-                data-add="contentidol"
-                class="secondary small"
-              >
-                + Add
-              </button>
-            </div>
-            <div id="contentidolList" class="contentidol-list"></div>
-          </div>
-
-          <div id="contentidolSettingsSection" class="group-box">
-            <div class="group-head">
-              <h3>Content Idol Settings</h3>
-            </div>
-
-            <label class="toggle compact-toggle">
-              <input id="contentidolEnabled" type="checkbox" />
-              <span>Enable Content Idol</span>
-            </label>
-
-            <div class="settings-grid">
-              <label class="compact-field">
-                <span>Show Minutes</span>
-                <input id="contentidolShowMinutes" type="text" />
-              </label>
-
-              <label class="compact-field">
-                <span>Hide Minutes</span>
-                <input id="contentidolHideMinutes" type="text" />
-              </label>
-
-              <label class="compact-field">
-                <span>Interval Minutes</span>
-                <input id="contentidolIntervalMinutes" type="text" />
-              </label>
-
-              <label class="compact-field">
-                <span>Repeat Count</span>
-                <input id="contentidolRepeatCount" type="text" />
-              </label>
-
-              <label class="compact-field">
-                <span>Speed Px Per Second</span>
-                <input id="contentidolSpeedPxPerSecond" type="text" />
-              </label>
-
-              <label class="compact-field">
-                <span>Font Size</span>
-                <input id="contentidolFontSize" type="text" />
-              </label>
-
-              <label class="compact-field">
-                <span>Copies Per Run</span>
-                <input id="contentidolCopiesPerRun" type="text" />
-              </label>
-
-              <label class="compact-field">
-                <span>Copy Gap Size</span>
-                <input id="contentidolCopyGapSize" type="text" />
-              </label>
-
-              <label class="compact-field">
-                <span>Lane Gap Px</span>
-                <input id="contentidolLaneGapPx" type="text" />
-              </label>
-
-              <label class="compact-field color-field">
-                <span>Text Color</span>
-                <div class="color-input-row">
-                  <input id="contentidolTextColor" type="color" />
-                  <input
-                    id="contentidolTextColorCode"
-                    type="text"
-                    placeholder="#ffffff"
-                  />
+      <div class="left-column">
+        <section class="card">
+          <div class="config-main">
+            <div class="config-main-head">
+              <div>
+                <h2 id="panelTitle">Config</h2>
+                <div id="panelSubTitle" class="muted">
+                  Choose a menu to manage settings
                 </div>
+              </div>
+            </div>
+
+            <div id="generalPanel" class="group-box config-panel">
+              <div class="group-head">
+                <h3>General</h3>
+              </div>
+
+              <label class="toggle">
+                <input id="enableFirework" type="checkbox" />
+                <span>Enable Firework</span>
               </label>
             </div>
-          </div>
 
-          <div id="domains1bSection" class="group-box">
-            <div class="group-head">
-              <h3>Domains 1B</h3>
-              <button
-                type="button"
-                data-add="domains1b"
-                class="secondary small"
+            <div id="contentidolPanel" class="group-box config-panel">
+              <div id="contentidolSection" class="group-box panel-inner-box">
+                <div class="group-head">
+                  <h3>Content Idol</h3>
+                  <button
+                    type="button"
+                    data-add="contentidol"
+                    class="secondary small"
+                  >
+                    + Add
+                  </button>
+                </div>
+                <div id="contentidolList" class="contentidol-list"></div>
+              </div>
+            </div>
+
+            <div id="contentidolSettingsPanel" class="group-box config-panel">
+              <div
+                id="contentidolSettingsSection"
+                class="group-box panel-inner-box"
               >
-                + Add
+                <div class="group-head">
+                  <h3>Content Idol Settings</h3>
+                </div>
+
+                <label class="toggle compact-toggle">
+                  <input id="contentidolEnabled" type="checkbox" />
+                  <span>Enable Content Idol</span>
+                </label>
+
+                <div class="settings-grid">
+                  <label class="compact-field">
+                    <span>Show Minutes</span>
+                    <input id="contentidolShowMinutes" type="text" />
+                  </label>
+
+                  <label class="compact-field">
+                    <span>Hide Minutes</span>
+                    <input id="contentidolHideMinutes" type="text" />
+                  </label>
+
+                  <label class="compact-field">
+                    <span>Interval Minutes</span>
+                    <input id="contentidolIntervalMinutes" type="text" />
+                  </label>
+
+                  <label class="compact-field">
+                    <span>Repeat Count</span>
+                    <input id="contentidolRepeatCount" type="text" />
+                  </label>
+
+                  <label class="compact-field">
+                    <span>Speed Px Per Second</span>
+                    <input id="contentidolSpeedPxPerSecond" type="text" />
+                  </label>
+
+                  <label class="compact-field">
+                    <span>Font Size</span>
+                    <input id="contentidolFontSize" type="text" />
+                  </label>
+
+                  <label class="compact-field">
+                    <span>Copies Per Run</span>
+                    <input id="contentidolCopiesPerRun" type="text" />
+                  </label>
+
+                  <label class="compact-field">
+                    <span>Copy Gap Size</span>
+                    <input id="contentidolCopyGapSize" type="text" />
+                  </label>
+
+                  <label class="compact-field">
+                    <span>Lane Gap Px</span>
+                    <input id="contentidolLaneGapPx" type="text" />
+                  </label>
+
+                  <label class="compact-field color-field">
+                    <span>Text Color</span>
+                    <div class="color-input-row">
+                      <input id="contentidolTextColor" type="color" />
+                      <input
+                        id="contentidolTextColorCode"
+                        type="text"
+                        placeholder="#ffffff"
+                      />
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div id="domains1bPanel" class="group-box config-panel">
+              <div id="domains1bSection" class="group-box panel-inner-box">
+                <div class="group-head">
+                  <h3>Domains 1B</h3>
+                  <button
+                    type="button"
+                    data-add="domains1b"
+                    class="secondary small"
+                  >
+                    + Add
+                  </button>
+                </div>
+                <div id="domains1bList" class="domain-list"></div>
+              </div>
+            </div>
+
+            <div id="domains789Panel" class="group-box config-panel">
+              <div id="domains789Section" class="group-box panel-inner-box">
+                <div class="group-head">
+                  <h3>Domains 789</h3>
+                  <button
+                    type="button"
+                    data-add="domains789"
+                    class="secondary small"
+                  >
+                    + Add
+                  </button>
+                </div>
+                <div id="domains789List" class="domain-list"></div>
+              </div>
+            </div>
+
+            <div id="domains0bPanel" class="group-box config-panel">
+              <div id="domains0bSection" class="group-box panel-inner-box">
+                <div class="group-head">
+                  <h3>Domains 0B</h3>
+                  <button
+                    type="button"
+                    data-add="domains0b"
+                    class="secondary small"
+                  >
+                    + Add
+                  </button>
+                </div>
+                <div id="domains0bList" class="domain-list"></div>
+              </div>
+            </div>
+
+            <div class="inline-save-status">
+              <div id="saveMessage" class="ok"></div>
+              <div id="saveError" class="error"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="userManagementCard" class="card hidden">
+          <div class="section-head" style="margin-bottom: 14px">
+            <h2>User Management</h2>
+            <div class="user-panel-actions">
+              <button id="addUserBtn" type="button" class="secondary">
+                Add User
+              </button>
+              <button id="reloadUsersBtn" type="button" class="secondary">
+                Reload Users
               </button>
             </div>
-            <div id="domains1bList" class="domain-list"></div>
           </div>
-
-          <div id="domains789Section" class="group-box">
-            <div class="group-head">
-              <h3>Domains 789</h3>
-              <button
-                type="button"
-                data-add="domains789"
-                class="secondary small"
-              >
-                + Add
-              </button>
-            </div>
-            <div id="domains789List" class="domain-list"></div>
-          </div>
-
-          <div id="domains0bSection" class="group-box">
-            <div class="group-head">
-              <h3>Domains 0B</h3>
-              <button
-                type="button"
-                data-add="domains0b"
-                class="secondary small"
-              >
-                + Add
-              </button>
-            </div>
-            <div id="domains0bList" class="domain-list"></div>
-          </div>
-
-          <div id="saveMessage" class="ok"></div>
-          <div id="saveError" class="error"></div>
-        </div>
-      </section>
+          <div id="usersBox" class="users-box"></div>
+        </section>
+      </div>
 
       <section id="changeLogsCard" class="card">
         <div class="section-head">
@@ -178,21 +285,6 @@
           </button>
         </div>
         <div id="logsBox" class="logs-box"></div>
-      </section>
-
-      <section id="userCard" class="card admin-only" style="display: none">
-        <div class="section-head">
-          <h2>User Management</h2>
-          <div class="row-actions">
-            <button id="addUserBtn" type="button" class="secondary">
-              Add User
-            </button>
-            <button id="reloadUsersBtn" type="button" class="secondary">
-              Reload Users
-            </button>
-          </div>
-        </div>
-        <div id="usersBox" class="users-box"></div>
       </section>
     </main>
 

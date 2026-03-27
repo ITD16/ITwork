@@ -1,5 +1,6 @@
 let originalConfig = null;
 let currentMe = null;
+let currentPanelId = null;
 
 const IDLE_LIMIT_MS = 5 * 60 * 1000;
 let idleTimer = null;
@@ -7,6 +8,21 @@ let idleTimer = null;
 const els = {
   meBox: document.getElementById("meBox"),
   enableFirework: document.getElementById("enableFirework"),
+
+  menuToggleBtn: document.getElementById("menuToggleBtn"),
+  menuDropdown: document.getElementById("menuDropdown"),
+  menuList: document.getElementById("menuList"),
+  panelTitle: document.getElementById("panelTitle"),
+  panelSubTitle: document.getElementById("panelSubTitle"),
+
+  generalPanel: document.getElementById("generalPanel"),
+  contentidolPanel: document.getElementById("contentidolPanel"),
+  contentidolSettingsPanel: document.getElementById("contentidolSettingsPanel"),
+  domains1bPanel: document.getElementById("domains1bPanel"),
+  domains789Panel: document.getElementById("domains789Panel"),
+  domains0bPanel: document.getElementById("domains0bPanel"),
+
+  userManagementCard: document.getElementById("userManagementCard"),
 
   contentidolSection: document.getElementById("contentidolSection"),
   contentidolSettingsSection: document.getElementById(
@@ -47,7 +63,6 @@ const els = {
   reloadLogsBtn: document.getElementById("reloadLogsBtn"),
   logoutBtn: document.getElementById("logoutBtn"),
 
-  userCard: document.getElementById("userCard"),
   usersBox: document.getElementById("usersBox"),
   reloadUsersBtn: document.getElementById("reloadUsersBtn"),
 
@@ -219,12 +234,6 @@ function renderLogChange(label, value) {
   `;
 }
 
-function removeElementCompletely(el) {
-  if (el && el.parentNode) {
-    el.parentNode.removeChild(el);
-  }
-}
-
 function setInputsDisabled(container, disabled) {
   if (!container) return;
   container
@@ -366,9 +375,11 @@ function getContentIdolList(container) {
     })
     .filter((item) => item.text);
 }
+
 function sanitizeConfigForCurrentUser(config) {
   const perms = getPermissions();
-  const safeConfig = {
+
+  return {
     enableFirework: !!config?.enableFirework,
     contentidol: perms.contentidol ? [...(config?.contentidol || [])] : [],
     contentidolSettings: perms.contentidolSettings
@@ -390,8 +401,6 @@ function sanitizeConfigForCurrentUser(config) {
     domains789: perms.domains789 ? [...(config?.domains789 || [])] : [],
     domains0b: perms.domains0b ? [...(config?.domains0b || [])] : [],
   };
-
-  return safeConfig;
 }
 
 function collectConfig() {
@@ -500,23 +509,115 @@ function renderConfig(config) {
   });
 }
 
-function applyRoleUi() {
+function getAllPanels() {
+  return [
+    els.generalPanel,
+    els.contentidolPanel,
+    els.contentidolSettingsPanel,
+    els.domains1bPanel,
+    els.domains789Panel,
+    els.domains0bPanel,
+  ].filter(Boolean);
+}
+
+function getPanelMeta() {
   const perms = getPermissions();
 
-  if (!perms.contentidol) removeElementCompletely(els.contentidolSection);
-  if (!perms.contentidolSettings)
-    removeElementCompletely(els.contentidolSettingsSection);
-  if (!perms.domains1b) removeElementCompletely(els.domains1bSection);
-  if (!perms.domains789) removeElementCompletely(els.domains789Section);
-  if (!perms.domains0b) removeElementCompletely(els.domains0bSection);
+  return [
+    {
+      id: "generalPanel",
+      label: "General",
+      subtitle: "General config",
+      visible: perms.enableFirework,
+    },
+    {
+      id: "contentidolPanel",
+      label: "Content Idol",
+      subtitle: "Manage content idol list",
+      visible: perms.contentidol,
+    },
+    {
+      id: "contentidolSettingsPanel",
+      label: "Content Idol Settings",
+      subtitle: "Manage content idol settings",
+      visible: perms.contentidolSettings,
+    },
+    {
+      id: "domains1bPanel",
+      label: "Change Dom 1B",
+      subtitle: "Manage domain list 1B",
+      visible: perms.domains1b,
+    },
+    {
+      id: "domains789Panel",
+      label: "Change Dom 789",
+      subtitle: "Manage domain list 789",
+      visible: perms.domains789,
+    },
+    {
+      id: "domains0bPanel",
+      label: "Change Dom 0B",
+      subtitle: "Manage domain list 0B",
+      visible: perms.domains0b,
+    },
+  ];
+}
 
-  if (els.userCard) {
-    if (!isAdmin()) {
-      removeElementCompletely(els.userCard);
-    } else {
-      els.userCard.style.display = "";
-    }
+function showPanel(panelId) {
+  const panelMeta = getPanelMeta();
+  const targetMeta = panelMeta.find((x) => x.id === panelId && x.visible);
+
+  if (!targetMeta) return;
+
+  currentPanelId = panelId;
+
+  getAllPanels().forEach((panel) => panel.classList.remove("active"));
+
+  const targetPanel = document.getElementById(panelId);
+  if (targetPanel) targetPanel.classList.add("active");
+
+  document.querySelectorAll(".menu-item[data-panel-id]").forEach((btn) => {
+    btn.classList.toggle(
+      "active",
+      btn.getAttribute("data-panel-id") === panelId,
+    );
+  });
+
+  if (els.panelTitle) els.panelTitle.textContent = targetMeta.label;
+  if (els.panelSubTitle) els.panelSubTitle.textContent = targetMeta.subtitle;
+
+  if (els.menuDropdown) {
+    els.menuDropdown.classList.add("hidden");
   }
+}
+
+function refreshMenuByRole() {
+  const panelMeta = getPanelMeta();
+
+  document.querySelectorAll(".menu-item[data-panel-id]").forEach((btn) => {
+    const panelId = btn.getAttribute("data-panel-id");
+    const meta = panelMeta.find((x) => x.id === panelId);
+    btn.style.display = meta?.visible ? "" : "none";
+  });
+
+  const firstVisible = panelMeta.find((x) => x.visible);
+
+  if (!firstVisible) {
+    getAllPanels().forEach((panel) => panel.classList.remove("active"));
+    if (els.panelTitle) els.panelTitle.textContent = "Config";
+    if (els.panelSubTitle) els.panelSubTitle.textContent = "No available menu";
+    return;
+  }
+
+  const stillVisible = panelMeta.find(
+    (x) => x.id === currentPanelId && x.visible,
+  );
+
+  showPanel(stillVisible ? stillVisible.id : firstVisible.id);
+}
+
+function applyRoleUi() {
+  const perms = getPermissions();
 
   document.querySelectorAll('[data-add="contentidol"]').forEach((btn) => {
     btn.style.display = canEditContentIdol() ? "" : "none";
@@ -538,6 +639,20 @@ function applyRoleUi() {
     btn.disabled = !canEditDomains0b();
   });
 
+  if (els.addUserBtn) {
+    els.addUserBtn.style.display = isAdmin() ? "" : "none";
+    els.addUserBtn.disabled = !isAdmin();
+  }
+
+  if (els.reloadUsersBtn) {
+    els.reloadUsersBtn.style.display = isAdmin() ? "" : "none";
+    els.reloadUsersBtn.disabled = !isAdmin();
+  }
+
+  if (els.userManagementCard) {
+    els.userManagementCard.classList.toggle("hidden", !isAdmin());
+  }
+
   if (els.saveBtn) {
     els.saveBtn.style.display = canEditAnything() ? "" : "none";
     els.saveBtn.disabled = !canEditAnything();
@@ -552,6 +667,29 @@ function applyRoleUi() {
   setInputsDisabled(els.domains1bList, !canEditDomains1b());
   setInputsDisabled(els.domains789List, !canEditDomains789());
   setInputsDisabled(els.domains0bList, !canEditDomains0b());
+
+  [
+    els.contentidolEnabled,
+    els.contentidolIntervalMinutes,
+    els.contentidolRepeatCount,
+    els.contentidolSpeedPxPerSecond,
+    els.contentidolFontSize,
+    els.contentidolCopiesPerRun,
+    els.contentidolCopyGapSize,
+    els.contentidolLaneGapPx,
+    els.contentidolShowMinutes,
+    els.contentidolHideMinutes,
+    els.contentidolTextColor,
+    els.contentidolTextColorCode,
+  ].forEach((el) => {
+    if (el) el.disabled = !canEditContentIdolSettings();
+  });
+
+  if (els.enableFirework) {
+    els.enableFirework.disabled = !perms.enableFirework;
+  }
+
+  refreshMenuByRole();
 }
 
 async function doAutoLogout() {
@@ -751,14 +889,6 @@ async function createUser(username) {
   return data;
 }
 
-async function init() {
-  bindIdleEvents();
-  await ensureMe();
-  await loadConfig();
-  await loadLogs();
-  resetIdleTimer();
-}
-
 function renderPermissionsTable(users) {
   const makeCheckbox = (username, field, checked, disabled = false) => {
     return `<input type="checkbox" data-perm-user="${escapeHtml(username)}" data-perm-field="${escapeHtml(field)}" ${checked ? "checked" : ""} ${disabled ? "disabled" : ""} />`;
@@ -818,12 +948,12 @@ async function bindPermissionCheckboxes() {
     .forEach((checkbox) => {
       checkbox.addEventListener("change", async () => {
         const username = checkbox.getAttribute("data-perm-user");
-        const field = checkbox.getAttribute("data-perm-field");
-        if (!username || !field) return;
+        if (!username) return;
 
         const rowChecks = Array.from(
           document.querySelectorAll(`[data-perm-user="${username}"]`),
         );
+
         const permissions = {
           contentidol:
             rowChecks.find(
@@ -857,6 +987,7 @@ async function bindPermissionCheckboxes() {
           });
 
           const data = await res.json().catch(() => ({}));
+
           if (!res.ok) {
             alert(data.error || "Update permissions failed");
             await loadUsers();
@@ -930,30 +1061,61 @@ function openForcePasswordModal() {
   if (!els.passwordModal) return;
   els.passwordError.textContent = "";
   els.passwordOk.textContent = "";
-  els.currentPasswordWrap.classList.add("hidden");
-  els.passwordModalText.textContent =
-    "Bạn cần đổi password trước khi tiếp tục sử dụng.";
+  if (els.currentPasswordWrap) {
+    els.currentPasswordWrap.classList.add("hidden");
+  }
+  if (els.passwordModalText) {
+    els.passwordModalText.textContent =
+      "Bạn cần đổi password trước khi tiếp tục sử dụng.";
+  }
   els.passwordModal.classList.remove("hidden");
 }
 
 function closePasswordModal() {
   if (!els.passwordModal) return;
   els.passwordModal.classList.add("hidden");
-  els.passwordForm.reset();
+  els.passwordForm?.reset();
 }
 
 function openAddUserModal() {
   if (!els.addUserModal) return;
   els.addUserError.textContent = "";
   els.addUserOk.textContent = "";
-  els.addUserForm.reset();
+  els.addUserForm?.reset();
   els.addUserModal.classList.remove("hidden");
 }
 
 function closeAddUserModal() {
   if (!els.addUserModal) return;
   els.addUserModal.classList.add("hidden");
-  els.addUserForm.reset();
+  els.addUserForm?.reset();
+}
+
+function bindMenuUi() {
+  els.menuToggleBtn?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    els.menuDropdown?.classList.toggle("hidden");
+    resetIdleTimer();
+  });
+
+  document.querySelectorAll(".menu-item[data-panel-id]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const panelId = btn.getAttribute("data-panel-id");
+      if (!panelId) return;
+      showPanel(panelId);
+      resetIdleTimer();
+    });
+  });
+
+  document.addEventListener("click", (e) => {
+    if (
+      els.menuDropdown &&
+      !els.menuDropdown.classList.contains("hidden") &&
+      !e.target.closest(".menu-wrap")
+    ) {
+      els.menuDropdown.classList.add("hidden");
+    }
+  });
 }
 
 document.querySelectorAll("[data-add]").forEach((btn) => {
@@ -1019,6 +1181,7 @@ els.reloadUsersBtn?.addEventListener("click", async () => {
   await loadUsers();
   resetIdleTimer();
 });
+
 els.addUserBtn?.addEventListener("click", () => {
   if (!isAdmin()) return;
   openAddUserModal();
@@ -1140,16 +1303,25 @@ els.addUserForm?.addEventListener("submit", async (e) => {
   }
 });
 
+async function init() {
+  bindIdleEvents();
+  bindMenuUi();
+  await ensureMe();
+  await loadConfig();
+  await loadLogs();
+  if (isAdmin()) {
+    await loadUsers();
+  }
+  refreshMenuByRole();
+  resetIdleTimer();
+}
+
 window.addEventListener("load", async () => {
   try {
     await init();
 
     if (currentMe?.mustChangePassword) {
       openForcePasswordModal();
-    }
-
-    if (isAdmin()) {
-      await loadUsers();
     }
   } catch (err) {
     console.error(err);
