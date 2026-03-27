@@ -4,12 +4,15 @@ const {
   getClientIp,
   verifyPassword,
   readUsersFromRepo,
+  requireSameOrigin,
 } = require("./utils");
 
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return json(405, { error: "Method not allowed" });
   }
+  const originCheck = requireSameOrigin(event);
+  if (!originCheck.ok) return originCheck.response;
 
   try {
     const { username, password, deviceInfo } = JSON.parse(event.body || "{}");

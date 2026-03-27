@@ -3,6 +3,7 @@ const {
   requireAdmin,
   readUsersFromRepo,
   writeUsersToRepo,
+  requireSameOrigin,
 } = require("./utils");
 
 function normalizePermissions(perms = {}) {
@@ -54,6 +55,9 @@ exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return json(405, { error: "Method not allowed" });
   }
+
+  const originCheck = requireSameOrigin(event);
+  if (!originCheck.ok) return originCheck.response;
 
   const auth = requireAdmin(event);
   if (!auth.ok) return auth.response;

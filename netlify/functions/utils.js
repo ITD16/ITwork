@@ -16,6 +16,24 @@ function json(statusCode, body, extraHeaders = {}) {
   };
 }
 
+function getAuthSecret() {
+  const secret = String(process.env.AUTH_SECRET || "").trim();
+
+  if (!secret) {
+    throw new Error("Missing AUTH_SECRET");
+  }
+
+  if (secret === "change-this-secret") {
+    throw new Error("AUTH_SECRET must not use the default insecure value");
+  }
+
+  if (secret.length < 32) {
+    throw new Error("AUTH_SECRET must be at least 32 characters");
+  }
+
+  return secret;
+}
+
 function parseCookies(event) {
   const raw = event.headers.cookie || event.headers.Cookie || "";
   const out = {};
@@ -31,6 +49,14 @@ function signValue(value, secret) {
   return crypto.createHmac("sha256", secret).update(value).digest("hex");
 }
 
+function safeEqualString(a, b) {
+  const aBuf = Buffer.from(String(a), "utf8");
+  const bBuf = Buffer.from(String(b), "utf8");
+
+  if (aBuf.length !== bBuf.length) return false;
+  return crypto.timingSafeEqual(aBuf, bBuf);
+}
+
 function getClientIp(event) {
   return (
     event.headers["x-nf-client-connection-ip"] ||
@@ -42,8 +68,88 @@ function getClientIp(event) {
     .trim();
 }
 
+function getRequestOrigin(event) {
+  const proto =
+    event.headers["x-forwarded-proto"] ||
+    event.headers["x-forwarded-protocol"] ||
+    "https";
+
+  const host =
+    event.headers["x-forwarded-host"] ||
+    event.headers.host ||
+    event.headers.Host ||
+    "";
+
+  if (!host) return "";
+  return `${proto}://${host}`;
+}
+
+function extractOrigin(value) {
+  try {
+    if (!value) return "";
+    return new URL(value).origin;
+  } catch {
+    return "";
+  }
+}
+
+function requireSameOrigin(event) {
+  const method = String(event.httpMethod || "GET").toUpperCase();
+
+  if (["GET", "HEAD", "OPTIONS"].includes(method)) {
+    return { ok: true };
+  }
+
+  const allowedOrigin = getRequestOrigin(event);
+  if (!allowedOrigin) {
+    return {
+      ok: false,
+      response: json(403, {
+        error: "Forbidden: cannot determine request origin",
+      }),
+    };
+  }
+
+  const originHeader = event.headers.origin || event.headers.Origin || "";
+  const refererHeader = event.headers.referer || event.headers.Referer || "";
+  const secFetchSite =
+    event.headers["sec-fetch-site"] || event.headers["Sec-Fetch-Site"] || "";
+
+  const origin = extractOrigin(originHeader);
+  const refererOrigin = extractOrigin(refererHeader);
+
+  if (origin) {
+    if (origin === allowedOrigin) return { ok: true };
+    return {
+      ok: false,
+      response: json(403, { error: "Forbidden: bad origin" }),
+    };
+  }
+
+  if (refererOrigin) {
+    if (refererOrigin === allowedOrigin) return { ok: true };
+    return {
+      ok: false,
+      response: json(403, { error: "Forbidden: bad referer" }),
+    };
+  }
+
+  if (
+    secFetchSite === "same-origin" ||
+    secFetchSite === "same-site" ||
+    secFetchSite === "none"
+  ) {
+    return { ok: true };
+  }
+
+  return {
+    ok: false,
+    response: json(403, { error: "Forbidden: missing origin" }),
+  };
+}
+
 function makeSession(user, extra = {}) {
-  const secret = process.env.AUTH_SECRET || "change-this-secret";
+  const secret = getAuthSecret();
   const payload = JSON.stringify({
     username: user.username,
     role: user.role || "user",
@@ -60,11 +166,11 @@ function makeSession(user, extra = {}) {
 function verifySession(token) {
   if (!token || !token.includes(".")) return null;
 
-  const secret = process.env.AUTH_SECRET || "change-this-secret";
+  const secret = getAuthSecret();
   const [encoded, sig] = token.split(".");
   const expected = signValue(encoded, secret);
 
-  if (sig !== expected) return null;
+  if (!safeEqualString(sig, expected)) return null;
 
   const payload = JSON.parse(
     Buffer.from(encoded, "base64url").toString("utf8"),
@@ -81,7 +187,14 @@ function getSession(event) {
 }
 
 function authRequired(event) {
-  const session = getSession(event);
+  let session = null;
+
+  try {
+    session = getSession(event);
+  } catch (err) {
+    return { ok: false, response: json(500, { error: err.message }) };
+  }
+
   if (!session) {
     return { ok: false, response: json(401, { error: "Unauthorized" }) };
   }
@@ -99,7 +212,7 @@ function requireAdmin(event) {
 
 function setSessionCookie(user, extra = {}) {
   const token = makeSession(user, extra);
-  return `${COOKIE_NAME}=${encodeURIComponent(token)}; Path=/; HttpOnly; SameSite=Lax; Secure`;
+  return `${COOKIE_NAME}=${encodeURIComponent(token)}; Path=/; HttpOnly; SameSite=Lax; Secure; Max-Age=43200`;
 }
 
 function clearSessionCookie() {
@@ -207,6 +320,7 @@ module.exports = {
   clearSessionCookie,
   authRequired,
   requireAdmin,
+  requireSameOrigin,
   getRepoFile,
   putRepoFile,
   repoInfo,

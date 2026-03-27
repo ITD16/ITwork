@@ -5,7 +5,8 @@ const {
   writeUsersToRepo,
   setSessionCookie,
   hashPassword,
-  verifyPassword
+  verifyPassword,
+  requireSameOrigin,
 } = require("./utils");
 
 exports.handler = async (event) => {
@@ -13,11 +14,16 @@ exports.handler = async (event) => {
     return json(405, { error: "Method not allowed" });
   }
 
+  const originCheck = requireSameOrigin(event);
+  if (!originCheck.ok) return originCheck.response;
+
   const auth = authRequired(event);
   if (!auth.ok) return auth.response;
 
   try {
-    const { currentPassword, newPassword, confirmPassword } = JSON.parse(event.body || "{}");
+    const { currentPassword, newPassword, confirmPassword } = JSON.parse(
+      event.body || "{}",
+    );
 
     if (!newPassword || !confirmPassword) {
       return json(400, { error: "Missing password fields" });
@@ -32,7 +38,7 @@ exports.handler = async (event) => {
     }
 
     const { sha, users } = await readUsersFromRepo();
-    const user = users.find(x => x.username === auth.session.username);
+    const user = users.find((x) => x.username === auth.session.username);
 
     if (!user) return json(404, { error: "User not found" });
 
@@ -56,11 +62,7 @@ exports.handler = async (event) => {
     user.mustChangePassword = false;
     delete user.password;
 
-    await writeUsersToRepo(
-      users,
-      sha,
-      `change password for ${user.username}`
-    );
+    await writeUsersToRepo(users, sha, `change password for ${user.username}`);
 
     return json(
       200,
@@ -68,9 +70,9 @@ exports.handler = async (event) => {
       {
         "Set-Cookie": setSessionCookie(user, {
           ip: auth.session.ip || "",
-          deviceInfo: auth.session.deviceInfo || ""
-        })
-      }
+          deviceInfo: auth.session.deviceInfo || "",
+        }),
+      },
     );
   } catch (err) {
     return json(500, { error: err.message || "Change password failed" });

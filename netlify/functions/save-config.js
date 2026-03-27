@@ -5,6 +5,7 @@ const {
   putRepoFile,
   repoInfo,
   readUsersFromRepo,
+  requireSameOrigin,
 } = require("./utils");
 
 function normalizeDomains(arr) {
@@ -266,6 +267,9 @@ exports.handler = async (event) => {
 
   const auth = authRequired(event);
   if (!auth.ok) return auth.response;
+
+  const originCheck = requireSameOrigin(event);
+  if (!originCheck.ok) return originCheck.response;
 
   try {
     const body = JSON.parse(event.body || "{}");
