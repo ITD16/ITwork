@@ -9,69 +9,77 @@
   <body>
     <header class="topbar">
       <div class="topbar-brand">
-        <div>
-          <h1>Config Admin</h1>
-          <div class="muted">Copy Right © D16 IT Team</div>
-        </div>
+        <div class="brand-block">
+          <div class="brand-title-row">
+            <h1>Config Admin</h1>
+            <div class="brand-copy muted">Copy Right © D16 IT Team</div>
+          </div>
 
-        <div class="menu-wrap">
-          <button
-            id="menuToggleBtn"
-            type="button"
-            class="secondary menu-toggle-btn"
-          >
-            Menu
-          </button>
-
-          <div id="menuDropdown" class="menu-dropdown hidden">
-            <div id="menuList" class="menu-list">
+          <div class="brand-menu-row">
+            <div class="menu-wrap">
               <button
+                id="menuToggleBtn"
                 type="button"
-                class="menu-item"
-                data-panel-id="generalPanel"
+                class="secondary menu-toggle-btn"
+                aria-label="Open menu"
+                title="Menu"
               >
-                General
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
               </button>
 
-              <button
-                type="button"
-                class="menu-item"
-                data-panel-id="contentidolPanel"
-              >
-                Content Idol
-              </button>
+              <div id="menuDropdown" class="menu-dropdown hidden">
+                <div id="menuList" class="menu-list">
+                  <button
+                    type="button"
+                    class="menu-item"
+                    data-panel-id="generalPanel"
+                  >
+                    General
+                  </button>
 
-              <button
-                type="button"
-                class="menu-item"
-                data-panel-id="contentidolSettingsPanel"
-              >
-                Content Idol Settings
-              </button>
+                  <button
+                    type="button"
+                    class="menu-item"
+                    data-panel-id="contentidolPanel"
+                  >
+                    Content Idol
+                  </button>
 
-              <button
-                type="button"
-                class="menu-item"
-                data-panel-id="domains1bPanel"
-              >
-                Change Dom 1B
-              </button>
+                  <button
+                    type="button"
+                    class="menu-item"
+                    data-panel-id="contentidolSettingsPanel"
+                  >
+                    Content Idol Settings
+                  </button>
 
-              <button
-                type="button"
-                class="menu-item"
-                data-panel-id="domains789Panel"
-              >
-                Change Dom 789
-              </button>
+                  <button
+                    type="button"
+                    class="menu-item"
+                    data-panel-id="domains1bPanel"
+                  >
+                    Change Dom 1B
+                  </button>
 
-              <button
-                type="button"
-                class="menu-item"
-                data-panel-id="domains0bPanel"
-              >
-                Change Dom 0B
-              </button>
+                  <button
+                    type="button"
+                    class="menu-item"
+                    data-panel-id="domains789Panel"
+                  >
+                    Change Dom 789
+                  </button>
+
+                  <button
+                    type="button"
+                    class="menu-item"
+                    data-panel-id="domains0bPanel"
+                  >
+                    Change Dom 0B
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
