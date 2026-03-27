@@ -45,7 +45,8 @@
       "contentidolSettings": true,
       "domains1b": false,
       "domains789": false,
-      "domains0b": false
+      "domains0b": false,
+      "vmixConfig": false
     }
   },
   {
@@ -101,7 +102,8 @@
       "contentidolSettings": true,
       "domains1b": false,
       "domains789": false,
-      "domains0b": false
+      "domains0b": false,
+      "vmixConfig": false
     }
   }
 ]
