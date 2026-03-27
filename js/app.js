@@ -658,7 +658,7 @@ function getPanelMeta() {
     {
       id: "vmixConfigPanel",
       label: "vMix Config",
-      subtitle: "Manage vmix-config.json",
+      subtitle: "Manage vmix config",
       visible: perms.vmixConfig,
       target: "vmix-config",
     },
