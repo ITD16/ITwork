@@ -84,6 +84,7 @@ button.small {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  align-items: flex-start;
 }
 .brand-title-row {
   display: flex;
@@ -102,7 +103,8 @@ button.small {
 
 .brand-menu-row {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
 
 .topbar-actions {
