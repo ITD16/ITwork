@@ -539,7 +539,7 @@ input[type="color"] {
   pointer-events: none;
   overflow: visible;
   position: relative;
-  top: 2px;
+  top: 3px;
 }
 
 /* end config con mắt */
