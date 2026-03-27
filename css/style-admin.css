@@ -490,3 +490,55 @@ input[type="color"] {
     flex-wrap: wrap;
   }
 }
+/* chỉnh con mắt trong ô password file login.html */
+.password-wrap {
+  position: relative;
+}
+
+.password-wrap input {
+  padding-right: 52px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  padding: 0;
+  border: 0;
+  background: transparent !important;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.password-toggle:hover {
+  background: transparent !important;
+  color: #111827;
+}
+
+.password-eye-icon {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.password-eye-icon svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+.password-eye-icon .hidden {
+  display: none;
+}
+
+/* end config con mắt */

@@ -7,6 +7,32 @@
     <link rel="stylesheet" href="/css/style-admin.css" />
     <link rel="icon" type="image/png" href="../logo/config.png?v=1" />
   </head>
+  <script>
+  const passwordInput = document.getElementById("password");
+  const togglePasswordBtn = document.getElementById("togglePasswordBtn");
+  const eyeClosedSvg = document.getElementById("eyeClosedSvg");
+  const eyeOpenSvg = document.getElementById("eyeOpenSvg");
+
+  if (passwordInput && togglePasswordBtn && eyeClosedSvg && eyeOpenSvg) {
+    togglePasswordBtn.addEventListener("click", () => {
+      const isHidden = passwordInput.type === "password";
+
+      passwordInput.type = isHidden ? "text" : "password";
+
+      eyeClosedSvg.classList.toggle("hidden", isHidden);
+      eyeOpenSvg.classList.toggle("hidden", !isHidden);
+
+      togglePasswordBtn.setAttribute(
+        "aria-label",
+        isHidden ? "Hide password" : "Show password"
+      );
+      togglePasswordBtn.setAttribute(
+        "title",
+        isHidden ? "Hide password" : "Show password"
+      );
+    });
+  }
+</script>
   <body class="login-page">
     <div class="card login-card">
       <h1>Dashboard Config</h1>
@@ -22,15 +48,60 @@
             required
           />
         </label>
-        <label>
-          <input
-            id="password"
-            type="password"
-            autocomplete="current-password"
-            placeholder="Nhập password..."
-            required
-          />
-        </label>
+       <label>
+  <div class="password-wrap">
+    <input
+      id="password"
+      type="password"
+      autocomplete="current-password"
+      placeholder="Nhập password..."
+      required
+    />
+
+    <button
+      id="togglePasswordBtn"
+      type="button"
+      class="password-toggle"
+      aria-label="Show password"
+      title="Show password"
+    >
+      <span id="passwordEyeIcon" class="password-eye-icon" aria-hidden="true">
+        <svg
+          id="eyeClosedSvg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M3 3l18 18"></path>
+          <path d="M10.58 10.58a2 2 0 0 0 2.84 2.84"></path>
+          <path
+            d="M9.88 4.24A10.94 10.94 0 0 1 12 4c5 0 9.27 3.11 11 8-0.56 1.57-1.46 3-2.62 4.18"
+          ></path>
+          <path
+            d="M6.61 6.61C4.62 7.95 3.12 9.79 2 12c1.73 4.89 6 8 10 8 1.61 0 3.16-.36 4.56-1.02"
+          ></path>
+        </svg>
+
+        <svg
+          id="eyeOpenSvg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="hidden"
+        >
+          <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+      </span>
+    </button>
+  </div>
+</label>
         <button type="submit">Login</button>
         <div id="loginError" class="error"></div>
       </form>
