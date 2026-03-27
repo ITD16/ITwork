@@ -8,7 +8,7 @@
   },
   {
     "username": "user1",
-    "passwordHash": "$2a$10$ptgmoFQzUFGB/wxxEM6cc.Z6YaPS/4CXOK7oCWjdxDIV.jc03sc9G",
+    "passwordHash": "$2a$10$VmIAxlj86Lx2KRqMXJVt1.ei7xKhOCPvoKeYaK5wjLi9a/5Af0v9O",
     "role": "user",
     "active": true,
     "mustChangePassword": false,
