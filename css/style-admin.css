@@ -767,8 +767,8 @@ canvas {
 
   --col-user: 70px;
   --col-role: 45px;
-  --col-active: 62px;
-  --col-must: 100px;
+  --col-active: 52px;
+  --col-must: 80px;
   --col-reset: 74px;
 }
 
@@ -941,7 +941,7 @@ canvas {
   font-weight: 700;
 }
 .user-perm-table tbody td {
-  font-size: 11px;
+  font-size: 12px;
 }
 .user-perm-table tbody td button.small,
 .user-perm-table tbody td .secondary.small,
