@@ -766,7 +766,7 @@ canvas {
   table-layout: fixed;
 
   --col-user: 70px;
-  --col-role: 50px;
+  --col-role: 45px;
   --col-active: 62px;
   --col-must: 100px;
   --col-reset: 74px;
@@ -847,12 +847,44 @@ canvas {
   width: var(--col-reset);
 }
 /* vạch phân tách để nhìn rõ 5 cột đầu đang cố định */
-.user-perm-table .sticky-col-1,
-.user-perm-table .sticky-col-2,
-.user-perm-table .sticky-col-3,
-.user-perm-table .sticky-col-4,
+.user-perm-table .sticky-col-1 {
+  z-index: 25;
+}
+
+.user-perm-table .sticky-col-2 {
+  z-index: 24;
+}
+
+.user-perm-table .sticky-col-3 {
+  z-index: 23;
+}
+
+.user-perm-table .sticky-col-4 {
+  z-index: 22;
+}
+
 .user-perm-table .sticky-col-5 {
-  box-shadow: 1px 0 0 #e5e7eb;
+  z-index: 21;
+}
+
+.user-perm-table thead .sticky-col-1 {
+  z-index: 55;
+}
+
+.user-perm-table thead .sticky-col-2 {
+  z-index: 54;
+}
+
+.user-perm-table thead .sticky-col-3 {
+  z-index: 53;
+}
+
+.user-perm-table thead .sticky-col-4 {
+  z-index: 52;
+}
+
+.user-perm-table thead .sticky-col-5 {
+  z-index: 51;
 }
 /* các cột quyền gọn hơn để hiện sớm hơn */
 .user-perm-table th:not(.sticky-col),
@@ -908,5 +940,13 @@ canvas {
   font-size: 12px !important;
   font-weight: 700;
 }
-
+.user-perm-table tbody td {
+  font-size: 11px;
+}
+.user-perm-table tbody td button.small,
+.user-perm-table tbody td .secondary.small,
+.user-perm-table tbody td [data-reset-user] {
+  font-size: 11px;
+  padding: 5px 8px;
+}
 /* ===== End user management sticky table ===== */
