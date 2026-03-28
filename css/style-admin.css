@@ -846,7 +846,14 @@ canvas {
   min-width: var(--col-reset);
   width: var(--col-reset);
 }
-
+/* vạch phân tách để nhìn rõ 5 cột đầu đang cố định */
+.user-perm-table .sticky-col-1,
+.user-perm-table .sticky-col-2,
+.user-perm-table .sticky-col-3,
+.user-perm-table .sticky-col-4,
+.user-perm-table .sticky-col-5 {
+  box-shadow: 1px 0 0 #e5e7eb;
+}
 /* các cột quyền gọn hơn để hiện sớm hơn */
 .user-perm-table th:not(.sticky-col),
 .user-perm-table td:not(.sticky-col) {
@@ -894,6 +901,11 @@ canvas {
 .user-delete-btn-x {
   font-size: 12px;
   line-height: 1;
+  font-weight: 700;
+}
+
+.user-perm-table thead th {
+  font-size: 12px !important;
   font-weight: 700;
 }
 
