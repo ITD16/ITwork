@@ -806,17 +806,22 @@ function showPanel(panelId) {
 
   document.querySelectorAll(".menu-item[data-panel-id]").forEach((btn) => {
     const isActivePanel = btn.getAttribute("data-panel-id") === panelId;
-    const isActiveVmixSubItem =
-      isActivePanel &&
-      btn.classList.contains("vmix-submenu-item") &&
-      btn.getAttribute("data-vmix-target") === activeVmixTarget;
 
-    btn.classList.toggle(
-      "active",
-      panelId === VMIX_PANEL_ID
-        ? btn.id === "vmixMenuBtn" || isActiveVmixSubItem
-        : isActivePanel,
-    );
+    if (btn.classList.contains("menu-item-parent")) {
+      btn.classList.remove("active");
+      return;
+    }
+
+    if (btn.classList.contains("vmix-submenu-item")) {
+      const isActiveVmixSubItem =
+        panelId === VMIX_PANEL_ID &&
+        btn.getAttribute("data-vmix-target") === activeVmixTarget;
+
+      btn.classList.toggle("active", isActiveVmixSubItem);
+      return;
+    }
+
+    btn.classList.toggle("active", isActivePanel);
   });
 
   if (els.panelTitle) els.panelTitle.textContent = targetMeta.label;
