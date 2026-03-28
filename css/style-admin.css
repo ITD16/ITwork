@@ -765,11 +765,11 @@ canvas {
   border-spacing: 0;
   table-layout: fixed;
 
-  --col-user: 90px;
+  --col-user: 80px;
   --col-role: 60px;
   --col-active: 62px;
   --col-must: 100px;
-  --col-reset: 78px;
+  --col-reset: 74px;
 }
 
 .user-perm-table th,
