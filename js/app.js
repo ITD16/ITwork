@@ -1377,7 +1377,7 @@ function renderPermissionsTable(users) {
               return `
               <tr>
                 <td class="sticky-col sticky-col-1 col-user">
-                  <div class="user-name-cell">
+                  <span class="user-name-inline">
                     <span class="user-name-text">${escapeHtml(user.username)}</span>
                     ${
                       canDelete
@@ -1394,7 +1394,7 @@ function renderPermissionsTable(users) {
                     `
                         : ""
                     }
-                  </div>
+                  </span>
                 </td>
                 <td class="sticky-col sticky-col-2 col-role">${escapeHtml(user.role || "user")}</td>
                 <td class="sticky-col sticky-col-3 col-active">${user.active ? "Yes" : "No"}</td>
