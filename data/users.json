@@ -48,8 +48,7 @@
       "domains1b": false,
       "domains789": false,
       "domains0b": false,
-      "vmixConfig": false,
-      "vmixConfig2": true
+      "vmixConfig": false
     }
   },
   {
@@ -59,12 +58,12 @@
     "active": true,
     "mustChangePassword": false,
     "permissions": {
-      "contentidol": true,
-      "contentidolSettings": true,
-      "domains1b": true,
-      "domains789": true,
-      "domains0b": true,
-      "vmixConfig2": true
+      "contentidol": false,
+      "contentidolSettings": false,
+      "domains1b": false,
+      "domains789": false,
+      "domains0b": false,
+      "vmixConfig": false
     }
   },
   {
@@ -79,7 +78,7 @@
       "domains1b": true,
       "domains789": true,
       "domains0b": true,
-      "vmixConfig2": true
+      "vmixConfig": true
     }
   },
   {
@@ -109,7 +108,7 @@
       "domains1b": false,
       "domains789": false,
       "domains0b": false,
-      "vmixConfig": false
+      "vmixConfig": true
     }
   }
 ]
