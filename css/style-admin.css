@@ -766,10 +766,10 @@ canvas {
   table-layout: fixed;
 
   --col-user: 90px;
-  --col-role: 70px;
-  --col-active: 72px;
-  --col-must: 120px;
-  --col-reset: 88px;
+  --col-role: 60px;
+  --col-active: 62px;
+  --col-must: 100px;
+  --col-reset: 78px;
 }
 
 .user-perm-table th,
