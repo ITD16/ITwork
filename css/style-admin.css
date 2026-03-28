@@ -767,9 +767,9 @@ canvas {
 
   --col-user: 70px;
   --col-role: 45px;
-  --col-active: 52px;
-  --col-must: 80px;
-  --col-reset: 74px;
+  --col-active: 42px;
+  --col-must: 70px;
+  --col-reset: 64px;
 }
 
 .user-perm-table th,
@@ -889,8 +889,8 @@ canvas {
 /* các cột quyền gọn hơn để hiện sớm hơn */
 .user-perm-table th:not(.sticky-col),
 .user-perm-table td:not(.sticky-col) {
-  min-width: 72px;
-  width: 72px;
+  min-width: 52px;
+  width: 52px;
   text-align: center;
 }
 
