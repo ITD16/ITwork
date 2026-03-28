@@ -501,6 +501,67 @@ pre {
   margin-bottom: 0;
   font-size: 12px;
 }
+
+/* ===== Generic submenu system start ===== */
+.menu-item-with-children {
+  position: relative;
+}
+
+.menu-item-parent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.menu-item-arrow {
+  font-size: 28px;
+  line-height: 1;
+  color: #2563eb;
+  flex: 0 0 auto;
+}
+
+.menu-item-with-children::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 100%;
+  width: 18px;
+  height: 100%;
+}
+
+.menu-submenu {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  margin-left: 8px;
+  min-width: 240px;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 14px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+  padding: 10px;
+  z-index: 1250;
+  display: none;
+}
+
+.menu-item-with-children:hover > .menu-submenu,
+.menu-item-with-children.open > .menu-submenu {
+  display: block;
+}
+
+.menu-submenu .menu-item {
+  width: 100%;
+  margin-top: 0;
+}
+
+.vmix-submenu-item.active {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+/* ===== Generic submenu system end ===== */
+
 @media (max-width: 980px) {
   .layout {
     grid-template-columns: 1fr;
@@ -528,7 +589,21 @@ pre {
   .topbar-config-actions {
     flex-wrap: wrap;
   }
+
+  .menu-item-with-children::after {
+    display: none;
+  }
+
+  .menu-submenu {
+    position: static;
+    top: auto;
+    left: auto;
+    margin-left: 0;
+    margin-top: 10px;
+    min-width: 100%;
+  }
 }
+
 /* chỉnh con mắt trong ô password file login.html */
 .password-wrap {
   position: relative;

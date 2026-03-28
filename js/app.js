@@ -87,7 +87,6 @@ const els = {
   vmixMenuGroup: document.getElementById("vmixMenuGroup"),
   vmixMenuBtn: document.getElementById("vmixMenuBtn"),
   vmixSubmenu: document.getElementById("vmixSubmenu"),
-  vmixConfigMachineName: document.getElementById("vmixConfigMachineName"),
   vmixEnabled: document.getElementById("vmixEnabled"),
   vmixHoldLayer2Ms: document.getElementById("vmixHoldLayer2Ms"),
   vmixHoldLayer3Ms: document.getElementById("vmixHoldLayer3Ms"),
@@ -485,7 +484,9 @@ function sanitizeConfigForCurrentUser(config) {
 function sanitizeVmixConfig(config, target = activeVmixTarget) {
   if (target === "vmix-config2") {
     return {
-      triggerMinutes: normalizeTriggerMinutesInput(config?.triggerMinutes || []),
+      triggerMinutes: normalizeTriggerMinutesInput(
+        config?.triggerMinutes || [],
+      ),
     };
   }
 
@@ -632,8 +633,8 @@ function updateVmixUiByTarget(target = activeVmixTarget) {
   const canEditTarget = canEditVmixTarget(target);
   const targetMeta = getVmixTargetMeta(target);
 
-  if (els.vmixConfigMachineName) {
-    els.vmixConfigMachineName.textContent = targetMeta.label;
+  if (els.panelSubTitle && currentPanelId === VMIX_PANEL_ID) {
+    els.panelSubTitle.textContent = `Manage vmix config - ${targetMeta.label}`;
   }
 
   if (els.vmixEnabledWrap) {
@@ -651,17 +652,25 @@ function updateVmixUiByTarget(target = activeVmixTarget) {
       : "Nhập phút, cách nhau bằng dấu phẩy";
   }
 
-  document.querySelectorAll(".vmix-submenu-item[data-vmix-target]").forEach((btn) => {
-    btn.classList.toggle("active", btn.getAttribute("data-vmix-target") === target);
-  });
+  document
+    .querySelectorAll(".vmix-submenu-item[data-vmix-target]")
+    .forEach((btn) => {
+      btn.classList.toggle(
+        "active",
+        btn.getAttribute("data-vmix-target") === target,
+      );
+    });
 
   if (els.vmixEnabled) els.vmixEnabled.disabled = isMachine2 || !canEditTarget;
-  if (els.vmixHoldLayer2Ms)
+  if (els.vmixHoldLayer2Ms) {
     els.vmixHoldLayer2Ms.disabled = isMachine2 || !canEditTarget;
-  if (els.vmixHoldLayer3Ms)
+  }
+  if (els.vmixHoldLayer3Ms) {
     els.vmixHoldLayer3Ms.disabled = isMachine2 || !canEditTarget;
-  if (els.vmixTriggerMinutes)
+  }
+  if (els.vmixTriggerMinutes) {
     els.vmixTriggerMinutes.disabled = !canEditTarget;
+  }
 }
 
 function renderVmixConfig(config, target = activeVmixTarget) {
@@ -675,7 +684,9 @@ function renderVmixConfig(config, target = activeVmixTarget) {
     if (els.vmixHoldLayer2Ms) els.vmixHoldLayer2Ms.value = "";
     if (els.vmixHoldLayer3Ms) els.vmixHoldLayer3Ms.value = "";
     if (els.vmixTriggerMinutes) {
-      els.vmixTriggerMinutes.value = (safeConfig.triggerMinutes || []).join(",");
+      els.vmixTriggerMinutes.value = (safeConfig.triggerMinutes || []).join(
+        ",",
+      );
     }
   } else {
     if (els.vmixEnabled) els.vmixEnabled.checked = !!safeConfig.enabled;
@@ -684,7 +695,9 @@ function renderVmixConfig(config, target = activeVmixTarget) {
     if (els.vmixHoldLayer3Ms)
       els.vmixHoldLayer3Ms.value = safeConfig.holdLayer3Ms;
     if (els.vmixTriggerMinutes)
-      els.vmixTriggerMinutes.value = (safeConfig.triggerMinutes || []).join(",");
+      els.vmixTriggerMinutes.value = (safeConfig.triggerMinutes || []).join(
+        ",",
+      );
   }
 
   updateVmixUiByTarget(target);
@@ -811,7 +824,10 @@ function showPanel(panelId) {
 
   if (isVmixPanel(panelId)) {
     ensureValidVmixTarget();
-    renderVmixConfig(originalVmixConfigs[activeVmixTarget] || {}, activeVmixTarget);
+    renderVmixConfig(
+      originalVmixConfigs[activeVmixTarget] || {},
+      activeVmixTarget,
+    );
   }
 
   if (els.menuDropdown) {
@@ -822,22 +838,23 @@ function showPanel(panelId) {
 function refreshMenuByRole() {
   const panelMeta = getPanelMeta();
 
-  document.querySelectorAll('.menu-item[data-panel-id]').forEach((btn) => {
+  document.querySelectorAll(".menu-item[data-panel-id]").forEach((btn) => {
     if (btn.classList.contains("vmix-submenu-item")) return;
     const panelId = btn.getAttribute("data-panel-id");
     const meta = panelMeta.find((x) => x.id === panelId);
     btn.style.display = meta?.visible ? "" : "none";
   });
 
-  document.querySelectorAll(".vmix-submenu-item[data-vmix-target]").forEach((btn) => {
-    const target = btn.getAttribute("data-vmix-target");
-    btn.style.display = canEditVmixTarget(target) ? "" : "none";
-  });
+  document
+    .querySelectorAll(".vmix-submenu-item[data-vmix-target]")
+    .forEach((btn) => {
+      const target = btn.getAttribute("data-vmix-target");
+      btn.style.display = canEditVmixTarget(target) ? "" : "none";
+    });
 
   if (els.vmixMenuGroup) {
     els.vmixMenuGroup.style.display = canEditVmixConfig() ? "" : "none";
   }
-
 
   const firstVisible = panelMeta.find((x) => x.visible);
 
@@ -1035,12 +1052,18 @@ async function loadAllVmixConfigs() {
     if (canEditVmixTarget(vmixTarget.id)) {
       await loadVmixConfig(vmixTarget.id);
     } else {
-      originalVmixConfigs[vmixTarget.id] = sanitizeVmixConfig({}, vmixTarget.id);
+      originalVmixConfigs[vmixTarget.id] = sanitizeVmixConfig(
+        {},
+        vmixTarget.id,
+      );
     }
   }
 
   if (canEditVmixTarget(activeVmixTarget)) {
-    renderVmixConfig(originalVmixConfigs[activeVmixTarget] || {}, activeVmixTarget);
+    renderVmixConfig(
+      originalVmixConfigs[activeVmixTarget] || {},
+      activeVmixTarget,
+    );
   }
 }
 
@@ -1426,6 +1449,8 @@ function closeAddUserModal() {
 }
 
 function bindMenuUi() {
+  let vmixHoverTimer = null;
+
   els.menuToggleBtn?.addEventListener("click", (e) => {
     e.stopPropagation();
     els.menuDropdown?.classList.toggle("hidden");
@@ -1433,13 +1458,54 @@ function bindMenuUi() {
   });
 
   document.querySelectorAll(".menu-item[data-panel-id]").forEach((btn) => {
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", async () => {
+      if (btn.classList.contains("vmix-submenu-item")) return;
+
       const panelId = btn.getAttribute("data-panel-id");
       if (!panelId) return;
+
       showPanel(panelId);
       resetIdleTimer();
     });
   });
+
+  if (els.vmixMenuGroup) {
+    els.vmixMenuGroup.addEventListener("mouseenter", () => {
+      if (vmixHoverTimer) clearTimeout(vmixHoverTimer);
+      els.vmixMenuGroup.classList.add("open");
+    });
+
+    els.vmixMenuGroup.addEventListener("mouseleave", () => {
+      vmixHoverTimer = setTimeout(() => {
+        els.vmixMenuGroup?.classList.remove("open");
+      }, 180);
+    });
+  }
+
+  document
+    .querySelectorAll(".vmix-submenu-item[data-vmix-target]")
+    .forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+
+        const target = btn.getAttribute("data-vmix-target");
+        if (!target || !canEditVmixTarget(target)) return;
+
+        activeVmixTarget = target;
+        showPanel(VMIX_PANEL_ID);
+
+        if (originalVmixConfigs[target]) {
+          renderVmixConfig(originalVmixConfigs[target], target);
+        } else {
+          await loadVmixConfig(target);
+        }
+
+        if (els.menuDropdown) els.menuDropdown.classList.add("hidden");
+        if (els.vmixMenuGroup) els.vmixMenuGroup.classList.remove("open");
+
+        resetIdleTimer();
+      });
+    });
 
   document.addEventListener("click", (e) => {
     if (
@@ -1448,6 +1514,7 @@ function bindMenuUi() {
       !e.target.closest(".menu-wrap")
     ) {
       els.menuDropdown.classList.add("hidden");
+      els.vmixMenuGroup?.classList.remove("open");
     }
   });
 }
@@ -1491,24 +1558,6 @@ document.querySelectorAll("[data-add]").forEach((btn) => {
     map[key]?.appendChild(createDomainRow("", true));
     resetIdleTimer();
   });
-});
-
-els.vmixConfigTarget?.addEventListener("change", async () => {
-  const target = getSelectedVmixTarget();
-  if (!canEditVmixTarget(target)) {
-    ensureValidVmixTarget();
-    return;
-  }
-
-  activeVmixTarget = target;
-
-  if (originalVmixConfigs[target]) {
-    renderVmixConfig(originalVmixConfigs[target], target);
-  } else {
-    await loadVmixConfig(target);
-  }
-
-  resetIdleTimer();
 });
 
 els.saveBtn?.addEventListener("click", saveConfig);
