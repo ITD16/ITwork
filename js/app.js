@@ -743,7 +743,7 @@ function updateVmixUiByTarget(target = activeVmixTarget) {
   if (els.vmixTriggerHelp) {
     els.vmixTriggerHelp.textContent = isMachine2
       ? "Máy này chỉ lưu trigger times, nhập thời gian theo mẫu hh:mm, cách nhau bằng dấu phẩy, không có khoảng trắng."
-      : "Máy này lưu trigger minutes, nhập phút cách nhau bằng dấu phẩy.";
+      : "Máy này lưu trigger minutes, nhập phút cách nhau bằng dấu phẩy, không khoảng trắng.";
   }
 
   document
