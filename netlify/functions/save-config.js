@@ -73,6 +73,63 @@ function normalizeConfig(config) {
   };
 }
 
+function hasOwn(obj, key) {
+  return Object.prototype.hasOwnProperty.call(obj || {}, key);
+}
+
+function normalizePartialConfig(config) {
+  const out = {};
+
+  if (hasOwn(config, "enableFirework")) {
+    out.enableFirework = !!config.enableFirework;
+  }
+
+  if (hasOwn(config, "contentidol")) {
+    out.contentidol = normalizeContentIdol(config.contentidol);
+  }
+
+  if (hasOwn(config, "contentidolSettings")) {
+    const s = config.contentidolSettings || {};
+    out.contentidolSettings = {
+      enabled: s.enabled !== false,
+      intervalMinutes: normalizeNumber(s.intervalMinutes, 5),
+      repeatCount: normalizeNumber(s.repeatCount, 10),
+      speedPxPerSecond: normalizeNumber(s.speedPxPerSecond, 140),
+      fontSize: normalizeNumber(s.fontSize, 48),
+      copiesPerRun: normalizeNumber(s.copiesPerRun, 8),
+      copyGapSize: normalizeNumber(s.copyGapSize, 24),
+      laneGapPx: normalizeNumber(s.laneGapPx, 160),
+      showMinutes: normalizeNumber(s.showMinutes, 0),
+      hideMinutes: normalizeNumber(s.hideMinutes, 0),
+      textColor: normalizeColor(s.textColor, "#ffffff"),
+    };
+  }
+
+  if (hasOwn(config, "domains1b")) {
+    out.domains1b = normalizeDomains(config.domains1b);
+  }
+
+  if (hasOwn(config, "domains789")) {
+    out.domains789 = normalizeDomains(config.domains789);
+  }
+
+  if (hasOwn(config, "domains0b")) {
+    out.domains0b = normalizeDomains(config.domains0b);
+  }
+
+  return out;
+}
+
+function mergeConfigPatch(before, patch) {
+  return {
+    ...before,
+    ...patch,
+    contentidolSettings: patch.contentidolSettings
+      ? { ...(before.contentidolSettings || {}), ...patch.contentidolSettings }
+      : before.contentidolSettings,
+  };
+}
+
 function normalizeVmixConfig(config) {
   const triggerMinutesRaw = Array.isArray(config?.triggerMinutes)
     ? config.triggerMinutes
@@ -105,9 +162,7 @@ function normalizeVmixConfig2(config) {
 
   return {
     triggerTimes: Array.from(
-      new Set(
-        triggerTimesRaw.filter((x) => /^\d{2}:\d{2}$/.test(String(x))),
-      ),
+      new Set(triggerTimesRaw.filter((x) => /^\d{2}:\d{2}$/.test(String(x)))),
     ).sort(),
   };
 }
@@ -407,9 +462,13 @@ exports.handler = async (event) => {
 
     const oldConfigFile = await getRepoFile(configPath);
     const before = JSON.parse(oldConfigFile.content || "{}");
-    const normalizedIncoming = normalizeConfig(incomingConfig);
 
-    const requestedChanges = buildDiff(before, normalizedIncoming);
+    const normalizedPatch = normalizePartialConfig(incomingConfig);
+    const requestedChanges = buildDiff(
+      before,
+      mergeConfigPatch(before, normalizedPatch),
+    );
+
     const unauthorizedFields = getUnauthorizedChangedFields(
       requestedChanges,
       perms,
@@ -423,7 +482,7 @@ exports.handler = async (event) => {
 
     const after = applyPermissionFilteredConfig(
       before,
-      normalizedIncoming,
+      mergeConfigPatch(before, normalizedPatch),
       perms,
     );
 
