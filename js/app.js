@@ -551,87 +551,78 @@ function collectConfig() {
 }
 
 function collectConfigByPanel(panelId = currentPanelId) {
-  const base = JSON.parse(JSON.stringify(originalConfigRaw || {}));
-
-  if (!base.contentidolSettings) {
-    base.contentidolSettings = {
-      enabled: false,
-      intervalMinutes: 5,
-      repeatCount: 10,
-      speedPxPerSecond: 140,
-      fontSize: 48,
-      copiesPerRun: 8,
-      copyGapSize: 24,
-      laneGapPx: 160,
-      showMinutes: 0,
-      hideMinutes: 0,
-      textColor: "#ffffff",
-    };
-  }
-
   switch (panelId) {
     case "generalPanel":
-      if (getPermissions().enableFirework) {
-        base.enableFirework = !!els.enableFirework?.checked;
-      }
-      break;
+      return getPermissions().enableFirework
+        ? {
+            enableFirework: !!els.enableFirework?.checked,
+          }
+        : {};
 
     case "contentidolPanel":
-      if (canEditContentIdol()) {
-        base.contentidol = getContentIdolList(els.contentidolList);
-      }
-      break;
+      return canEditContentIdol()
+        ? {
+            contentidol: getContentIdolList(els.contentidolList),
+          }
+        : {};
 
     case "contentidolSettingsPanel":
-      if (canEditContentIdolSettings()) {
-        base.contentidolSettings = {
-          enabled: !!els.contentidolEnabled?.checked,
-          intervalMinutes: Number(els.contentidolIntervalMinutes?.value || 5),
-          repeatCount: Number(els.contentidolRepeatCount?.value || 10),
-          speedPxPerSecond: Number(
-            els.contentidolSpeedPxPerSecond?.value || 140,
-          ),
-          fontSize: Number(els.contentidolFontSize?.value || 48),
-          copiesPerRun: Number(els.contentidolCopiesPerRun?.value || 8),
-          copyGapSize: Number(els.contentidolCopyGapSize?.value || 24),
-          laneGapPx: Number(els.contentidolLaneGapPx?.value || 160),
-          showMinutes: normalizeNumberInput(
-            els.contentidolShowMinutes?.value || 0,
-            0,
-          ),
-          hideMinutes: normalizeNumberInput(
-            els.contentidolHideMinutes?.value || 0,
-            0,
-          ),
-          textColor: normalizeHexColor(
-            els.contentidolTextColorCode?.value ||
-              els.contentidolTextColor?.value,
-            "#ffffff",
-          ),
-        };
-      }
-      break;
+      return canEditContentIdolSettings()
+        ? {
+            contentidolSettings: {
+              enabled: !!els.contentidolEnabled?.checked,
+              intervalMinutes: Number(
+                els.contentidolIntervalMinutes?.value || 5,
+              ),
+              repeatCount: Number(els.contentidolRepeatCount?.value || 10),
+              speedPxPerSecond: Number(
+                els.contentidolSpeedPxPerSecond?.value || 140,
+              ),
+              fontSize: Number(els.contentidolFontSize?.value || 48),
+              copiesPerRun: Number(els.contentidolCopiesPerRun?.value || 8),
+              copyGapSize: Number(els.contentidolCopyGapSize?.value || 24),
+              laneGapPx: Number(els.contentidolLaneGapPx?.value || 160),
+              showMinutes: normalizeNumberInput(
+                els.contentidolShowMinutes?.value || 0,
+                0,
+              ),
+              hideMinutes: normalizeNumberInput(
+                els.contentidolHideMinutes?.value || 0,
+                0,
+              ),
+              textColor: normalizeHexColor(
+                els.contentidolTextColorCode?.value ||
+                  els.contentidolTextColor?.value,
+                "#ffffff",
+              ),
+            },
+          }
+        : {};
 
     case "domains1bPanel":
-      if (canEditDomains1b()) {
-        base.domains1b = getDomainList(els.domains1bList);
-      }
-      break;
+      return canEditDomains1b()
+        ? {
+            domains1b: getDomainList(els.domains1bList),
+          }
+        : {};
 
     case "domains789Panel":
-      if (canEditDomains789()) {
-        base.domains789 = getDomainList(els.domains789List);
-      }
-      break;
+      return canEditDomains789()
+        ? {
+            domains789: getDomainList(els.domains789List),
+          }
+        : {};
 
     case "domains0bPanel":
-      if (canEditDomains0b()) {
-        base.domains0b = getDomainList(els.domains0bList);
-      }
-      break;
-  }
+      return canEditDomains0b()
+        ? {
+            domains0b: getDomainList(els.domains0bList),
+          }
+        : {};
 
-  return base;
+    default:
+      return {};
+  }
 }
 
 function collectVmixConfig(target = activeVmixTarget) {
