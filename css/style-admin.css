@@ -768,14 +768,14 @@ canvas {
   --col-user: 190px;
   --col-role: 90px;
   --col-active: 90px;
-  --col-must: 130px;
-  --col-reset: 80px;
+  --col-must: 140px;
+  --col-reset: 90px;
 }
 
 .user-perm-table th,
 .user-perm-table td {
   background: #fff;
-  padding: 10px 14px;
+  padding: 8px 10px;
   vertical-align: middle;
 }
 
@@ -785,18 +785,17 @@ canvas {
 
 .user-perm-table thead th {
   white-space: normal;
-  line-height: 1.2;
-  word-break: break-word;
+  line-height: 1.15;
+  word-break: normal;
+  overflow-wrap: normal;
 }
 
-.user-perm-table .col-must {
-  white-space: normal !important;
-  line-height: 1.2;
-}
-
+.user-perm-table .col-must,
 .user-perm-table .col-reset {
   white-space: normal !important;
-  line-height: 1.2;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  line-height: 1.15;
 }
 
 .user-perm-table thead th {
@@ -851,16 +850,16 @@ canvas {
 /* các cột quyền gọn hơn để hiện sớm hơn */
 .user-perm-table th:not(.sticky-col),
 .user-perm-table td:not(.sticky-col) {
-  min-width: 74px;
-  width: 74px;
+  min-width: 72px;
+  width: 72px;
   text-align: center;
 }
 
 .user-name-chip {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
+  gap: 6px;
+  padding: 4px 8px;
   border: 1px solid rgba(37, 99, 235, 0.18);
   border-radius: 999px;
   background: #fff;
