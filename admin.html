@@ -6,6 +6,70 @@
     <title>Config Admin</title>
     <link rel="stylesheet" href="/css/style-admin.css" />
     <link rel="icon" type="image/png" href="../logo/config.png?v=1" />
+  
+    <style>
+      .menu-item-with-children {
+        position: relative;
+      }
+
+      .menu-submenu {
+        position: absolute;
+        top: 0;
+        left: calc(100% + 10px);
+        min-width: 220px;
+        padding: 10px;
+        border: 1px solid rgba(20, 30, 55, 0.14);
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 0 16px 40px rgba(20, 30, 55, 0.18);
+        display: none;
+        z-index: 50;
+      }
+
+      .menu-item-with-children:hover > .menu-submenu,
+      .menu-item-with-children.open > .menu-submenu {
+        display: block;
+      }
+
+      .menu-submenu .menu-item {
+        width: 100%;
+        margin-top: 0;
+      }
+
+      .menu-item-parent {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .menu-item-arrow {
+        font-size: 18px;
+        line-height: 1;
+      }
+
+      .vmix-machine-current {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 0 14px;
+        border: 1px solid rgba(20, 30, 55, 0.14);
+        border-radius: 12px;
+        background: #fff;
+        font-weight: 600;
+      }
+
+      @media (max-width: 900px) {
+        .menu-submenu {
+          position: static;
+          left: auto;
+          top: auto;
+          min-width: 100%;
+          margin-top: 10px;
+        }
+      }
+    </style>
+
   </head>
   <body>
     <header class="topbar">
@@ -80,13 +144,41 @@
                     Change Dom 0B
                   </button>
 
-                  <button
-                    type="button"
-                    class="menu-item"
+                  <div
+                    class="menu-item-with-children"
+                    id="vmixMenuGroup"
                     data-panel-id="vmixConfigPanel"
                   >
-                    vMix Config
-                  </button>
+                    <button
+                      type="button"
+                      class="menu-item menu-item-parent"
+                      id="vmixMenuBtn"
+                      data-panel-id="vmixConfigPanel"
+                    >
+                      <span>vMix Config</span>
+                      <span class="menu-item-arrow">›</span>
+                    </button>
+
+                    <div class="menu-submenu" id="vmixSubmenu">
+                      <button
+                        type="button"
+                        class="menu-item vmix-submenu-item"
+                        data-panel-id="vmixConfigPanel"
+                        data-vmix-target="vmix-config"
+                      >
+                        Vmix DOM 1B
+                      </button>
+
+                      <button
+                        type="button"
+                        class="menu-item vmix-submenu-item"
+                        data-panel-id="vmixConfigPanel"
+                        data-vmix-target="vmix-config2"
+                      >
+                        vMix iDol 1B
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -278,10 +370,9 @@
 
                 <label class="compact-field">
                   <span>Config Machine</span>
-                  <select id="vmixConfigTarget">
-                    <option value="vmix-config">Vmix DOM 1B</option>
-                    <option value="vmix-config2">vMix iDol 1B</option>
-                  </select>
+                  <div id="vmixConfigMachineName" class="vmix-machine-current">
+                    Vmix DOM 1B
+                  </div>
                 </label>
 
                 <label id="vmixEnabledWrap" class="toggle compact-toggle">

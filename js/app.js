@@ -25,6 +25,14 @@ const VMIX_TARGETS = [
   { id: "vmix-config2", label: "vMix iDol 1B" },
 ];
 
+function getVmixTargetMeta(target) {
+  return VMIX_TARGETS.find((x) => x.id === target) || VMIX_TARGETS[0];
+}
+
+function getVisibleVmixTargets() {
+  return VMIX_TARGETS.filter((x) => canEditVmixTarget(x.id));
+}
+
 const els = {
   meBox: document.getElementById("meBox"),
   enableFirework: document.getElementById("enableFirework"),
@@ -76,7 +84,10 @@ const els = {
   domains789List: document.getElementById("domains789List"),
   domains0bList: document.getElementById("domains0bList"),
 
-  vmixConfigTarget: document.getElementById("vmixConfigTarget"),
+  vmixMenuGroup: document.getElementById("vmixMenuGroup"),
+  vmixMenuBtn: document.getElementById("vmixMenuBtn"),
+  vmixSubmenu: document.getElementById("vmixSubmenu"),
+  vmixConfigMachineName: document.getElementById("vmixConfigMachineName"),
   vmixEnabled: document.getElementById("vmixEnabled"),
   vmixHoldLayer2Ms: document.getElementById("vmixHoldLayer2Ms"),
   vmixHoldLayer3Ms: document.getElementById("vmixHoldLayer3Ms"),
@@ -619,6 +630,11 @@ function renderConfig(config) {
 function updateVmixUiByTarget(target = activeVmixTarget) {
   const isMachine2 = target === "vmix-config2";
   const canEditTarget = canEditVmixTarget(target);
+  const targetMeta = getVmixTargetMeta(target);
+
+  if (els.vmixConfigMachineName) {
+    els.vmixConfigMachineName.textContent = targetMeta.label;
+  }
 
   if (els.vmixEnabledWrap) {
     els.vmixEnabledWrap.style.display = isMachine2 ? "none" : "";
@@ -631,18 +647,13 @@ function updateVmixUiByTarget(target = activeVmixTarget) {
   }
   if (els.vmixTriggerHelp) {
     els.vmixTriggerHelp.textContent = isMachine2
-      ? "Máy 2 chỉ lưu trigger minutes, nhập phút cách nhau bằng dấu phẩy"
+      ? "Máy này chỉ lưu trigger minutes, nhập phút cách nhau bằng dấu phẩy"
       : "Nhập phút, cách nhau bằng dấu phẩy";
   }
 
-  if (els.vmixConfigTarget) {
-    Array.from(els.vmixConfigTarget.options).forEach((opt) => {
-      const visible = canEditVmixTarget(opt.value);
-      opt.disabled = !visible;
-      opt.hidden = !visible;
-    });
-    els.vmixConfigTarget.disabled = !canEditVmixConfig();
-  }
+  document.querySelectorAll(".vmix-submenu-item[data-vmix-target]").forEach((btn) => {
+    btn.classList.toggle("active", btn.getAttribute("data-vmix-target") === target);
+  });
 
   if (els.vmixEnabled) els.vmixEnabled.disabled = isMachine2 || !canEditTarget;
   if (els.vmixHoldLayer2Ms)
@@ -658,9 +669,6 @@ function renderVmixConfig(config, target = activeVmixTarget) {
   originalVmixConfigs[target] = safeConfig;
 
   activeVmixTarget = target;
-  if (els.vmixConfigTarget) {
-    els.vmixConfigTarget.value = target;
-  }
 
   if (target === "vmix-config2") {
     if (els.vmixEnabled) els.vmixEnabled.checked = false;
@@ -759,7 +767,7 @@ function isVmixPanel(panelId = currentPanelId) {
 }
 
 function ensureValidVmixTarget() {
-  const availableTargets = VMIX_TARGETS.filter((x) => canEditVmixTarget(x.id));
+  const availableTargets = getVisibleVmixTargets();
   if (!availableTargets.length) {
     activeVmixTarget = "vmix-config";
     return;
@@ -767,13 +775,6 @@ function ensureValidVmixTarget() {
 
   if (!availableTargets.some((x) => x.id === activeVmixTarget)) {
     activeVmixTarget = availableTargets[0].id;
-  }
-
-  if (els.vmixConfigTarget) {
-    els.vmixConfigTarget.innerHTML = availableTargets
-      .map((x) => `<option value="${x.id}">${x.label}</option>`)
-      .join("");
-    els.vmixConfigTarget.value = activeVmixTarget;
   }
 }
 
@@ -791,9 +792,17 @@ function showPanel(panelId) {
   if (targetPanel) targetPanel.classList.add("active");
 
   document.querySelectorAll(".menu-item[data-panel-id]").forEach((btn) => {
+    const isActivePanel = btn.getAttribute("data-panel-id") === panelId;
+    const isActiveVmixSubItem =
+      isActivePanel &&
+      btn.classList.contains("vmix-submenu-item") &&
+      btn.getAttribute("data-vmix-target") === activeVmixTarget;
+
     btn.classList.toggle(
       "active",
-      btn.getAttribute("data-panel-id") === panelId,
+      panelId === VMIX_PANEL_ID
+        ? btn.id === "vmixMenuBtn" || isActiveVmixSubItem
+        : isActivePanel,
     );
   });
 
@@ -813,11 +822,22 @@ function showPanel(panelId) {
 function refreshMenuByRole() {
   const panelMeta = getPanelMeta();
 
-  document.querySelectorAll(".menu-item[data-panel-id]").forEach((btn) => {
+  document.querySelectorAll('.menu-item[data-panel-id]').forEach((btn) => {
+    if (btn.classList.contains("vmix-submenu-item")) return;
     const panelId = btn.getAttribute("data-panel-id");
     const meta = panelMeta.find((x) => x.id === panelId);
     btn.style.display = meta?.visible ? "" : "none";
   });
+
+  document.querySelectorAll(".vmix-submenu-item[data-vmix-target]").forEach((btn) => {
+    const target = btn.getAttribute("data-vmix-target");
+    btn.style.display = canEditVmixTarget(target) ? "" : "none";
+  });
+
+  if (els.vmixMenuGroup) {
+    els.vmixMenuGroup.style.display = canEditVmixConfig() ? "" : "none";
+  }
+
 
   const firstVisible = panelMeta.find((x) => x.visible);
 
