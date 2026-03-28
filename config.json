@@ -12,6 +12,12 @@
       "startTime": "18:00",
       "endTime": "00:00",
       "enabled": true
+    },
+    {
+      "text": "IDOL HÔ CẦU BÀN TÀI XỈU MINI & RỒNG HỔ SUN",
+      "startTime": "21:00",
+      "endTime": "22:00",
+      "enabled": true
     }
   ],
   "contentidolSettings": {
