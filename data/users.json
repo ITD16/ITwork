@@ -58,12 +58,12 @@
     "active": true,
     "mustChangePassword": false,
     "permissions": {
-      "contentidol": true,
+      "contentidol": false,
       "contentidolSettings": true,
       "domains1b": true,
       "domains789": true,
       "domains0b": true,
-      "vmixConfig2": true
+      "vmixConfig": true
     }
   },
   {
