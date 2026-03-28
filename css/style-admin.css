@@ -747,3 +747,123 @@ canvas {
 }
 
 /* End Background index.html */
+/* ===== User management sticky table ===== */
+
+.user-perm-table-wrap {
+  width: 100%;
+  overflow: auto;
+  max-height: 70vh;
+  position: relative;
+  border-radius: 14px;
+}
+
+.user-perm-table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+
+  --col-user: 220px;
+  --col-role: 120px;
+  --col-active: 110px;
+  --col-must: 220px;
+  --col-reset: 170px;
+}
+
+.user-perm-table th,
+.user-perm-table td {
+  background: #fff;
+  white-space: nowrap;
+}
+
+.user-perm-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: #fff;
+}
+
+.user-perm-table .sticky-col {
+  position: sticky;
+  z-index: 20;
+  background: #fff;
+}
+
+.user-perm-table thead .sticky-col {
+  z-index: 40;
+}
+
+.user-perm-table .sticky-col-1 {
+  left: 0;
+  min-width: var(--col-user);
+  width: var(--col-user);
+}
+
+.user-perm-table .sticky-col-2 {
+  left: var(--col-user);
+  min-width: var(--col-role);
+  width: var(--col-role);
+}
+
+.user-perm-table .sticky-col-3 {
+  left: calc(var(--col-user) + var(--col-role));
+  min-width: var(--col-active);
+  width: var(--col-active);
+}
+
+.user-perm-table .sticky-col-4 {
+  left: calc(var(--col-user) + var(--col-role) + var(--col-active));
+  min-width: var(--col-must);
+  width: var(--col-must);
+}
+
+.user-perm-table .sticky-col-5 {
+  left: calc(
+    var(--col-user) + var(--col-role) + var(--col-active) + var(--col-must)
+  );
+  min-width: var(--col-reset);
+  width: var(--col-reset);
+}
+
+.user-name-cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.user-name-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-delete-btn {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid rgba(220, 38, 38, 0.55);
+  background: rgba(220, 38, 38, 0.08);
+  color: #dc2626;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.user-delete-btn:hover {
+  background: rgba(220, 38, 38, 0.14);
+  border-color: #dc2626;
+  color: #b91c1c;
+}
+
+.user-delete-btn-x {
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+/* ===== End user management sticky table ===== */
