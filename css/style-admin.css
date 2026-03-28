@@ -768,8 +768,8 @@ canvas {
   --col-user: 190px;
   --col-role: 90px;
   --col-active: 90px;
-  --col-must: 190px;
-  --col-reset: 130px;
+  --col-must: 160px;
+  --col-reset: 110px;
 }
 
 .user-perm-table th,
