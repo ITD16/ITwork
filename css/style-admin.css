@@ -768,16 +768,35 @@ canvas {
   --col-user: 190px;
   --col-role: 90px;
   --col-active: 90px;
-  --col-must: 140px;
-  --col-reset: 90px;
+  --col-must: 130px;
+  --col-reset: 80px;
 }
 
 .user-perm-table th,
 .user-perm-table td {
   background: #fff;
-  white-space: nowrap;
   padding: 10px 14px;
   vertical-align: middle;
+}
+
+.user-perm-table td {
+  white-space: nowrap;
+}
+
+.user-perm-table thead th {
+  white-space: normal;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.user-perm-table .col-must {
+  white-space: normal !important;
+  line-height: 1.2;
+}
+
+.user-perm-table .col-reset {
+  white-space: normal !important;
+  line-height: 1.2;
 }
 
 .user-perm-table thead th {
@@ -832,8 +851,8 @@ canvas {
 /* các cột quyền gọn hơn để hiện sớm hơn */
 .user-perm-table th:not(.sticky-col),
 .user-perm-table td:not(.sticky-col) {
-  min-width: 86px;
-  width: 86px;
+  min-width: 74px;
+  width: 74px;
   text-align: center;
 }
 
