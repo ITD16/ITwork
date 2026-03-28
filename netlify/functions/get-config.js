@@ -17,6 +17,7 @@ function getUserPermissions(user) {
       domains0b: true,
       enableFirework: true,
       vmixConfig: true,
+      vmixConfig2: true,
     };
   }
 
@@ -31,6 +32,7 @@ function getUserPermissions(user) {
     domains0b: p.domains0b !== false,
     enableFirework: false,
     vmixConfig: p.vmixConfig !== false,
+    vmixConfig2: p.vmixConfig2 !== false,
   };
 }
 
@@ -74,18 +76,33 @@ function normalizeVmixConfig(config) {
   };
 }
 
+function normalizeVmixConfig2(config) {
+  return {
+    triggerMinutes: Array.isArray(config?.triggerMinutes)
+      ? config.triggerMinutes
+          .map((x) => Number(x))
+          .filter((x) => Number.isInteger(x) && x >= 0 && x <= 59)
+      : [],
+  };
+}
+
+function parseTarget(value) {
+  const target = String(value || "config").trim();
+
+  if (target === "vmix-config2") return "vmix-config2";
+  if (target === "vmix-config") return "vmix-config";
+  return "config";
+}
+
 exports.handler = async (event) => {
   const auth = authRequired(event);
   if (!auth.ok) return auth.response;
 
   try {
     const qs = event.queryStringParameters || {};
-    const target =
-      String(qs.target || "config").trim() === "vmix-config"
-        ? "vmix-config"
-        : "config";
+    const target = parseTarget(qs.target);
 
-    const { configPath, vmixConfigPath } = repoInfo();
+    const { configPath, vmixConfigPath, vmixConfig2Path } = repoInfo();
     const { users } = await readUsersFromRepo();
     const currentUser = users.find((u) => u.username === auth.session.username);
     const perms = getUserPermissions(currentUser || auth.session);
@@ -100,6 +117,19 @@ exports.handler = async (event) => {
       return json(200, {
         target: "vmix-config",
         config: normalizeVmixConfig(config),
+      });
+    }
+
+    if (target === "vmix-config2") {
+      if (!perms.vmixConfig2) {
+        return json(403, { error: "Forbidden" });
+      }
+
+      const file = await getRepoFile(vmixConfig2Path);
+      const config = JSON.parse(file.content || "{}");
+      return json(200, {
+        target: "vmix-config2",
+        config: normalizeVmixConfig2(config),
       });
     }
 

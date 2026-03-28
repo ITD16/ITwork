@@ -17,7 +17,8 @@
       "contentidolSettings": true,
       "domains1b": false,
       "domains789": false,
-      "domains0b": false
+      "domains0b": false,
+      "vmixConfig2": true
     }
   },
   {
@@ -31,7 +32,8 @@
       "contentidolSettings": true,
       "domains1b": true,
       "domains789": true,
-      "domains0b": true
+      "domains0b": true,
+      "vmixConfig2": true
     }
   },
   {
@@ -46,7 +48,8 @@
       "domains1b": false,
       "domains789": false,
       "domains0b": false,
-      "vmixConfig": false
+      "vmixConfig": false,
+      "vmixConfig2": true
     }
   },
   {
@@ -60,7 +63,8 @@
       "contentidolSettings": true,
       "domains1b": true,
       "domains789": true,
-      "domains0b": true
+      "domains0b": true,
+      "vmixConfig2": true
     }
   },
   {
@@ -74,7 +78,8 @@
       "contentidolSettings": false,
       "domains1b": true,
       "domains789": true,
-      "domains0b": true
+      "domains0b": true,
+      "vmixConfig2": true
     }
   },
   {
@@ -88,7 +93,8 @@
       "contentidolSettings": true,
       "domains1b": true,
       "domains789": true,
-      "domains0b": true
+      "domains0b": true,
+      "vmixConfig2": true
     }
   },
   {
@@ -103,7 +109,8 @@
       "domains1b": false,
       "domains789": false,
       "domains0b": false,
-      "vmixConfig": false
+      "vmixConfig": false,
+      "vmixConfig2": true
     }
   }
 ]

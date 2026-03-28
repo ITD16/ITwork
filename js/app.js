@@ -1,7 +1,11 @@
 let originalConfig = null;
-let originalVmixConfig = null;
+let originalVmixConfigs = {
+  "vmix-config": null,
+  "vmix-config2": null,
+};
 let currentMe = null;
 let currentPanelId = null;
+let activeVmixTarget = "vmix-config";
 
 const IDLE_LIMIT_MS = 5 * 60 * 1000;
 let idleTimer = null;
@@ -16,6 +20,10 @@ const CONFIG_PANEL_IDS = [
 ];
 
 const VMIX_PANEL_ID = "vmixConfigPanel";
+const VMIX_TARGETS = [
+  { id: "vmix-config", label: "Vmix DOM 1B" },
+  { id: "vmix-config2", label: "vMix iDol 1B" },
+];
 
 const els = {
   meBox: document.getElementById("meBox"),
@@ -68,10 +76,15 @@ const els = {
   domains789List: document.getElementById("domains789List"),
   domains0bList: document.getElementById("domains0bList"),
 
+  vmixConfigTarget: document.getElementById("vmixConfigTarget"),
   vmixEnabled: document.getElementById("vmixEnabled"),
   vmixHoldLayer2Ms: document.getElementById("vmixHoldLayer2Ms"),
   vmixHoldLayer3Ms: document.getElementById("vmixHoldLayer3Ms"),
   vmixTriggerMinutes: document.getElementById("vmixTriggerMinutes"),
+  vmixEnabledWrap: document.getElementById("vmixEnabledWrap"),
+  vmixHoldLayer2Wrap: document.getElementById("vmixHoldLayer2Wrap"),
+  vmixHoldLayer3Wrap: document.getElementById("vmixHoldLayer3Wrap"),
+  vmixTriggerHelp: document.getElementById("vmixTriggerHelp"),
 
   saveMessage: document.getElementById("saveMessage"),
   saveError: document.getElementById("saveError"),
@@ -121,6 +134,7 @@ function getPermissions() {
     domains789: perms.domains789 !== false,
     domains0b: perms.domains0b !== false,
     vmixConfig: perms.vmixConfig !== false,
+    vmixConfig2: perms.vmixConfig2 !== false,
     enableFirework: isAdmin(),
   };
 }
@@ -146,7 +160,15 @@ function canEditDomains0b() {
 }
 
 function canEditVmixConfig() {
-  return isAdmin() || getPermissions().vmixConfig;
+  const perms = getPermissions();
+  return isAdmin() || perms.vmixConfig || perms.vmixConfig2;
+}
+
+function canEditVmixTarget(target) {
+  const perms = getPermissions();
+  if (isAdmin()) return true;
+  if (target === "vmix-config2") return perms.vmixConfig2;
+  return perms.vmixConfig;
 }
 
 function canEditAnything() {
@@ -449,7 +471,13 @@ function sanitizeConfigForCurrentUser(config) {
   };
 }
 
-function sanitizeVmixConfig(config) {
+function sanitizeVmixConfig(config, target = activeVmixTarget) {
+  if (target === "vmix-config2") {
+    return {
+      triggerMinutes: normalizeTriggerMinutesInput(config?.triggerMinutes || []),
+    };
+  }
+
   return {
     holdLayer2Ms: normalizeNumberInput(config?.holdLayer2Ms, 60000),
     holdLayer3Ms: normalizeNumberInput(config?.holdLayer3Ms, 120000),
@@ -490,7 +518,20 @@ function collectConfig() {
   };
 }
 
-function collectVmixConfig() {
+function getSelectedVmixTarget() {
+  const target = String(els.vmixConfigTarget?.value || "vmix-config").trim();
+  return target === "vmix-config2" ? "vmix-config2" : "vmix-config";
+}
+
+function collectVmixConfig(target = getSelectedVmixTarget()) {
+  if (target === "vmix-config2") {
+    return {
+      triggerMinutes: normalizeTriggerMinutesInput(
+        els.vmixTriggerMinutes?.value || "",
+      ),
+    };
+  }
+
   return {
     enabled: !!els.vmixEnabled?.checked,
     holdLayer2Ms: normalizeNumberInput(els.vmixHoldLayer2Ms?.value, 60000),
@@ -575,26 +616,70 @@ function renderConfig(config) {
   });
 }
 
-function renderVmixConfig(config) {
-  const safeConfig = sanitizeVmixConfig(config || {});
-  originalVmixConfig = safeConfig;
+function updateVmixUiByTarget(target = activeVmixTarget) {
+  const isMachine2 = target === "vmix-config2";
+  const canEditTarget = canEditVmixTarget(target);
 
-  if (els.vmixEnabled) els.vmixEnabled.checked = !!safeConfig.enabled;
+  if (els.vmixEnabledWrap) {
+    els.vmixEnabledWrap.style.display = isMachine2 ? "none" : "";
+  }
+  if (els.vmixHoldLayer2Wrap) {
+    els.vmixHoldLayer2Wrap.style.display = isMachine2 ? "none" : "";
+  }
+  if (els.vmixHoldLayer3Wrap) {
+    els.vmixHoldLayer3Wrap.style.display = isMachine2 ? "none" : "";
+  }
+  if (els.vmixTriggerHelp) {
+    els.vmixTriggerHelp.textContent = isMachine2
+      ? "Máy 2 chỉ lưu trigger minutes, nhập phút cách nhau bằng dấu phẩy"
+      : "Nhập phút, cách nhau bằng dấu phẩy";
+  }
+
+  if (els.vmixConfigTarget) {
+    Array.from(els.vmixConfigTarget.options).forEach((opt) => {
+      const visible = canEditVmixTarget(opt.value);
+      opt.disabled = !visible;
+      opt.hidden = !visible;
+    });
+    els.vmixConfigTarget.disabled = !canEditVmixConfig();
+  }
+
+  if (els.vmixEnabled) els.vmixEnabled.disabled = isMachine2 || !canEditTarget;
   if (els.vmixHoldLayer2Ms)
-    els.vmixHoldLayer2Ms.value = safeConfig.holdLayer2Ms;
+    els.vmixHoldLayer2Ms.disabled = isMachine2 || !canEditTarget;
   if (els.vmixHoldLayer3Ms)
-    els.vmixHoldLayer3Ms.value = safeConfig.holdLayer3Ms;
+    els.vmixHoldLayer3Ms.disabled = isMachine2 || !canEditTarget;
   if (els.vmixTriggerMinutes)
-    els.vmixTriggerMinutes.value = (safeConfig.triggerMinutes || []).join(",");
+    els.vmixTriggerMinutes.disabled = !canEditTarget;
+}
 
-  [
-    els.vmixEnabled,
-    els.vmixHoldLayer2Ms,
-    els.vmixHoldLayer3Ms,
-    els.vmixTriggerMinutes,
-  ].forEach((el) => {
-    if (el) el.disabled = !canEditVmixConfig();
-  });
+function renderVmixConfig(config, target = activeVmixTarget) {
+  const safeConfig = sanitizeVmixConfig(config || {}, target);
+  originalVmixConfigs[target] = safeConfig;
+
+  activeVmixTarget = target;
+  if (els.vmixConfigTarget) {
+    els.vmixConfigTarget.value = target;
+  }
+
+  if (target === "vmix-config2") {
+    if (els.vmixEnabled) els.vmixEnabled.checked = false;
+    if (els.vmixHoldLayer2Ms) els.vmixHoldLayer2Ms.value = "";
+    if (els.vmixHoldLayer3Ms) els.vmixHoldLayer3Ms.value = "";
+    if (els.vmixTriggerMinutes) {
+      els.vmixTriggerMinutes.value = (safeConfig.triggerMinutes || []).join(",");
+    }
+  } else {
+    if (els.vmixEnabled) els.vmixEnabled.checked = !!safeConfig.enabled;
+    if (els.vmixHoldLayer2Ms)
+      els.vmixHoldLayer2Ms.value = safeConfig.holdLayer2Ms;
+    if (els.vmixHoldLayer3Ms)
+      els.vmixHoldLayer3Ms.value = safeConfig.holdLayer3Ms;
+    if (els.vmixTriggerMinutes)
+      els.vmixTriggerMinutes.value = (safeConfig.triggerMinutes || []).join(",");
+  }
+
+  updateVmixUiByTarget(target);
 }
 
 function getAllPanels() {
@@ -659,7 +744,7 @@ function getPanelMeta() {
       id: "vmixConfigPanel",
       label: "vMix Config",
       subtitle: "Manage vmix config",
-      visible: perms.vmixConfig,
+      visible: perms.vmixConfig || perms.vmixConfig2,
       target: "vmix-config",
     },
   ];
@@ -671,6 +756,25 @@ function getCurrentPanelMeta() {
 
 function isVmixPanel(panelId = currentPanelId) {
   return panelId === VMIX_PANEL_ID;
+}
+
+function ensureValidVmixTarget() {
+  const availableTargets = VMIX_TARGETS.filter((x) => canEditVmixTarget(x.id));
+  if (!availableTargets.length) {
+    activeVmixTarget = "vmix-config";
+    return;
+  }
+
+  if (!availableTargets.some((x) => x.id === activeVmixTarget)) {
+    activeVmixTarget = availableTargets[0].id;
+  }
+
+  if (els.vmixConfigTarget) {
+    els.vmixConfigTarget.innerHTML = availableTargets
+      .map((x) => `<option value="${x.id}">${x.label}</option>`)
+      .join("");
+    els.vmixConfigTarget.value = activeVmixTarget;
+  }
 }
 
 function showPanel(panelId) {
@@ -695,6 +799,11 @@ function showPanel(panelId) {
 
   if (els.panelTitle) els.panelTitle.textContent = targetMeta.label;
   if (els.panelSubTitle) els.panelSubTitle.textContent = targetMeta.subtitle;
+
+  if (isVmixPanel(panelId)) {
+    ensureValidVmixTarget();
+    renderVmixConfig(originalVmixConfigs[activeVmixTarget] || {}, activeVmixTarget);
+  }
 
   if (els.menuDropdown) {
     els.menuDropdown.classList.add("hidden");
@@ -795,18 +904,12 @@ function applyRoleUi() {
     if (el) el.disabled = !canEditContentIdolSettings();
   });
 
-  [
-    els.vmixEnabled,
-    els.vmixHoldLayer2Ms,
-    els.vmixHoldLayer3Ms,
-    els.vmixTriggerMinutes,
-  ].forEach((el) => {
-    if (el) el.disabled = !canEditVmixConfig();
-  });
-
   if (els.enableFirework) {
     els.enableFirework.disabled = !perms.enableFirework;
   }
+
+  ensureValidVmixTarget();
+  updateVmixUiByTarget(activeVmixTarget);
 
   refreshMenuByRole();
 }
@@ -877,14 +980,16 @@ async function loadConfig() {
   renderConfig(originalConfig);
 }
 
-async function loadVmixConfig() {
-  if (!getPermissions().vmixConfig) {
-    originalVmixConfig = null;
-    renderVmixConfig({});
+async function loadVmixConfig(target = activeVmixTarget) {
+  if (!canEditVmixTarget(target)) {
+    originalVmixConfigs[target] = sanitizeVmixConfig({}, target);
+    if (target === activeVmixTarget) {
+      renderVmixConfig({}, target);
+    }
     return;
   }
 
-  const res = await fetch("/api/config?target=vmix-config", {
+  const res = await fetch(`/api/config?target=${encodeURIComponent(target)}`, {
     credentials: "include",
   });
 
@@ -898,7 +1003,25 @@ async function loadVmixConfig() {
   }
 
   const data = await res.json();
-  renderVmixConfig(data.config || {});
+  originalVmixConfigs[target] = sanitizeVmixConfig(data.config || {}, target);
+
+  if (target === activeVmixTarget) {
+    renderVmixConfig(originalVmixConfigs[target], target);
+  }
+}
+
+async function loadAllVmixConfigs() {
+  for (const vmixTarget of VMIX_TARGETS) {
+    if (canEditVmixTarget(vmixTarget.id)) {
+      await loadVmixConfig(vmixTarget.id);
+    } else {
+      originalVmixConfigs[vmixTarget.id] = sanitizeVmixConfig({}, vmixTarget.id);
+    }
+  }
+
+  if (canEditVmixTarget(activeVmixTarget)) {
+    renderVmixConfig(originalVmixConfigs[activeVmixTarget] || {}, activeVmixTarget);
+  }
 }
 
 async function loadAllConfigs() {
@@ -906,12 +1029,7 @@ async function loadAllConfigs() {
   if (els.saveMessage) els.saveMessage.textContent = "";
 
   await loadConfig();
-
-  if (getPermissions().vmixConfig) {
-    await loadVmixConfig();
-  } else {
-    renderVmixConfig({});
-  }
+  await loadAllVmixConfigs();
 
   applyRoleUi();
 }
@@ -984,25 +1102,24 @@ async function saveConfig() {
 
   try {
     const currentMeta = getCurrentPanelMeta();
-    const target = currentMeta?.target || "config";
+    let target = currentMeta?.target || "config";
 
-    let payloadConfig;
-    if (target === "vmix-config") {
-      payloadConfig = collectVmixConfig();
-    } else {
-      payloadConfig = collectConfig();
+    if (isVmixPanel()) {
+      target = getSelectedVmixTarget();
+      activeVmixTarget = target;
+      if (!canEditVmixTarget(target)) {
+        throw new Error("Bạn không có quyền chỉnh sửa máy vMix này.");
+      }
     }
 
-    const body =
-      target === "config"
-        ? { config: payloadConfig, target: "config" }
-        : { config: payloadConfig, target: "vmix-config" };
+    const payloadConfig =
+      target === "config" ? collectConfig() : collectVmixConfig(target);
 
     const res = await fetch("/api/config/save", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify(body),
+      body: JSON.stringify({ config: payloadConfig, target }),
     });
 
     const data = await res.json().catch(() => ({}));
@@ -1011,14 +1128,17 @@ async function saveConfig() {
       throw new Error(data.error || "Save failed");
     }
 
-    if (target === "vmix-config") {
-      originalVmixConfig = sanitizeVmixConfig(data.config || payloadConfig);
-      renderVmixConfig(originalVmixConfig);
-    } else {
+    if (target === "config") {
       originalConfig = sanitizeConfigForCurrentUser(
         data.config || payloadConfig,
       );
       renderConfig(originalConfig);
+    } else {
+      originalVmixConfigs[target] = sanitizeVmixConfig(
+        data.config || payloadConfig,
+        target,
+      );
+      renderVmixConfig(originalVmixConfigs[target], target);
     }
 
     applyRoleUi();
@@ -1091,7 +1211,8 @@ function renderPermissionsTable(users) {
             <th>Domain 1B</th>
             <th>Domain 789</th>
             <th>Domain 0B</th>
-            <th>vMix Config</th>
+            <th>vMix DOM 1B</th>
+            <th>vMix iDol 1B</th>
           </tr>
         </thead>
         <tbody>
@@ -1116,6 +1237,7 @@ function renderPermissionsTable(users) {
                 <td>${makeCheckbox(user.username, "domains789", perms.domains789 !== false, disabled)}</td>
                 <td>${makeCheckbox(user.username, "domains0b", perms.domains0b !== false, disabled)}</td>
                 <td>${makeCheckbox(user.username, "vmixConfig", perms.vmixConfig !== false, disabled)}</td>
+                <td>${makeCheckbox(user.username, "vmixConfig2", perms.vmixConfig2 !== false, disabled)}</td>
               </tr>
             `;
             })
@@ -1163,6 +1285,10 @@ async function bindPermissionCheckboxes() {
           vmixConfig:
             rowChecks.find(
               (x) => x.getAttribute("data-perm-field") === "vmixConfig",
+            )?.checked ?? true,
+          vmixConfig2:
+            rowChecks.find(
+              (x) => x.getAttribute("data-perm-field") === "vmixConfig2",
             )?.checked ?? true,
         };
 
@@ -1347,11 +1473,30 @@ document.querySelectorAll("[data-add]").forEach((btn) => {
   });
 });
 
+els.vmixConfigTarget?.addEventListener("change", async () => {
+  const target = getSelectedVmixTarget();
+  if (!canEditVmixTarget(target)) {
+    ensureValidVmixTarget();
+    return;
+  }
+
+  activeVmixTarget = target;
+
+  if (originalVmixConfigs[target]) {
+    renderVmixConfig(originalVmixConfigs[target], target);
+  } else {
+    await loadVmixConfig(target);
+  }
+
+  resetIdleTimer();
+});
+
 els.saveBtn?.addEventListener("click", saveConfig);
 
 els.resetBtn?.addEventListener("click", () => {
   if (isVmixPanel()) {
-    renderVmixConfig(originalVmixConfig || {});
+    const target = getSelectedVmixTarget();
+    renderVmixConfig(originalVmixConfigs[target] || {}, target);
   } else {
     renderConfig(originalConfig || {});
   }
@@ -1500,6 +1645,7 @@ async function init() {
   bindIdleEvents();
   bindMenuUi();
   await ensureMe();
+  ensureValidVmixTarget();
   await loadAllConfigs();
   await loadLogs();
   if (isAdmin()) {

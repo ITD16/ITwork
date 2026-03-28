@@ -275,18 +275,27 @@
             <div id="vmixConfigPanel" class="group-box config-panel">
               <div id="vmixConfigSection" class="group-box panel-inner-box">
                 <div class="group-head"></div>
-                <label class="toggle compact-toggle">
+
+                <label class="compact-field">
+                  <span>Config Machine</span>
+                  <select id="vmixConfigTarget">
+                    <option value="vmix-config">Vmix DOM 1B</option>
+                    <option value="vmix-config2">vMix iDol 1B</option>
+                  </select>
+                </label>
+
+                <label id="vmixEnabledWrap" class="toggle compact-toggle">
                   <input id="vmixEnabled" type="checkbox" />
                   <span>Enable vMix Script</span>
                 </label>
 
                 <div class="settings-grid">
-                  <label class="compact-field">
+                  <label id="vmixHoldLayer2Wrap" class="compact-field">
                     <span>Hold Layer 2 (mili second)</span>
                     <input id="vmixHoldLayer2Ms" type="text" />
                   </label>
 
-                  <label class="compact-field">
+                  <label id="vmixHoldLayer3Wrap" class="compact-field">
                     <span>Hold Layer 3 (mili second)</span>
                     <input id="vmixHoldLayer3Ms" type="text" />
                   </label>
@@ -298,7 +307,7 @@
                       type="text"
                       placeholder="Ví dụ: 3,33"
                     />
-                    <small class="muted"
+                    <small id="vmixTriggerHelp" class="muted"
                       >Nhập phút, cách nhau bằng dấu phẩy</small
                     >
                   </label>

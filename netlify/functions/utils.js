@@ -263,14 +263,24 @@ function repoInfo() {
   const repo = process.env.GITHUB_REPO;
   const branch = process.env.GITHUB_BRANCH || "main";
   const configPath = process.env.CONFIG_PATH || "config.json";
-  const vmixConfigPath = process.env.VMIX_CONFIG_PATH || "vmix-config.json";
+  const vmixConfigPath = process.env.VMIX_CONFIG_PATH || "data/vmix-config.json";
+  const vmixConfig2Path =
+    process.env.VMIX_CONFIG2_PATH || "data/vmix-config2.json";
   const logPath = process.env.LOG_PATH || "data/change_logs.jsonl";
 
   if (!owner || !repo) {
     throw new Error("Missing GITHUB_OWNER or GITHUB_REPO");
   }
 
-  return { owner, repo, branch, configPath, vmixConfigPath, logPath };
+  return {
+    owner,
+    repo,
+    branch,
+    configPath,
+    vmixConfigPath,
+    vmixConfig2Path,
+    logPath,
+  };
 }
 
 async function getRepoFile(filePath) {
