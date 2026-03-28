@@ -1376,25 +1376,25 @@ function renderPermissionsTable(users) {
 
               return `
               <tr>
-                <td class="sticky-col sticky-col-1 col-user">
-                  <span class="user-name-inline">
-                    <span class="user-name-text">${escapeHtml(user.username)}</span>
-                    ${
-                      canDelete
-                        ? `
-                      <button
-                        type="button"
-                        class="user-delete-btn"
-                        data-delete-user="${escapeHtml(user.username)}"
-                        title="Delete user"
-                        aria-label="Delete user ${escapeHtml(user.username)}"
-                      >
-                        <span class="user-delete-btn-x">✕</span>
-                      </button>
+               <td class="sticky-col sticky-col-1 col-user">
+                  <div class="user-name-chip">
+                   <span class="user-name-text">${escapeHtml(user.username)}</span>
+                   ${
+                     canDelete
+                       ? `
+                   <button
+                     type="button"
+                     class="user-delete-btn"
+                     data-delete-user="${escapeHtml(user.username)}"
+                     title="Delete user"
+                    aria-label="Delete user ${escapeHtml(user.username)}"
+                    >
+                     <span class="user-delete-btn-x">✕</span>
+                    </button>
                     `
-                        : ""
-                    }
-                  </span>
+                       : ""
+                   }
+                  </div>
                 </td>
                 <td class="sticky-col sticky-col-2 col-role">${escapeHtml(user.role || "user")}</td>
                 <td class="sticky-col sticky-col-3 col-active">${user.active ? "Yes" : "No"}</td>

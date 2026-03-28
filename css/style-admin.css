@@ -826,17 +826,107 @@ canvas {
   width: var(--col-reset);
 }
 
-.user-name-cell {
-  display: flex;
+.user-perm-table-wrap {
+  width: 100%;
+  overflow: auto;
+  max-height: 70vh;
+  position: relative;
+  border-radius: 14px;
+}
+
+.user-perm-table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  --col-user: 260px;
+  --col-role: 120px;
+  --col-active: 110px;
+  --col-must: 260px;
+  --col-reset: 170px;
+}
+
+.user-perm-table th,
+.user-perm-table td {
+  background: #fff;
+  white-space: nowrap;
+  padding: 12px 16px;
+}
+
+.user-perm-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: #fff;
+}
+
+.user-perm-table .sticky-col {
+  position: sticky;
+  z-index: 20;
+  background: #fff;
+}
+
+.user-perm-table thead .sticky-col {
+  z-index: 40;
+}
+
+.user-perm-table .sticky-col-1 {
+  left: 0;
+  min-width: var(--col-user);
+  width: var(--col-user);
+}
+
+.user-perm-table .sticky-col-2 {
+  left: var(--col-user);
+  min-width: var(--col-role);
+  width: var(--col-role);
+}
+
+.user-perm-table .sticky-col-3 {
+  left: calc(var(--col-user) + var(--col-role));
+  min-width: var(--col-active);
+  width: var(--col-active);
+}
+
+.user-perm-table .sticky-col-4 {
+  left: calc(var(--col-user) + var(--col-role) + var(--col-active));
+  min-width: var(--col-must);
+  width: var(--col-must);
+}
+
+.user-perm-table .sticky-col-5 {
+  left: calc(
+    var(--col-user) + var(--col-role) + var(--col-active) + var(--col-must)
+  );
+  min-width: var(--col-reset);
+  width: var(--col-reset);
+}
+
+/* cho các cột quyền luôn có bề rộng rõ ràng để không bị co mất */
+.user-perm-table th:not(.sticky-col),
+.user-perm-table td:not(.sticky-col) {
+  min-width: 120px;
+  width: 120px;
+  text-align: center;
+}
+
+.user-name-chip {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
   gap: 10px;
+  padding: 6px 10px 6px 0;
+  border: 1px solid #1e3a8a33;
+  border-radius: 999px;
+  background: transparent;
 }
 
 .user-name-text {
+  display: inline-block;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .user-delete-btn {
