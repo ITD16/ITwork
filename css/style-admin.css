@@ -765,17 +765,17 @@ canvas {
   border-spacing: 0;
   table-layout: fixed;
 
-  --col-user: 190px;
-  --col-role: 90px;
-  --col-active: 90px;
-  --col-must: 140px;
-  --col-reset: 90px;
+  --col-user: 150px;
+  --col-role: 70px;
+  --col-active: 72px;
+  --col-must: 120px;
+  --col-reset: 88px;
 }
 
 .user-perm-table th,
 .user-perm-table td {
   background: #fff;
-  padding: 8px 10px;
+  padding: 6px 8px;
   vertical-align: middle;
 }
 
@@ -858,8 +858,8 @@ canvas {
 .user-name-chip {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 8px;
+  gap: 4px;
+  padding: 3px 6px;
   border: 1px solid rgba(37, 99, 235, 0.18);
   border-radius: 999px;
   background: #fff;
@@ -871,9 +871,9 @@ canvas {
 }
 
 .user-delete-btn {
-  width: 30px;
-  height: 30px;
-  min-width: 30px;
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
   padding: 0;
   border-radius: 999px;
   border: 1px solid rgba(220, 38, 38, 0.55);
@@ -892,7 +892,7 @@ canvas {
 }
 
 .user-delete-btn-x {
-  font-size: 16px;
+  font-size: 12px;
   line-height: 1;
   font-weight: 700;
 }
