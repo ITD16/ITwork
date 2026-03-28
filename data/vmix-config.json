@@ -1,5 +1,5 @@
 {
-  "holdLayer2Ms": 600000,
+  "holdLayer2Ms": 60000,
   "holdLayer3Ms": 120000,
   "triggerMinutes": [
     3,
