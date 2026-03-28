@@ -1,4 +1,5 @@
 let originalConfig = null;
+let originalConfigRaw = null;
 let originalVmixConfigs = {
   "vmix-config": null,
   "vmix-config2": null,
@@ -550,7 +551,7 @@ function collectConfig() {
 }
 
 function collectConfigByPanel(panelId = currentPanelId) {
-  const base = JSON.parse(JSON.stringify(originalConfig || {}));
+  const base = JSON.parse(JSON.stringify(originalConfigRaw || {}));
 
   if (!base.contentidolSettings) {
     base.contentidolSettings = {
@@ -1110,6 +1111,7 @@ async function loadConfig() {
   }
 
   const data = await res.json();
+  originalConfigRaw = JSON.parse(JSON.stringify(data.config || {}));
   originalConfig = sanitizeConfigForCurrentUser(data.config || {});
   renderConfig(originalConfig);
 }
