@@ -765,7 +765,7 @@ canvas {
   border-spacing: 0;
   table-layout: fixed;
 
-  --col-user: 150px;
+  --col-user: 90px;
   --col-role: 70px;
   --col-active: 72px;
   --col-must: 120px;
