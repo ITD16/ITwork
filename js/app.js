@@ -805,8 +805,6 @@ function showPanel(panelId) {
   if (targetPanel) targetPanel.classList.add("active");
 
   document.querySelectorAll(".menu-item[data-panel-id]").forEach((btn) => {
-    const isActivePanel = btn.getAttribute("data-panel-id") === panelId;
-
     if (btn.classList.contains("menu-item-parent")) {
       btn.classList.remove("active");
       return;
@@ -821,7 +819,7 @@ function showPanel(panelId) {
       return;
     }
 
-    btn.classList.toggle("active", isActivePanel);
+    btn.classList.remove("active");
   });
 
   if (els.panelTitle) els.panelTitle.textContent = targetMeta.label;
