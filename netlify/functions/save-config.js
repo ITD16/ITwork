@@ -96,21 +96,19 @@ function normalizeVmixConfig(config) {
 }
 
 function normalizeVmixConfig2(config) {
-  const triggerMinutesRaw = Array.isArray(config?.triggerMinutes)
-    ? config.triggerMinutes
-    : String(config?.triggerMinutes || "")
+  const triggerTimesRaw = Array.isArray(config?.triggerTimes)
+    ? config.triggerTimes
+    : String(config?.triggerTimes || "")
         .split(",")
         .map((x) => x.trim())
         .filter(Boolean);
 
   return {
-    triggerMinutes: Array.from(
+    triggerTimes: Array.from(
       new Set(
-        triggerMinutesRaw
-          .map((x) => Number(x))
-          .filter((x) => Number.isInteger(x) && x >= 0 && x <= 59),
+        triggerTimesRaw.filter((x) => /^\d{2}:\d{2}$/.test(String(x))),
       ),
-    ).sort((a, b) => a - b),
+    ).sort(),
   };
 }
 

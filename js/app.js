@@ -25,14 +25,6 @@ const VMIX_TARGETS = [
   { id: "vmix-config2", label: "vMix iDol 1B" },
 ];
 
-function getVmixTargetMeta(target) {
-  return VMIX_TARGETS.find((x) => x.id === target) || VMIX_TARGETS[0];
-}
-
-function getVisibleVmixTargets() {
-  return VMIX_TARGETS.filter((x) => canEditVmixTarget(x.id));
-}
-
 const els = {
   meBox: document.getElementById("meBox"),
   enableFirework: document.getElementById("enableFirework"),
@@ -84,9 +76,6 @@ const els = {
   domains789List: document.getElementById("domains789List"),
   domains0bList: document.getElementById("domains0bList"),
 
-  vmixMenuGroup: document.getElementById("vmixMenuGroup"),
-  vmixMenuBtn: document.getElementById("vmixMenuBtn"),
-  vmixSubmenu: document.getElementById("vmixSubmenu"),
   vmixEnabled: document.getElementById("vmixEnabled"),
   vmixHoldLayer2Ms: document.getElementById("vmixHoldLayer2Ms"),
   vmixHoldLayer3Ms: document.getElementById("vmixHoldLayer3Ms"),
@@ -235,6 +224,27 @@ function normalizeTriggerMinutesInput(value) {
         .filter((x) => Number.isInteger(x) && x >= 0 && x <= 59),
     ),
   ).sort((a, b) => a - b);
+}
+
+function normalizeTriggerTimesInput(value) {
+  if (Array.isArray(value)) {
+    return Array.from(
+      new Set(
+        value
+          .map((x) => String(x || "").trim())
+          .filter((x) => /^\d{2}:\d{2}$/.test(x)),
+      ),
+    ).sort();
+  }
+
+  return Array.from(
+    new Set(
+      String(value || "")
+        .split(",")
+        .map((x) => String(x || "").trim())
+        .filter((x) => /^\d{2}:\d{2}$/.test(x)),
+    ),
+  ).sort();
 }
 
 function formatDateTimeVN(value) {
@@ -484,9 +494,7 @@ function sanitizeConfigForCurrentUser(config) {
 function sanitizeVmixConfig(config, target = activeVmixTarget) {
   if (target === "vmix-config2") {
     return {
-      triggerMinutes: normalizeTriggerMinutesInput(
-        config?.triggerMinutes || [],
-      ),
+      triggerTimes: normalizeTriggerTimesInput(config?.triggerTimes || []),
     };
   }
 
@@ -530,15 +538,11 @@ function collectConfig() {
   };
 }
 
-function getSelectedVmixTarget() {
-  const target = String(els.vmixConfigTarget?.value || "vmix-config").trim();
-  return target === "vmix-config2" ? "vmix-config2" : "vmix-config";
-}
 
-function collectVmixConfig(target = getSelectedVmixTarget()) {
+function collectVmixConfig(target = activeVmixTarget) {
   if (target === "vmix-config2") {
     return {
-      triggerMinutes: normalizeTriggerMinutesInput(
+      triggerTimes: normalizeTriggerTimesInput(
         els.vmixTriggerMinutes?.value || "",
       ),
     };
@@ -646,10 +650,17 @@ function updateVmixUiByTarget(target = activeVmixTarget) {
   if (els.vmixHoldLayer3Wrap) {
     els.vmixHoldLayer3Wrap.style.display = isMachine2 ? "none" : "";
   }
+
+  if (els.vmixTriggerMinutes) {
+    els.vmixTriggerMinutes.placeholder = isMachine2
+      ? "Ví dụ: 04:00,08:00,12:00..."
+      : "Ví dụ: 3,33";
+  }
+
   if (els.vmixTriggerHelp) {
     els.vmixTriggerHelp.textContent = isMachine2
-      ? "Máy này chỉ lưu trigger minutes, nhập phút cách nhau bằng dấu phẩy"
-      : "Nhập phút, cách nhau bằng dấu phẩy";
+      ? "Máy này chỉ lưu trigger times, nhập thời gian theo mẫu hh:mm, cách nhau bằng dấu phẩy, không có khoảng trắng."
+      : "Máy này lưu trigger minutes, nhập phút cách nhau bằng dấu phẩy.";
   }
 
   document
@@ -684,9 +695,7 @@ function renderVmixConfig(config, target = activeVmixTarget) {
     if (els.vmixHoldLayer2Ms) els.vmixHoldLayer2Ms.value = "";
     if (els.vmixHoldLayer3Ms) els.vmixHoldLayer3Ms.value = "";
     if (els.vmixTriggerMinutes) {
-      els.vmixTriggerMinutes.value = (safeConfig.triggerMinutes || []).join(
-        ",",
-      );
+      els.vmixTriggerMinutes.value = (safeConfig.triggerTimes || []).join(",");
     }
   } else {
     if (els.vmixEnabled) els.vmixEnabled.checked = !!safeConfig.enabled;
@@ -695,9 +704,7 @@ function renderVmixConfig(config, target = activeVmixTarget) {
     if (els.vmixHoldLayer3Ms)
       els.vmixHoldLayer3Ms.value = safeConfig.holdLayer3Ms;
     if (els.vmixTriggerMinutes)
-      els.vmixTriggerMinutes.value = (safeConfig.triggerMinutes || []).join(
-        ",",
-      );
+      els.vmixTriggerMinutes.value = (safeConfig.triggerMinutes || []).join(",");
   }
 
   updateVmixUiByTarget(target);
@@ -780,7 +787,7 @@ function isVmixPanel(panelId = currentPanelId) {
 }
 
 function ensureValidVmixTarget() {
-  const availableTargets = getVisibleVmixTargets();
+  const availableTargets = VMIX_TARGETS.filter((x) => canEditVmixTarget(x.id));
   if (!availableTargets.length) {
     activeVmixTarget = "vmix-config";
     return;
@@ -789,6 +796,7 @@ function ensureValidVmixTarget() {
   if (!availableTargets.some((x) => x.id === activeVmixTarget)) {
     activeVmixTarget = availableTargets[0].id;
   }
+
 }
 
 function showPanel(panelId) {
@@ -1055,18 +1063,12 @@ async function loadAllVmixConfigs() {
     if (canEditVmixTarget(vmixTarget.id)) {
       await loadVmixConfig(vmixTarget.id);
     } else {
-      originalVmixConfigs[vmixTarget.id] = sanitizeVmixConfig(
-        {},
-        vmixTarget.id,
-      );
+      originalVmixConfigs[vmixTarget.id] = sanitizeVmixConfig({}, vmixTarget.id);
     }
   }
 
   if (canEditVmixTarget(activeVmixTarget)) {
-    renderVmixConfig(
-      originalVmixConfigs[activeVmixTarget] || {},
-      activeVmixTarget,
-    );
+    renderVmixConfig(originalVmixConfigs[activeVmixTarget] || {}, activeVmixTarget);
   }
 }
 
@@ -1151,7 +1153,7 @@ async function saveConfig() {
     let target = currentMeta?.target || "config";
 
     if (isVmixPanel()) {
-      target = getSelectedVmixTarget();
+      target = activeVmixTarget;
       activeVmixTarget = target;
       if (!canEditVmixTarget(target)) {
         throw new Error("Bạn không có quyền chỉnh sửa máy vMix này.");
@@ -1463,6 +1465,7 @@ function bindMenuUi() {
   document.querySelectorAll(".menu-item[data-panel-id]").forEach((btn) => {
     btn.addEventListener("click", async () => {
       if (btn.classList.contains("vmix-submenu-item")) return;
+      if (btn.classList.contains("menu-item-parent")) return;
 
       const panelId = btn.getAttribute("data-panel-id");
       if (!panelId) return;
@@ -1563,11 +1566,12 @@ document.querySelectorAll("[data-add]").forEach((btn) => {
   });
 });
 
+
 els.saveBtn?.addEventListener("click", saveConfig);
 
 els.resetBtn?.addEventListener("click", () => {
   if (isVmixPanel()) {
-    const target = getSelectedVmixTarget();
+    const target = activeVmixTarget;
     renderVmixConfig(originalVmixConfigs[target] || {}, target);
   } else {
     renderConfig(originalConfig || {});

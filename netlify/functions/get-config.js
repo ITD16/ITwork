@@ -78,10 +78,10 @@ function normalizeVmixConfig(config) {
 
 function normalizeVmixConfig2(config) {
   return {
-    triggerMinutes: Array.isArray(config?.triggerMinutes)
-      ? config.triggerMinutes
-          .map((x) => Number(x))
-          .filter((x) => Number.isInteger(x) && x >= 0 && x <= 59)
+    triggerTimes: Array.isArray(config?.triggerTimes)
+      ? config.triggerTimes
+          .map((x) => String(x || "").trim())
+          .filter((x) => /^\d{2}:\d{2}$/.test(x))
       : [],
   };
 }
