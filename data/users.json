@@ -52,21 +52,6 @@
     }
   },
   {
-    "username": "user2",
-    "passwordHash": "$2a$10$JHGKu241ya7uJyh9jtcAkuLns7K9GfFwuTQGp4DFOmP7Y0hDlCgB2",
-    "role": "user",
-    "active": true,
-    "mustChangePassword": false,
-    "permissions": {
-      "contentidol": false,
-      "contentidolSettings": false,
-      "domains1b": false,
-      "domains789": false,
-      "domains0b": false,
-      "vmixConfig": false
-    }
-  },
-  {
     "username": "kend",
     "passwordHash": "$2a$10$rGYfuTnaRfl9CBRMjqxv/OVhnXSexDo9HpvU4hKSMKILCh4.AEKoC",
     "role": "user",
