@@ -25,6 +25,14 @@ const VMIX_TARGETS = [
   { id: "vmix-config2", label: "vMix iDol 1B" },
 ];
 
+function getVmixTargetMeta(target) {
+  return VMIX_TARGETS.find((x) => x.id === target) || VMIX_TARGETS[0];
+}
+
+function getVisibleVmixTargets() {
+  return VMIX_TARGETS.filter((x) => canEditVmixTarget(x.id));
+}
+
 const els = {
   meBox: document.getElementById("meBox"),
   enableFirework: document.getElementById("enableFirework"),
@@ -46,9 +54,7 @@ const els = {
   userManagementCard: document.getElementById("userManagementCard"),
 
   contentidolSection: document.getElementById("contentidolSection"),
-  contentidolSettingsSection: document.getElementById(
-    "contentidolSettingsSection",
-  ),
+  contentidolSettingsSection: document.getElementById("contentidolSettingsSection"),
   domains1bSection: document.getElementById("domains1bSection"),
   domains789Section: document.getElementById("domains789Section"),
   domains0bSection: document.getElementById("domains0bSection"),
@@ -56,13 +62,9 @@ const els = {
 
   contentidolList: document.getElementById("contentidolList"),
   contentidolEnabled: document.getElementById("contentidolEnabled"),
-  contentidolIntervalMinutes: document.getElementById(
-    "contentidolIntervalMinutes",
-  ),
+  contentidolIntervalMinutes: document.getElementById("contentidolIntervalMinutes"),
   contentidolRepeatCount: document.getElementById("contentidolRepeatCount"),
-  contentidolSpeedPxPerSecond: document.getElementById(
-    "contentidolSpeedPxPerSecond",
-  ),
+  contentidolSpeedPxPerSecond: document.getElementById("contentidolSpeedPxPerSecond"),
   contentidolFontSize: document.getElementById("contentidolFontSize"),
   contentidolCopiesPerRun: document.getElementById("contentidolCopiesPerRun"),
   contentidolCopyGapSize: document.getElementById("contentidolCopyGapSize"),
@@ -76,6 +78,9 @@ const els = {
   domains789List: document.getElementById("domains789List"),
   domains0bList: document.getElementById("domains0bList"),
 
+  vmixMenuGroup: document.getElementById("vmixMenuGroup"),
+  vmixMenuBtn: document.getElementById("vmixMenuBtn"),
+  vmixSubmenu: document.getElementById("vmixSubmenu"),
   vmixEnabled: document.getElementById("vmixEnabled"),
   vmixHoldLayer2Ms: document.getElementById("vmixHoldLayer2Ms"),
   vmixHoldLayer3Ms: document.getElementById("vmixHoldLayer3Ms"),
@@ -519,14 +524,8 @@ function collectConfig() {
       copiesPerRun: Number(els.contentidolCopiesPerRun?.value || 8),
       copyGapSize: Number(els.contentidolCopyGapSize?.value || 24),
       laneGapPx: Number(els.contentidolLaneGapPx?.value || 160),
-      showMinutes: normalizeNumberInput(
-        els.contentidolShowMinutes?.value || 0,
-        0,
-      ),
-      hideMinutes: normalizeNumberInput(
-        els.contentidolHideMinutes?.value || 0,
-        0,
-      ),
+      showMinutes: normalizeNumberInput(els.contentidolShowMinutes?.value || 0, 0),
+      hideMinutes: normalizeNumberInput(els.contentidolHideMinutes?.value || 0, 0),
       textColor: normalizeHexColor(
         els.contentidolTextColorCode?.value || els.contentidolTextColor?.value,
         "#ffffff",
@@ -538,13 +537,10 @@ function collectConfig() {
   };
 }
 
-
 function collectVmixConfig(target = activeVmixTarget) {
   if (target === "vmix-config2") {
     return {
-      triggerTimes: normalizeTriggerTimesInput(
-        els.vmixTriggerMinutes?.value || "",
-      ),
+      triggerTimes: normalizeTriggerTimesInput(els.vmixTriggerMinutes?.value || ""),
     };
   }
 
@@ -552,9 +548,7 @@ function collectVmixConfig(target = activeVmixTarget) {
     enabled: !!els.vmixEnabled?.checked,
     holdLayer2Ms: normalizeNumberInput(els.vmixHoldLayer2Ms?.value, 60000),
     holdLayer3Ms: normalizeNumberInput(els.vmixHoldLayer3Ms?.value, 120000),
-    triggerMinutes: normalizeTriggerMinutesInput(
-      els.vmixTriggerMinutes?.value || "",
-    ),
+    triggerMinutes: normalizeTriggerMinutesInput(els.vmixTriggerMinutes?.value || ""),
   };
 }
 
@@ -567,48 +561,23 @@ function renderConfig(config) {
     els.enableFirework.disabled = !perms.enableFirework;
   }
 
-  renderContentIdolList(
-    els.contentidolList,
-    safeConfig.contentidol || [],
-    canEditContentIdol(),
-  );
-  renderDomainList(
-    els.domains1bList,
-    safeConfig.domains1b || [],
-    canEditDomains1b(),
-  );
-  renderDomainList(
-    els.domains789List,
-    safeConfig.domains789 || [],
-    canEditDomains789(),
-  );
-  renderDomainList(
-    els.domains0bList,
-    safeConfig.domains0b || [],
-    canEditDomains0b(),
-  );
+  renderContentIdolList(els.contentidolList, safeConfig.contentidol || [], canEditContentIdol());
+  renderDomainList(els.domains1bList, safeConfig.domains1b || [], canEditDomains1b());
+  renderDomainList(els.domains789List, safeConfig.domains789 || [], canEditDomains789());
+  renderDomainList(els.domains0bList, safeConfig.domains0b || [], canEditDomains0b());
 
   const s = safeConfig.contentidolSettings || {};
 
-  if (els.contentidolEnabled)
-    els.contentidolEnabled.checked = s.enabled !== false;
-  if (els.contentidolIntervalMinutes)
-    els.contentidolIntervalMinutes.value = s.intervalMinutes ?? 5;
-  if (els.contentidolRepeatCount)
-    els.contentidolRepeatCount.value = s.repeatCount ?? 10;
-  if (els.contentidolSpeedPxPerSecond)
-    els.contentidolSpeedPxPerSecond.value = s.speedPxPerSecond ?? 140;
+  if (els.contentidolEnabled) els.contentidolEnabled.checked = s.enabled !== false;
+  if (els.contentidolIntervalMinutes) els.contentidolIntervalMinutes.value = s.intervalMinutes ?? 5;
+  if (els.contentidolRepeatCount) els.contentidolRepeatCount.value = s.repeatCount ?? 10;
+  if (els.contentidolSpeedPxPerSecond) els.contentidolSpeedPxPerSecond.value = s.speedPxPerSecond ?? 140;
   if (els.contentidolFontSize) els.contentidolFontSize.value = s.fontSize ?? 48;
-  if (els.contentidolCopiesPerRun)
-    els.contentidolCopiesPerRun.value = s.copiesPerRun ?? 8;
-  if (els.contentidolCopyGapSize)
-    els.contentidolCopyGapSize.value = s.copyGapSize ?? 24;
-  if (els.contentidolLaneGapPx)
-    els.contentidolLaneGapPx.value = s.laneGapPx ?? 160;
-  if (els.contentidolShowMinutes)
-    els.contentidolShowMinutes.value = s.showMinutes ?? 0;
-  if (els.contentidolHideMinutes)
-    els.contentidolHideMinutes.value = s.hideMinutes ?? 0;
+  if (els.contentidolCopiesPerRun) els.contentidolCopiesPerRun.value = s.copiesPerRun ?? 8;
+  if (els.contentidolCopyGapSize) els.contentidolCopyGapSize.value = s.copyGapSize ?? 24;
+  if (els.contentidolLaneGapPx) els.contentidolLaneGapPx.value = s.laneGapPx ?? 160;
+  if (els.contentidolShowMinutes) els.contentidolShowMinutes.value = s.showMinutes ?? 0;
+  if (els.contentidolHideMinutes) els.contentidolHideMinutes.value = s.hideMinutes ?? 0;
 
   const color = normalizeHexColor(s.textColor || "#ffffff", "#ffffff");
   if (els.contentidolTextColor) els.contentidolTextColor.value = color;
@@ -641,20 +610,14 @@ function updateVmixUiByTarget(target = activeVmixTarget) {
     els.panelSubTitle.textContent = `Manage vmix config - ${targetMeta.label}`;
   }
 
-  if (els.vmixEnabledWrap) {
-    els.vmixEnabledWrap.style.display = isMachine2 ? "none" : "";
-  }
-  if (els.vmixHoldLayer2Wrap) {
-    els.vmixHoldLayer2Wrap.style.display = isMachine2 ? "none" : "";
-  }
-  if (els.vmixHoldLayer3Wrap) {
-    els.vmixHoldLayer3Wrap.style.display = isMachine2 ? "none" : "";
-  }
+  if (els.vmixEnabledWrap) els.vmixEnabledWrap.style.display = isMachine2 ? "none" : "";
+  if (els.vmixHoldLayer2Wrap) els.vmixHoldLayer2Wrap.style.display = isMachine2 ? "none" : "";
+  if (els.vmixHoldLayer3Wrap) els.vmixHoldLayer3Wrap.style.display = isMachine2 ? "none" : "";
 
   if (els.vmixTriggerMinutes) {
     els.vmixTriggerMinutes.placeholder = isMachine2
       ? "Ví dụ: 04:00,08:00,12:00..."
-      : "Ví dụ: 3,33";
+      : "Ví dụ: 3,33,44";
   }
 
   if (els.vmixTriggerHelp) {
@@ -663,31 +626,19 @@ function updateVmixUiByTarget(target = activeVmixTarget) {
       : "Máy này lưu trigger minutes, nhập phút cách nhau bằng dấu phẩy.";
   }
 
-  document
-    .querySelectorAll(".vmix-submenu-item[data-vmix-target]")
-    .forEach((btn) => {
-      btn.classList.toggle(
-        "active",
-        btn.getAttribute("data-vmix-target") === target,
-      );
-    });
+  document.querySelectorAll(".vmix-submenu-item[data-vmix-target]").forEach((btn) => {
+    btn.classList.toggle("active", btn.getAttribute("data-vmix-target") === target);
+  });
 
   if (els.vmixEnabled) els.vmixEnabled.disabled = isMachine2 || !canEditTarget;
-  if (els.vmixHoldLayer2Ms) {
-    els.vmixHoldLayer2Ms.disabled = isMachine2 || !canEditTarget;
-  }
-  if (els.vmixHoldLayer3Ms) {
-    els.vmixHoldLayer3Ms.disabled = isMachine2 || !canEditTarget;
-  }
-  if (els.vmixTriggerMinutes) {
-    els.vmixTriggerMinutes.disabled = !canEditTarget;
-  }
+  if (els.vmixHoldLayer2Ms) els.vmixHoldLayer2Ms.disabled = isMachine2 || !canEditTarget;
+  if (els.vmixHoldLayer3Ms) els.vmixHoldLayer3Ms.disabled = isMachine2 || !canEditTarget;
+  if (els.vmixTriggerMinutes) els.vmixTriggerMinutes.disabled = !canEditTarget;
 }
 
 function renderVmixConfig(config, target = activeVmixTarget) {
   const safeConfig = sanitizeVmixConfig(config || {}, target);
   originalVmixConfigs[target] = safeConfig;
-
   activeVmixTarget = target;
 
   if (target === "vmix-config2") {
@@ -699,12 +650,11 @@ function renderVmixConfig(config, target = activeVmixTarget) {
     }
   } else {
     if (els.vmixEnabled) els.vmixEnabled.checked = !!safeConfig.enabled;
-    if (els.vmixHoldLayer2Ms)
-      els.vmixHoldLayer2Ms.value = safeConfig.holdLayer2Ms;
-    if (els.vmixHoldLayer3Ms)
-      els.vmixHoldLayer3Ms.value = safeConfig.holdLayer3Ms;
-    if (els.vmixTriggerMinutes)
+    if (els.vmixHoldLayer2Ms) els.vmixHoldLayer2Ms.value = safeConfig.holdLayer2Ms;
+    if (els.vmixHoldLayer3Ms) els.vmixHoldLayer3Ms.value = safeConfig.holdLayer3Ms;
+    if (els.vmixTriggerMinutes) {
       els.vmixTriggerMinutes.value = (safeConfig.triggerMinutes || []).join(",");
+    }
   }
 
   updateVmixUiByTarget(target);
@@ -726,55 +676,13 @@ function getPanelMeta() {
   const perms = getPermissions();
 
   return [
-    {
-      id: "generalPanel",
-      label: "General",
-      subtitle: "General config",
-      visible: perms.enableFirework,
-      target: "config",
-    },
-    {
-      id: "contentidolPanel",
-      label: "Content Idol",
-      subtitle: "Manage content idol list",
-      visible: perms.contentidol,
-      target: "config",
-    },
-    {
-      id: "contentidolSettingsPanel",
-      label: "Content Idol Settings",
-      subtitle: "Manage content idol settings",
-      visible: perms.contentidolSettings,
-      target: "config",
-    },
-    {
-      id: "domains1bPanel",
-      label: "Change Dom 1B",
-      subtitle: "Manage domain list 1B",
-      visible: perms.domains1b,
-      target: "config",
-    },
-    {
-      id: "domains789Panel",
-      label: "Change Dom 789",
-      subtitle: "Manage domain list 789",
-      visible: perms.domains789,
-      target: "config",
-    },
-    {
-      id: "domains0bPanel",
-      label: "Change Dom 0B",
-      subtitle: "Manage domain list 0B",
-      visible: perms.domains0b,
-      target: "config",
-    },
-    {
-      id: "vmixConfigPanel",
-      label: "vMix Config",
-      subtitle: "Manage vmix config",
-      visible: perms.vmixConfig || perms.vmixConfig2,
-      target: "vmix-config",
-    },
+    { id: "generalPanel", label: "General", subtitle: "General config", visible: perms.enableFirework, target: "config" },
+    { id: "contentidolPanel", label: "Content Idol", subtitle: "Manage content idol list", visible: perms.contentidol, target: "config" },
+    { id: "contentidolSettingsPanel", label: "Content Idol Settings", subtitle: "Manage content idol settings", visible: perms.contentidolSettings, target: "config" },
+    { id: "domains1bPanel", label: "Change Dom 1B", subtitle: "Manage domain list 1B", visible: perms.domains1b, target: "config" },
+    { id: "domains789Panel", label: "Change Dom 789", subtitle: "Manage domain list 789", visible: perms.domains789, target: "config" },
+    { id: "domains0bPanel", label: "Change Dom 0B", subtitle: "Manage domain list 0B", visible: perms.domains0b, target: "config" },
+    { id: "vmixConfigPanel", label: "vMix Config", subtitle: "Manage vmix config", visible: perms.vmixConfig || perms.vmixConfig2, target: "vmix-config" },
   ];
 }
 
@@ -787,7 +695,7 @@ function isVmixPanel(panelId = currentPanelId) {
 }
 
 function ensureValidVmixTarget() {
-  const availableTargets = VMIX_TARGETS.filter((x) => canEditVmixTarget(x.id));
+  const availableTargets = getVisibleVmixTargets();
   if (!availableTargets.length) {
     activeVmixTarget = "vmix-config";
     return;
@@ -796,7 +704,6 @@ function ensureValidVmixTarget() {
   if (!availableTargets.some((x) => x.id === activeVmixTarget)) {
     activeVmixTarget = availableTargets[0].id;
   }
-
 }
 
 function showPanel(panelId) {
@@ -835,10 +742,7 @@ function showPanel(panelId) {
 
   if (isVmixPanel(panelId)) {
     ensureValidVmixTarget();
-    renderVmixConfig(
-      originalVmixConfigs[activeVmixTarget] || {},
-      activeVmixTarget,
-    );
+    renderVmixConfig(originalVmixConfigs[activeVmixTarget] || {}, activeVmixTarget);
   }
 
   if (els.menuDropdown) {
@@ -856,12 +760,10 @@ function refreshMenuByRole() {
     btn.style.display = meta?.visible ? "" : "none";
   });
 
-  document
-    .querySelectorAll(".vmix-submenu-item[data-vmix-target]")
-    .forEach((btn) => {
-      const target = btn.getAttribute("data-vmix-target");
-      btn.style.display = canEditVmixTarget(target) ? "" : "none";
-    });
+  document.querySelectorAll(".vmix-submenu-item[data-vmix-target]").forEach((btn) => {
+    const target = btn.getAttribute("data-vmix-target");
+    btn.style.display = canEditVmixTarget(target) ? "" : "none";
+  });
 
   if (els.vmixMenuGroup) {
     els.vmixMenuGroup.style.display = canEditVmixConfig() ? "" : "none";
@@ -876,10 +778,7 @@ function refreshMenuByRole() {
     return;
   }
 
-  const stillVisible = panelMeta.find(
-    (x) => x.id === currentPanelId && x.visible,
-  );
-
+  const stillVisible = panelMeta.find((x) => x.id === currentPanelId && x.visible);
   showPanel(stillVisible ? stillVisible.id : firstVisible.id);
 }
 
@@ -958,7 +857,6 @@ function applyRoleUi() {
 
   ensureValidVmixTarget();
   updateVmixUiByTarget(activeVmixTarget);
-
   refreshMenuByRole();
 }
 
@@ -977,16 +875,7 @@ function resetIdleTimer() {
 }
 
 function bindIdleEvents() {
-  [
-    "mousemove",
-    "mousedown",
-    "click",
-    "scroll",
-    "keydown",
-    "touchstart",
-    "input",
-    "change",
-  ].forEach((eventName) => {
+  ["mousemove", "mousedown", "click", "scroll", "keydown", "touchstart", "input", "change"].forEach((eventName) => {
     window.addEventListener(eventName, resetIdleTimer, { passive: true });
   });
 
@@ -1010,9 +899,7 @@ async function ensureMe() {
 }
 
 async function loadConfig() {
-  const res = await fetch("/api/config?target=config", {
-    credentials: "include",
-  });
+  const res = await fetch("/api/config?target=config", { credentials: "include" });
 
   if (!res.ok) {
     if (res.status === 401) {
@@ -1154,14 +1041,12 @@ async function saveConfig() {
 
     if (isVmixPanel()) {
       target = activeVmixTarget;
-      activeVmixTarget = target;
       if (!canEditVmixTarget(target)) {
         throw new Error("Bạn không có quyền chỉnh sửa máy vMix này.");
       }
     }
 
-    const payloadConfig =
-      target === "config" ? collectConfig() : collectVmixConfig(target);
+    const payloadConfig = target === "config" ? collectConfig() : collectVmixConfig(target);
 
     const res = await fetch("/api/config/save", {
       method: "POST",
@@ -1177,15 +1062,10 @@ async function saveConfig() {
     }
 
     if (target === "config") {
-      originalConfig = sanitizeConfigForCurrentUser(
-        data.config || payloadConfig,
-      );
+      originalConfig = sanitizeConfigForCurrentUser(data.config || payloadConfig);
       renderConfig(originalConfig);
     } else {
-      originalVmixConfigs[target] = sanitizeVmixConfig(
-        data.config || payloadConfig,
-        target,
-      );
+      originalVmixConfigs[target] = sanitizeVmixConfig(data.config || payloadConfig, target);
       renderVmixConfig(originalVmixConfigs[target], target);
     }
 
@@ -1297,72 +1177,46 @@ function renderPermissionsTable(users) {
 }
 
 async function bindPermissionCheckboxes() {
-  document
-    .querySelectorAll("[data-perm-user][data-perm-field]")
-    .forEach((checkbox) => {
-      checkbox.addEventListener("change", async () => {
-        const username = checkbox.getAttribute("data-perm-user");
-        if (!username) return;
+  document.querySelectorAll("[data-perm-user][data-perm-field]").forEach((checkbox) => {
+    checkbox.addEventListener("change", async () => {
+      const username = checkbox.getAttribute("data-perm-user");
+      if (!username) return;
 
-        const rowChecks = Array.from(
-          document.querySelectorAll(`[data-perm-user="${username}"]`),
-        );
+      const rowChecks = Array.from(document.querySelectorAll(`[data-perm-user="${username}"]`));
 
-        const permissions = {
-          contentidol:
-            rowChecks.find(
-              (x) => x.getAttribute("data-perm-field") === "contentidol",
-            )?.checked ?? true,
-          contentidolSettings:
-            rowChecks.find(
-              (x) =>
-                x.getAttribute("data-perm-field") === "contentidolSettings",
-            )?.checked ?? true,
-          domains1b:
-            rowChecks.find(
-              (x) => x.getAttribute("data-perm-field") === "domains1b",
-            )?.checked ?? true,
-          domains789:
-            rowChecks.find(
-              (x) => x.getAttribute("data-perm-field") === "domains789",
-            )?.checked ?? true,
-          domains0b:
-            rowChecks.find(
-              (x) => x.getAttribute("data-perm-field") === "domains0b",
-            )?.checked ?? true,
-          vmixConfig:
-            rowChecks.find(
-              (x) => x.getAttribute("data-perm-field") === "vmixConfig",
-            )?.checked ?? true,
-          vmixConfig2:
-            rowChecks.find(
-              (x) => x.getAttribute("data-perm-field") === "vmixConfig2",
-            )?.checked ?? true,
-        };
+      const permissions = {
+        contentidol: rowChecks.find((x) => x.getAttribute("data-perm-field") === "contentidol")?.checked ?? true,
+        contentidolSettings: rowChecks.find((x) => x.getAttribute("data-perm-field") === "contentidolSettings")?.checked ?? true,
+        domains1b: rowChecks.find((x) => x.getAttribute("data-perm-field") === "domains1b")?.checked ?? true,
+        domains789: rowChecks.find((x) => x.getAttribute("data-perm-field") === "domains789")?.checked ?? true,
+        domains0b: rowChecks.find((x) => x.getAttribute("data-perm-field") === "domains0b")?.checked ?? true,
+        vmixConfig: rowChecks.find((x) => x.getAttribute("data-perm-field") === "vmixConfig")?.checked ?? true,
+        vmixConfig2: rowChecks.find((x) => x.getAttribute("data-perm-field") === "vmixConfig2")?.checked ?? true,
+      };
 
-        try {
-          const res = await fetch("/api/users/update-permissions", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({ username, permissions }),
-          });
+      try {
+        const res = await fetch("/api/users/update-permissions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ username, permissions }),
+        });
 
-          const data = await res.json().catch(() => ({}));
+        const data = await res.json().catch(() => ({}));
 
-          if (!res.ok) {
-            alert(data.error || "Update permissions failed");
-            await loadUsers();
-            return;
-          }
-
-          resetIdleTimer();
-        } catch (err) {
-          alert(err.message || "Update permissions failed");
+        if (!res.ok) {
+          alert(data.error || "Update permissions failed");
           await loadUsers();
+          return;
         }
-      });
+
+        resetIdleTimer();
+      } catch (err) {
+        alert(err.message || "Update permissions failed");
+        await loadUsers();
+      }
     });
+  });
 }
 
 async function loadUsers() {
@@ -1389,8 +1243,7 @@ async function loadUsers() {
   document.querySelectorAll("[data-reset-user]").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const username = btn.getAttribute("data-reset-user");
-      if (!username || !window.confirm(`Reset password for ${username}?`))
-        return;
+      if (!username || !window.confirm(`Reset password for ${username}?`)) return;
 
       try {
         const res = await fetch("/api/users/reset-password", {
@@ -1427,8 +1280,7 @@ function openForcePasswordModal() {
     els.currentPasswordWrap.classList.add("hidden");
   }
   if (els.passwordModalText) {
-    els.passwordModalText.textContent =
-      "Bạn cần đổi password trước khi tiếp tục sử dụng.";
+    els.passwordModalText.textContent = "Bạn cần đổi password trước khi tiếp tục sử dụng.";
   }
   els.passwordModal.classList.remove("hidden");
 }
@@ -1488,30 +1340,28 @@ function bindMenuUi() {
     });
   }
 
-  document
-    .querySelectorAll(".vmix-submenu-item[data-vmix-target]")
-    .forEach((btn) => {
-      btn.addEventListener("click", async (e) => {
-        e.stopPropagation();
+  document.querySelectorAll(".vmix-submenu-item[data-vmix-target]").forEach((btn) => {
+    btn.addEventListener("click", async (e) => {
+      e.stopPropagation();
 
-        const target = btn.getAttribute("data-vmix-target");
-        if (!target || !canEditVmixTarget(target)) return;
+      const target = btn.getAttribute("data-vmix-target");
+      if (!target || !canEditVmixTarget(target)) return;
 
-        activeVmixTarget = target;
-        showPanel(VMIX_PANEL_ID);
+      activeVmixTarget = target;
+      showPanel(VMIX_PANEL_ID);
 
-        if (originalVmixConfigs[target]) {
-          renderVmixConfig(originalVmixConfigs[target], target);
-        } else {
-          await loadVmixConfig(target);
-        }
+      if (originalVmixConfigs[target]) {
+        renderVmixConfig(originalVmixConfigs[target], target);
+      } else {
+        await loadVmixConfig(target);
+      }
 
-        if (els.menuDropdown) els.menuDropdown.classList.add("hidden");
-        if (els.vmixMenuGroup) els.vmixMenuGroup.classList.remove("open");
+      if (els.menuDropdown) els.menuDropdown.classList.add("hidden");
+      if (els.vmixMenuGroup) els.vmixMenuGroup.classList.remove("open");
 
-        resetIdleTimer();
-      });
+      resetIdleTimer();
     });
+  });
 
   document.addEventListener("click", (e) => {
     if (
@@ -1566,13 +1416,11 @@ document.querySelectorAll("[data-add]").forEach((btn) => {
   });
 });
 
-
 els.saveBtn?.addEventListener("click", saveConfig);
 
 els.resetBtn?.addEventListener("click", () => {
   if (isVmixPanel()) {
-    const target = activeVmixTarget;
-    renderVmixConfig(originalVmixConfigs[target] || {}, target);
+    renderVmixConfig(originalVmixConfigs[activeVmixTarget] || {}, activeVmixTarget);
   } else {
     renderConfig(originalConfig || {});
   }
@@ -1628,10 +1476,7 @@ els.contentidolTextColorCode?.addEventListener("input", () => {
 });
 
 els.contentidolTextColorCode?.addEventListener("blur", () => {
-  const color = normalizeHexColor(
-    els.contentidolTextColorCode?.value,
-    "#ffffff",
-  );
+  const color = normalizeHexColor(els.contentidolTextColorCode?.value, "#ffffff");
   if (els.contentidolTextColorCode) {
     els.contentidolTextColorCode.value = color;
   }
@@ -1647,8 +1492,7 @@ els.passwordForm?.addEventListener("submit", async (e) => {
   els.passwordError.textContent = "";
   els.passwordOk.textContent = "";
 
-  const currentPasswordVisible =
-    !els.currentPasswordWrap.classList.contains("hidden");
+  const currentPasswordVisible = !els.currentPasswordWrap.classList.contains("hidden");
 
   const currentPassword = els.currentPassword?.value || "";
   const newPassword = els.newPassword?.value || "";
@@ -1683,8 +1527,7 @@ els.passwordForm?.addEventListener("submit", async (e) => {
       }
     }, 700);
   } catch (err) {
-    els.passwordError.textContent =
-      err.message || "Đổi password không thành công.";
+    els.passwordError.textContent = err.message || "Đổi password không thành công.";
   }
 });
 
