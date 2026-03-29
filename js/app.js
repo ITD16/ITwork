@@ -137,15 +137,15 @@ function isAdmin() {
 }
 
 function getPermissions() {
-  const perms = currentMe?.permissions || {};
+  const allowed = currentMe?.allowedPanels || [];
   return {
-    contentidol: !!perms.contentidol,
-    contentidolSettings: !!perms.contentidolSettings,
-    domains1b: !!perms.domains1b,
-    domains789: !!perms.domains789,
-    domains0b: !!perms.domains0b,
-    vmixConfig: !!perms.vmixConfig,
-    vmixConfig2: !!perms.vmixConfig2,
+    contentidol: allowed.includes("contentidol"),
+    contentidolSettings: allowed.includes("contentidolSettings"),
+    domains1b: allowed.includes("domains1b"),
+    domains789: allowed.includes("domains789"),
+    domains0b: allowed.includes("domains0b"),
+    vmixConfig: allowed.includes("vmixConfig"),
+    vmixConfig2: allowed.includes("vmixConfig2"),
     enableFirework: isAdmin(),
   };
 }

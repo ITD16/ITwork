@@ -1,25 +1,30 @@
 const { json, authRequired, readUsersFromRepo } = require("./utils");
 
-function normalizePermissions(user) {
+function normalizeAllowedPanels(user) {
   if ((user?.role || "user") === "admin") {
-    return {
-      contentidol: true,
-      contentidolSettings: true,
-      domains1b: true,
-      domains789: true,
-      domains0b: true,
-      vmixConfig: true,
-    };
+    return [
+      "contentidol",
+      "contentidolSettings",
+      "domains1b",
+      "domains789",
+      "domains0b",
+      "vmixConfig",
+      "vmixConfig2",
+    ];
   }
 
-  return {
-    contentidol: user?.permissions?.contentidol !== false,
-    contentidolSettings: user?.permissions?.contentidolSettings !== false,
-    domains1b: user?.permissions?.domains1b !== false,
-    domains789: user?.permissions?.domains789 !== false,
-    domains0b: user?.permissions?.domains0b !== false,
-    vmixConfig: user?.permissions?.vmixConfig !== false,
-  };
+  const out = [];
+  const p = user?.permissions || {};
+
+  if (!!p.contentidol) out.push("contentidol");
+  if (!!p.contentidolSettings) out.push("contentidolSettings");
+  if (!!p.domains1b) out.push("domains1b");
+  if (!!p.domains789) out.push("domains789");
+  if (!!p.domains0b) out.push("domains0b");
+  if (!!p.vmixConfig) out.push("vmixConfig");
+  if (!!p.vmixConfig2) out.push("vmixConfig2");
+
+  return out;
 }
 
 exports.handler = async (event) => {
@@ -34,7 +39,7 @@ exports.handler = async (event) => {
       username: auth.session.username,
       role: auth.session.role || "user",
       mustChangePassword: !!auth.session.mustChangePassword,
-      permissions: normalizePermissions(
+      allowedPanels: normalizeAllowedPanels(
         me || {
           username: auth.session.username,
           role: auth.session.role || "user",
