@@ -407,28 +407,29 @@ pre {
 .menu-wrap {
   position: relative;
   display: inline-block;
-  z-index: 1301;
+  z-index: 1305;
 }
 
 .menu-toggle-btn {
-  width: 50px;
-  height: 44px;
-  min-width: 50px;
+  width: 74px;
+  height: 74px;
+  min-width: 74px;
   padding: 0;
-  border-radius: 12px;
-  background: #e5e7eb;
+  border-radius: 22px;
+  border: 3px solid #2563eb;
+  background: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 7px;
   position: relative;
-  z-index: 1302;
+  z-index: 1306;
 }
 .hamburger-line {
   display: block;
-  width: 24px;
-  height: 3px;
+  width: 28px;
+  height: 4px;
   border-radius: 999px;
   background: #111827;
 }
@@ -436,54 +437,52 @@ pre {
 .menu-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.42);
-  z-index: 1298;
+  background: rgba(15, 23, 42, 0.35);
+  z-index: 1290;
 }
 
 .menu-dropdown {
   position: fixed;
-  top: 112px;
-  left: 18px;
-  width: 320px;
-  max-width: calc(100vw - 36px);
-  max-height: calc(100vh - 140px);
+  top: 118px;
+  left: 36px;
+  width: 430px;
+  max-width: calc(100vw - 72px);
+  max-height: calc(100vh - 150px);
   overflow-y: auto;
-  background: #fff;
+  background: #ffffff;
   border: 1px solid #d1d5db;
-  border-radius: 20px;
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
-  padding: 14px;
-  z-index: 1299;
+  border-radius: 28px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+  padding: 26px;
+  z-index: 1302;
 }
 
 .menu-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 20px;
 }
 
 .menu-item {
   width: 100%;
   text-align: left;
-  padding: 14px 18px;
-  min-height: 56px;
-  border-radius: 18px;
-  border: 1px solid #d1d5db;
-  background: #ffffff;
+  padding: 8px 14px;
+  min-height: 44px;
+  border-radius: 14px;
+  border: 0;
+  background: transparent;
   color: #2563eb;
   cursor: pointer;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 17px;
 }
 
 .menu-item:hover {
-  background: #ffffff;
-  color: #2563eb;
-  border-color: #2563eb;
+  background: #eff6ff;
+  color: #1d4ed8;
 }
 
 .menu-item.active {
-  border-color: #2563eb;
   background: #eff6ff;
   color: #1d4ed8;
 }
@@ -500,15 +499,13 @@ pre {
 }
 
 .menu-item-parent.active {
-  border-color: #d1d5db;
-  background: #ffffff;
+  background: transparent;
   color: #2563eb;
 }
 
 .menu-item-parent:hover {
-  border-color: #2563eb;
-  background: #ffffff;
-  color: #2563eb;
+  background: #eff6ff;
+  color: #1d4ed8;
 }
 
 .menu-item-arrow {
@@ -531,17 +528,17 @@ pre {
   position: absolute;
   top: 0;
   left: 100%;
-  margin-left: 14px;
-  min-width: 220px;
-  background: #fff;
+  margin-left: 16px;
+  min-width: 240px;
+  background: #ffffff;
   border: 1px solid #d1d5db;
-  border-radius: 16px;
-  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.14);
-  padding: 10px;
-  z-index: 1300;
+  border-radius: 22px;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.12);
+  padding: 16px;
+  z-index: 1304;
   display: none;
   flex-direction: column;
-  gap: 10px;
+  gap: 16px;
 }
 
 .menu-item-with-children.open > .menu-submenu {
@@ -550,10 +547,10 @@ pre {
 
 .menu-submenu .menu-item {
   margin: 0;
-  min-height: 52px;
-  padding: 12px 16px;
+  min-height: 44px;
+  padding: 8px 14px;
   border-radius: 14px;
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .vmix-submenu-item.active {
@@ -632,9 +629,10 @@ pre {
 
   .menu-dropdown {
     top: 100px;
-    left: 12px;
-    width: calc(100vw - 24px);
-    max-width: calc(100vw - 24px);
+    left: 18px;
+    width: calc(100vw - 36px);
+    max-width: calc(100vw - 36px);
+    padding: 18px;
   }
 
   .menu-item-with-children::after {

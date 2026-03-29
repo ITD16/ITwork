@@ -1687,12 +1687,15 @@ function bindMenuUi() {
   });
 
   document.addEventListener("click", (e) => {
+    const insideMenu =
+      e.target.closest(".menu-wrap") ||
+      e.target.closest(".menu-dropdown") ||
+      e.target.closest(".menu-submenu");
+
     if (
       els.menuDropdown &&
       !els.menuDropdown.classList.contains("hidden") &&
-      !e.target.closest(".menu-wrap") &&
-      !e.target.closest(".menu-dropdown") &&
-      !e.target.closest(".menu-submenu")
+      !insideMenu
     ) {
       closeMenu();
     }
