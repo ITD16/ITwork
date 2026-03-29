@@ -910,19 +910,19 @@ function openMenu() {
 }
 
 function closeMenu() {
-  if (els.menuDropdown) {
-    els.menuDropdown.classList.remove("open");
-
-    setTimeout(() => {
-      if (!els.menuDropdown?.classList.contains("open")) {
-        els.menuDropdown?.classList.add("hidden");
-      }
-    }, 220);
-  }
-
-  if (els.menuOverlay) els.menuOverlay.classList.add("hidden");
+  els.menuDropdown?.classList.remove("open");
+  els.menuOverlay?.classList.remove("open");
   if (els.vmixMenuGroup) els.vmixMenuGroup.classList.remove("open");
   document.body.classList.remove("menu-open");
+
+  setTimeout(() => {
+    if (!els.menuDropdown?.classList.contains("open")) {
+      els.menuDropdown?.classList.add("hidden");
+    }
+    if (!els.menuOverlay?.classList.contains("open")) {
+      els.menuOverlay?.classList.add("hidden");
+    }
+  }, 1000);
 }
 
 function showPanel(panelId) {
