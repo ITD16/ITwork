@@ -139,13 +139,13 @@ function isAdmin() {
 function getPermissions() {
   const perms = currentMe?.permissions || {};
   return {
-    contentidol: perms.contentidol !== false,
-    contentidolSettings: perms.contentidolSettings !== false,
-    domains1b: perms.domains1b !== false,
-    domains789: perms.domains789 !== false,
-    domains0b: perms.domains0b !== false,
-    vmixConfig: perms.vmixConfig !== false,
-    vmixConfig2: perms.vmixConfig2 !== false,
+    contentidol: !!perms.contentidol,
+    contentidolSettings: !!perms.contentidolSettings,
+    domains1b: !!perms.domains1b,
+    domains789: !!perms.domains789,
+    domains0b: !!perms.domains0b,
+    vmixConfig: !!perms.vmixConfig,
+    vmixConfig2: !!perms.vmixConfig2,
     enableFirework: isAdmin(),
   };
 }
@@ -1407,13 +1407,13 @@ function renderPermissionsTable(users) {
                     Reset
                   </button>
                 </td>
-                <td>${makeCheckbox(user.username, "contentidol", perms.contentidol !== false, disabled)}</td>
-                <td>${makeCheckbox(user.username, "contentidolSettings", perms.contentidolSettings !== false, disabled)}</td>
-                <td>${makeCheckbox(user.username, "domains1b", perms.domains1b !== false, disabled)}</td>
-                <td>${makeCheckbox(user.username, "domains789", perms.domains789 !== false, disabled)}</td>
-                <td>${makeCheckbox(user.username, "domains0b", perms.domains0b !== false, disabled)}</td>
-                <td>${makeCheckbox(user.username, "vmixConfig", perms.vmixConfig !== false, disabled)}</td>
-                <td>${makeCheckbox(user.username, "vmixConfig2", perms.vmixConfig2 !== false, disabled)}</td>
+                <td>${makeCheckbox(user.username, "contentidol", !!perms.contentidol, disabled)}</td>
+                <td>${makeCheckbox(user.username, "contentidolSettings", !!perms.contentidolSettings, disabled)}</td>
+                <td>${makeCheckbox(user.username, "domains1b", !!perms.domains1b, disabled)}</td>
+                <td>${makeCheckbox(user.username, "domains789", !!perms.domains789, disabled)}</td>
+                <td>${makeCheckbox(user.username, "domains0b", !!perms.domains0b, disabled)}</td>
+                <td>${makeCheckbox(user.username, "vmixConfig", !!perms.vmixConfig, disabled)}</td>
+                <td>${makeCheckbox(user.username, "vmixConfig2", !!perms.vmixConfig2, disabled)}</td>
               </tr>
             `;
             })

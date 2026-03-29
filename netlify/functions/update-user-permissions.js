@@ -8,12 +8,13 @@ const {
 
 function normalizePermissions(perms = {}) {
   return {
-    contentidol: perms.contentidol !== false,
-    contentidolSettings: perms.contentidolSettings !== false,
-    domains1b: perms.domains1b !== false,
-    domains789: perms.domains789 !== false,
-    domains0b: perms.domains0b !== false,
-    vmixConfig: perms.vmixConfig !== false,
+    contentidol: !!perms.contentidol,
+    contentidolSettings: !!perms.contentidolSettings,
+    domains1b: !!perms.domains1b,
+    domains789: !!perms.domains789,
+    domains0b: !!perms.domains0b,
+    vmixConfig: !!perms.vmixConfig,
+    vmixConfig2: !!perms.vmixConfig2,
   };
 }
 
