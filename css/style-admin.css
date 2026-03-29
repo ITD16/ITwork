@@ -444,16 +444,15 @@ pre {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(15, 23, 42, 0.35);
+  background: rgba(15, 23, 42, 0.6);
   z-index: 1290;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.7s ease;
+  transition: opacity 0.8.5s ease;
 }
 
 .menu-overlay.open {
   opacity: 1;
-  pointer-events: auto;
 }
 
 .menu-dropdown {
@@ -478,8 +477,8 @@ pre {
   pointer-events: none;
   will-change: transform, opacity;
   transition:
-    transform 0.95s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.6s ease;
+    transform 1.05s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.65s ease;
 }
 
 .menu-dropdown.open {
