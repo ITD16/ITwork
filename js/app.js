@@ -35,6 +35,7 @@ function getVisibleVmixTargets() {
 }
 
 const els = {
+  topbar: document.querySelector(".topbar"),
   meBox: document.getElementById("meBox"),
   enableFirework: document.getElementById("enableFirework"),
 
@@ -885,7 +886,18 @@ function ensureValidVmixTarget() {
     activeVmixTarget = availableTargets[0].id;
   }
 }
+function syncMenuTop() {
+  const topbar = els.topbar;
+  if (!topbar) return;
+
+  const rect = topbar.getBoundingClientRect();
+  const menuTop = Math.round(rect.bottom);
+
+  document.documentElement.style.setProperty("--menu-top", `${menuTop}px`);
+}
 function openMenu() {
+  syncMenuTop();
+
   if (els.menuDropdown) {
     els.menuDropdown.classList.remove("hidden");
     requestAnimationFrame(() => {
@@ -1912,6 +1924,7 @@ els.addUserForm?.addEventListener("submit", async (e) => {
 async function init() {
   bindIdleEvents();
   bindMenuUi();
+  syncMenuTop();
   await ensureMe();
   ensureValidVmixTarget();
   await loadAllConfigs();
@@ -1922,7 +1935,8 @@ async function init() {
   refreshMenuByRole();
   resetIdleTimer();
 }
-
+window.addEventListener("resize", syncMenuTop);
+window.addEventListener("scroll", syncMenuTop, { passive: true });
 window.addEventListener("load", async () => {
   try {
     await init();
