@@ -127,6 +127,7 @@ button.small {
   align-items: flex-end;
   margin-top: 14px;
   margin-bottom: -15px;
+  background-color: #2563eb;
 }
 .topbar-actions {
   display: flex;
