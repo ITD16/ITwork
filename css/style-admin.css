@@ -438,7 +438,7 @@ pre {
 
 .menu-overlay {
   position: fixed;
-  top: 141px;
+  top: 142px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -448,7 +448,7 @@ pre {
 
 .menu-dropdown {
   position: fixed;
-  top: 141px;
+  top: 142px;
   left: 0;
   width: 280px;
   height: calc(100vh - 86px);
