@@ -1368,8 +1368,19 @@ function renderPermissionsTable(users) {
         <tbody>
           ${users
             .map((user) => {
-              const perms = user.permissions || {};
-              const disabled = (user.role || "user") === "admin";
+              const isAdminRow = (user.role || "user") === "admin";
+              const perms = isAdminRow
+                ? {
+                    contentidol: true,
+                    contentidolSettings: true,
+                    domains1b: true,
+                    domains789: true,
+                    domains0b: true,
+                    vmixConfig: true,
+                    vmixConfig2: true,
+                  }
+                : user.permissions || {};
+              const disabled = isAdminRow;
               const canDelete =
                 (user.role || "user") !== "admin" &&
                 user.username !== currentMe?.username;
