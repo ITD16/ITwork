@@ -8,6 +8,10 @@ body {
   color: #111827;
 }
 
+body.menu-open {
+  overflow: hidden;
+}
+
 .login-page {
   min-height: 100vh;
   position: relative;
@@ -16,7 +20,6 @@ body {
 }
 
 .login-shell {
-  /* position: relative; */
   z-index: 2;
   min-height: 100vh;
   display: grid;
@@ -400,10 +403,13 @@ pre {
   align-items: center;
   justify-content: center;
 }
+
 .menu-wrap {
   position: relative;
   display: inline-block;
+  z-index: 1301;
 }
+
 .menu-toggle-btn {
   width: 50px;
   height: 44px;
@@ -416,6 +422,8 @@ pre {
   align-items: center;
   justify-content: center;
   gap: 5px;
+  position: relative;
+  z-index: 1302;
 }
 .hamburger-line {
   display: block;
@@ -424,44 +432,136 @@ pre {
   border-radius: 999px;
   background: #111827;
 }
+
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.42);
+  z-index: 1298;
+}
+
 .menu-dropdown {
-  position: absolute;
-  top: calc(100% + 10px);
-  left: 0;
-  min-width: 240px;
+  position: fixed;
+  top: 112px;
+  left: 18px;
+  width: 320px;
+  max-width: calc(100vw - 36px);
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
   background: #fff;
   border: 1px solid #d1d5db;
-  border-radius: 14px;
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
-  padding: 10px;
-  z-index: 1200;
+  border-radius: 20px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
+  padding: 14px;
+  z-index: 1299;
 }
+
 .menu-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
 }
+
 .menu-item {
   width: 100%;
   text-align: left;
-  padding: 9px 12px;
-  border-radius: 12px;
+  padding: 14px 18px;
+  min-height: 56px;
+  border-radius: 18px;
   border: 1px solid #d1d5db;
   background: #ffffff;
   color: #2563eb;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 16px;
 }
+
 .menu-item:hover {
   background: #ffffff;
   color: #2563eb;
   border-color: #2563eb;
 }
+
 .menu-item.active {
   border-color: #2563eb;
   background: #eff6ff;
   color: #1d4ed8;
 }
+
+.menu-item-with-children {
+  position: relative;
+}
+
+.menu-item-parent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.menu-item-parent.active {
+  border-color: #d1d5db;
+  background: #ffffff;
+  color: #2563eb;
+}
+
+.menu-item-parent:hover {
+  border-color: #2563eb;
+  background: #ffffff;
+  color: #2563eb;
+}
+
+.menu-item-arrow {
+  font-size: 24px;
+  line-height: 1;
+  color: #2563eb;
+  flex: 0 0 auto;
+}
+
+.menu-item-with-children::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 100%;
+  width: 16px;
+  height: 100%;
+}
+
+.menu-submenu {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  margin-left: 14px;
+  min-width: 220px;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 16px;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.14);
+  padding: 10px;
+  z-index: 1300;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu-item-with-children.open > .menu-submenu {
+  display: flex;
+}
+
+.menu-submenu .menu-item {
+  margin: 0;
+  min-height: 52px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 15px;
+}
+
+.vmix-submenu-item.active {
+  border-color: #2563eb !important;
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+}
+
 .config-main {
   min-width: 0;
 }
@@ -502,137 +602,6 @@ pre {
   font-size: 12px;
 }
 
-/* ===== Generic submenu system start ===== */
-
-.menu-dropdown {
-  min-width: 210px;
-  padding: 8px;
-}
-
-.menu-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.menu-item {
-  width: 100%;
-  text-align: left;
-  padding: 9px 12px;
-  min-height: 42px;
-  border-radius: 10px;
-  border: 1px solid #d1d5db;
-  background: #ffffff;
-  color: #2563eb;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 13px;
-}
-
-.menu-item:hover {
-  background: #ffffff;
-  color: #2563eb;
-  border-color: #2563eb;
-}
-
-.menu-item.active {
-  border-color: #2563eb;
-  background: #eff6ff;
-  color: #1d4ed8;
-}
-
-.menu-item-with-children {
-  position: relative;
-}
-
-.menu-item-parent {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.menu-item-parent.active {
-  background: #ffffff;
-  color: #2563eb;
-  border-color: #d1d5db;
-}
-
-.menu-item-parent:hover {
-  background: #ffffff;
-  color: #2563eb;
-  border-color: #2563eb;
-}
-
-.menu-item-arrow {
-  font-size: 18px;
-  line-height: 1;
-  color: #2563eb;
-  flex: 0 0 auto;
-}
-
-/* cầu nối hover */
-.menu-item-with-children::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 100%;
-  width: 14px;
-  height: 100%;
-}
-
-.menu-submenu {
-  position: absolute;
-  top: 0;
-  left: 100%;
-  margin-left: 8px;
-  min-width: 190px;
-  background: #fff;
-  border: 1px solid #d1d5db;
-  border-radius: 12px;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.1);
-  padding: 8px;
-  z-index: 1250;
-  display: none;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.menu-item-with-children:hover > .menu-submenu,
-.menu-item-with-children.open > .menu-submenu {
-  display: flex;
-}
-
-.menu-submenu .menu-item {
-  margin: 0;
-  min-height: 42px;
-  padding: 9px 12px;
-  border-radius: 10px;
-}
-
-.vmix-submenu-item.active {
-  border-color: #2563eb !important;
-  background: #eff6ff !important;
-  color: #1d4ed8 !important;
-}
-
-@media (max-width: 980px) {
-  .menu-item-with-children::after {
-    display: none;
-  }
-
-  .menu-submenu {
-    position: static;
-    top: auto;
-    left: auto;
-    margin-left: 0;
-    margin-top: 8px;
-    min-width: 100%;
-  }
-}
-
-/* ===== Generic submenu system end ===== */
-
 @media (max-width: 980px) {
   .layout {
     grid-template-columns: 1fr;
@@ -659,6 +628,13 @@ pre {
   .topbar-main-actions,
   .topbar-config-actions {
     flex-wrap: wrap;
+  }
+
+  .menu-dropdown {
+    top: 100px;
+    left: 12px;
+    width: calc(100vw - 24px);
+    max-width: calc(100vw - 24px);
   }
 
   .menu-item-with-children::after {
@@ -846,7 +822,6 @@ canvas {
   min-width: var(--col-reset);
   width: var(--col-reset);
 }
-/* vạch phân tách để nhìn rõ 5 cột đầu đang cố định */
 .user-perm-table .sticky-col-1 {
   z-index: 25;
 }
@@ -886,7 +861,6 @@ canvas {
 .user-perm-table thead .sticky-col-5 {
   z-index: 51;
 }
-/* các cột quyền gọn hơn để hiện sớm hơn */
 .user-perm-table th:not(.sticky-col),
 .user-perm-table td:not(.sticky-col) {
   min-width: 52px;
@@ -950,7 +924,7 @@ canvas {
   padding: 5px 8px;
 }
 /* ===== End user management sticky table ===== */
-/* chỉnh màu btn khi rê chuột vào */
+
 button,
 .user-delete-btn,
 .menu-item {
