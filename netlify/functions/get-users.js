@@ -13,22 +13,26 @@ exports.handler = async (event) => {
         role: u.role || "user",
         active: u.active !== false,
         mustChangePassword: !!u.mustChangePassword,
-        permissions: {
-          contentidol:
-            u.role === "admin" ? true : u.permissions?.contentidol !== false,
-          contentidolSettings:
-            u.role === "admin"
-              ? true
-              : u.permissions?.contentidolSettings !== false,
-          domains1b:
-            u.role === "admin" ? true : u.permissions?.domains1b !== false,
-          domains789:
-            u.role === "admin" ? true : u.permissions?.domains789 !== false,
-          domains0b:
-            u.role === "admin" ? true : u.permissions?.domains0b !== false,
-          vmixConfig:
-            u.role === "admin" ? true : u.permissions?.vmixConfig !== false,
-        },
+        permissions:
+          u.role === "admin"
+            ? {
+                contentidol: true,
+                contentidolSettings: true,
+                domains1b: true,
+                domains789: true,
+                domains0b: true,
+                vmixConfig: true,
+                vmixConfig2: true,
+              }
+            : {
+                contentidol: !!u.permissions?.contentidol,
+                contentidolSettings: !!u.permissions?.contentidolSettings,
+                domains1b: !!u.permissions?.domains1b,
+                domains789: !!u.permissions?.domains789,
+                domains0b: !!u.permissions?.domains0b,
+                vmixConfig: !!u.permissions?.vmixConfig,
+                vmixConfig2: !!u.permissions?.vmixConfig2,
+              },
       })),
     });
   } catch (err) {
