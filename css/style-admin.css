@@ -89,6 +89,10 @@ button.small {
   background: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   border-bottom: 1px solid #e5e7eb;
+  background-image: url("../logo/background-header.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
 .topbar-brand {
   display: flex;
