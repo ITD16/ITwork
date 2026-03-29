@@ -118,8 +118,8 @@ button.small {
 .brand-menu-row {
   display: flex;
   justify-content: flex-start;
-  align-items: flex-start;
-  margin-top: 20px;
+  align-items: flex-end;
+  margin-top: 0;
 }
 .topbar-actions {
   display: flex;
@@ -438,7 +438,7 @@ pre {
 
 .menu-overlay {
   position: fixed;
-  top: 142px;
+  top: 150px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -448,10 +448,10 @@ pre {
 
 .menu-dropdown {
   position: fixed;
-  top: 142px;
+  top: 150px;
   left: 0;
   width: 280px;
-  height: calc(100vh - 86px);
+  height: calc(100vh - 150px);
 
   background: linear-gradient(180deg, #1e2a44 0%, #243556 100%);
   border: 0;
@@ -467,8 +467,8 @@ pre {
   opacity: 0;
   pointer-events: none;
   transition:
-    transform 0.22s ease,
-    opacity 0.22s ease;
+    transform 0.42s ease,
+    opacity 0.32s ease;
 }
 .menu-dropdown.open {
   transform: translateX(0);
