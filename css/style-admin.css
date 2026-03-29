@@ -491,7 +491,7 @@ pre {
 .menu-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 
 .menu-item {
@@ -500,14 +500,14 @@ pre {
   justify-content: space-between;
   gap: 10px;
 
-  padding: 10px 14px;
+  padding: 6px 10px;
   min-height: 44px;
   border-radius: 12px;
 
   background: transparent;
   color: #e5e7eb;
 
-  font-size: 15px;
+  font-size: 12px;
   font-weight: 500;
 }
 
@@ -562,7 +562,7 @@ pre {
 .menu-submenu {
   display: none;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   margin-top: 4px;
   margin-left: 10px;
   padding-left: 12px;
@@ -582,9 +582,9 @@ pre {
 .menu-submenu .menu-item {
   margin: 0;
   min-height: 38px;
-  padding: 8px 12px;
+  padding: 6px 10px;
   border-radius: 10px;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .vmix-submenu-item.active {
