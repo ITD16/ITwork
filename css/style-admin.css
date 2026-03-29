@@ -112,6 +112,7 @@ button.small {
   align-items: baseline;
   gap: 14px;
   flex-wrap: wrap;
+  color: #ffffff;
 }
 .brand-title-row h1 {
   margin: 0;
