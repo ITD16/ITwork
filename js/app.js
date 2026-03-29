@@ -886,13 +886,28 @@ function ensureValidVmixTarget() {
   }
 }
 function openMenu() {
-  if (els.menuDropdown) els.menuDropdown.classList.remove("hidden");
+  if (els.menuDropdown) {
+    els.menuDropdown.classList.remove("hidden");
+    requestAnimationFrame(() => {
+      els.menuDropdown?.classList.add("open");
+    });
+  }
+
   if (els.menuOverlay) els.menuOverlay.classList.remove("hidden");
   document.body.classList.add("menu-open");
 }
 
 function closeMenu() {
-  if (els.menuDropdown) els.menuDropdown.classList.add("hidden");
+  if (els.menuDropdown) {
+    els.menuDropdown.classList.remove("open");
+
+    setTimeout(() => {
+      if (!els.menuDropdown?.classList.contains("open")) {
+        els.menuDropdown?.classList.add("hidden");
+      }
+    }, 220);
+  }
+
   if (els.menuOverlay) els.menuOverlay.classList.add("hidden");
   if (els.vmixMenuGroup) els.vmixMenuGroup.classList.remove("open");
   document.body.classList.remove("menu-open");
@@ -1654,7 +1669,6 @@ function bindMenuUi() {
 
   els.vmixMenuBtn?.addEventListener("click", (e) => {
     e.stopPropagation();
-    els.vmixMenuGroup?.classList.toggle("open");
     resetIdleTimer();
   });
 
