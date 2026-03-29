@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+      font-family: sans-serif;
+      user-select: none;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #ededed;
+    }
+
+    .card {
+      width: 70%;
+      position: relative;
+      box-shadow: 5px 6px 20px -1px #000000 
+      
+    }
+
+    .cave {
+      width: 100%;
+      display: block;
+    }
+
+    .caveman {
+      width: 58%;
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+    }
+    .txt {
+      position: absolute;
+      left: 50%;
+      top: 43%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      font-weight: bold;
+      font-size: 4rem;
+      white-space: nowrap;
+      animation: anime duration timing-function delay iteration-count direction fill-mode;
+    }
+
+    .alert{
+        position: absolute;
+        left: 10px;
+        top: 0;
+        width: 300px;
+        height: 30px;
+        background-color: #be3737;
+        color: #ededed;
+        border-radius: 10px;
+        text-align: center;
+        transform: translateY(-50px);
+    }
+
+    .note{
+        line-height: 30px;
+    }
+
+    .animated {
+    animation-name: moving;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    }
+
+    @keyframes moving {
+        0% {
+            transform: translate(-50%, -43%);
+        }
+
+        50% {
+            transform: translate(-50%, -60%);
+        }
+
+        80% {
+            transform: translate(-50%, -60%);
+        }
+        100% {
+            transform: translate(-50%, -43%);
+        }
+    }   
+
+    .animated2 {
+        animation-name: moving2;
+        animation-duration: 5s;
+    }
+
+    @keyframes moving2 {
+        10% {
+            transform: translateY(-50px);
+        }
+        20%{
+            transform: translateY(10px);
+        }
+        90%{
+            transform: translateY(10px);
+        }
+        100% {
+            transform: translateY(-50px);
+        }
+    }   
+
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .card {
+        width: 85%;
+      }
+
+      .caveman {
+        width: 62%;
+      }
+
+      .txt {
+        top: 40%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .card {
+        width: 95%;
+      }
+      .caveman {
+        width: 68%;
+      }
+      .txt {
+        top: 36%;
+        font-size: clamp(0.9rem, 5vw, 2.2rem);
+        width: 92%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .caveman {
+        width: 75%;
+      }
+      .txt {
+        top: 32%;
+        font-size: clamp(0.8rem, 5.5vw, 1.4rem);
+        width: 94%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img class="cave" src="./img/cave1.jpg" alt="">
+    <p class="txt animated">CÓ GÌ HỎI ATA NHÉ!</p>
+    <img class="caveman" src="./img/caveman.png" alt="">
+  </div>
+  <div class="alert animated2">
+    <p class="note">Hành Vi Đã Được Ghi Lại</p>
+  </div>
+
+  <script>
+(function () {
+  const THRESHOLD = 140;
+  const REDIRECT_URL = "https://itvip.netlify.app/404";
+  let redirected = false;
+
+  function goRedirect() {
+    if (redirected) return;
+    redirected = true;
+    window.location.replace(REDIRECT_URL);
+  }
+
+  // Chặn chuột phải
+  document.addEventListener("contextmenu", function (e) {
+    e.preventDefault();
+  });
+
+  // Chặn phím tắt phổ biến
+  document.addEventListener("keydown", function (e) {
+    const key = (e.key || "").toLowerCase();
+
+    const blocked =
+      e.key === "F12" ||
+      ((e.ctrlKey || e.metaKey) && key === "u") ||
+      ((e.ctrlKey || e.metaKey) && key === "s") ||
+      (e.ctrlKey && e.shiftKey && ["i", "j", "c"].includes(key)) ||
+      (e.metaKey && e.altKey && ["i", "j", "c"].includes(key));
+
+    if (blocked) {
+      e.preventDefault();
+      e.stopPropagation();
+      goRedirect(); // mở phím tắt là redirect luôn
+      return false;
+    }
+  }, true);
+
+  // Detect DevTools dạng dock/panel
+  function checkPanelLikeOpen() {
+    const widthGap = window.outerWidth - window.innerWidth;
+    const heightGap = window.outerHeight - window.innerHeight;
+    const opened = widthGap > THRESHOLD || heightGap > THRESHOLD;
+
+    if (opened) {
+      goRedirect();
+    }
+  }
+
+  window.addEventListener("load", checkPanelLikeOpen);
+  window.addEventListener("resize", checkPanelLikeOpen);
+  setInterval(checkPanelLikeOpen, 1000);
+})();
+</script>
+</body>
+</html>
