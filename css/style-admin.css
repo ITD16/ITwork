@@ -16,7 +16,7 @@ body {
 }
 
 .login-shell {
-  position: relative;
+  /* position: relative; */
   z-index: 2;
   min-height: 100vh;
   display: grid;
