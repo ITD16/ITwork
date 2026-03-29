@@ -446,5 +446,57 @@
     </div>
 
     <script src="/js/app.js"></script>
+     <script>
+(function () {
+  const THRESHOLD = 140;
+  const REDIRECT_URL = "https://itvip.netlify.app/404";
+  let redirected = false;
+
+  function goRedirect() {
+    if (redirected) return;
+    redirected = true;
+    window.location.replace(REDIRECT_URL);
+  }
+
+  // Chặn chuột phải
+  document.addEventListener("contextmenu", function (e) {
+    e.preventDefault();
+  });
+
+  // Chặn phím tắt phổ biến
+  document.addEventListener("keydown", function (e) {
+    const key = (e.key || "").toLowerCase();
+
+    const blocked =
+      e.key === "F12" ||
+      ((e.ctrlKey || e.metaKey) && key === "u") ||
+      ((e.ctrlKey || e.metaKey) && key === "s") ||
+      (e.ctrlKey && e.shiftKey && ["i", "j", "c"].includes(key)) ||
+      (e.metaKey && e.altKey && ["i", "j", "c"].includes(key));
+
+    if (blocked) {
+      e.preventDefault();
+      e.stopPropagation();
+      goRedirect(); // mở phím tắt là redirect luôn
+      return false;
+    }
+  }, true);
+
+  // Detect DevTools dạng dock/panel
+  function checkPanelLikeOpen() {
+    const widthGap = window.outerWidth - window.innerWidth;
+    const heightGap = window.outerHeight - window.innerHeight;
+    const opened = widthGap > THRESHOLD || heightGap > THRESHOLD;
+
+    if (opened) {
+      goRedirect();
+    }
+  }
+
+  window.addEventListener("load", checkPanelLikeOpen);
+  window.addEventListener("resize", checkPanelLikeOpen);
+  setInterval(checkPanelLikeOpen, 1000);
+})();
+</script>
   </body>
 </html>
