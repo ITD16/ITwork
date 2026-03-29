@@ -352,6 +352,12 @@ function createDomainRow(value = "", allowEdit = false) {
   input.value = value;
   input.placeholder = "Example: SUNWIN.AG";
   input.disabled = !allowEdit;
+  input.addEventListener("input", () => {
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+    input.value = input.value.toUpperCase();
+    input.setSelectionRange(start, end);
+  });
 
   const btn = document.createElement("button");
   btn.type = "button";
