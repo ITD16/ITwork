@@ -18,7 +18,8 @@
       "domains1b": false,
       "domains789": false,
       "domains0b": false,
-      "vmixConfig": false
+      "vmixConfig": false,
+      "vmixConfig2": true
     }
   },
   {
