@@ -448,10 +448,10 @@ pre {
 
 .menu-dropdown {
   position: fixed;
-  top: 150px;
+  top: 145px;
   left: 0;
   width: 280px;
-  height: calc(100vh - 150px);
+  height: calc(100vh - 145px);
 
   background: linear-gradient(180deg, #1e2a44 0%, #243556 100%);
   border: 0;
