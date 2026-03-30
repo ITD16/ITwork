@@ -1,11 +1,26 @@
-const { getStore } = require("@netlify/blobs");
-const { json, requireAdmin, requireSameOrigin, getRepoFile } = require("./utils");
+const {
+  json,
+  requireAdmin,
+  requireSameOrigin,
+  getRepoFile,
+} = require("./utils");
 
-const BLOCK_IP_LOG_PATH = process.env.BLOCK_IP_LOG_PATH || "data/block-ips.json";
+const BLOCK_IP_LOG_PATH =
+  process.env.BLOCK_IP_LOG_PATH || "data/block-ips.json";
 const BLOCK_IP_STORE_NAME = process.env.BLOCK_IP_STORE_NAME || "security-logs";
 const BLOCK_IP_STORE_KEY = process.env.BLOCK_IP_STORE_KEY || "blocked-ips";
 
-function getBlockIpStore() {
+let _getStore = null;
+
+async function getBlobsGetStore() {
+  if (_getStore) return _getStore;
+  const mod = await import("@netlify/blobs");
+  _getStore = mod.getStore;
+  return _getStore;
+}
+
+async function getBlockIpStore() {
+  const getStore = await getBlobsGetStore();
   return getStore({ name: BLOCK_IP_STORE_NAME, consistency: "strong" });
 }
 
@@ -38,8 +53,11 @@ exports.handler = async (event) => {
       return json(400, { error: "Missing ip" });
     }
 
-    const store = getBlockIpStore();
-    let logs = await store.get(BLOCK_IP_STORE_KEY, { type: "json", consistency: "strong" });
+    const store = await getBlockIpStore();
+    let logs = await store.get(BLOCK_IP_STORE_KEY, {
+      type: "json",
+      consistency: "strong",
+    });
 
     if (!Array.isArray(logs)) {
       logs = await readLegacyRepoLogs();

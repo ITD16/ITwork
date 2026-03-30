@@ -1,11 +1,23 @@
-const { getStore } = require("@netlify/blobs");
 const { json, getRepoFile } = require("./utils");
 
-const BLOCK_IP_LOG_PATH = process.env.BLOCK_IP_LOG_PATH || "data/block-ips.json";
+const BLOCK_IP_LOG_PATH =
+  process.env.BLOCK_IP_LOG_PATH || "data/block-ips.json";
 const BLOCK_IP_STORE_NAME = process.env.BLOCK_IP_STORE_NAME || "security-logs";
 const BLOCK_IP_STORE_KEY = process.env.BLOCK_IP_STORE_KEY || "blocked-ips";
 const MAX_LOGS = Number(process.env.BLOCK_IP_LOG_MAX || 500);
-const BLOCK_THRESHOLD = Math.max(2, Number(process.env.BLOCK_IP_THRESHOLD || 3));
+const BLOCK_THRESHOLD = Math.max(
+  2,
+  Number(process.env.BLOCK_IP_THRESHOLD || 3),
+);
+
+let _getStore = null;
+
+async function getBlobsGetStore() {
+  if (_getStore) return _getStore;
+  const mod = await import("@netlify/blobs");
+  _getStore = mod.getStore;
+  return _getStore;
+}
 
 function isAuthorized(event) {
   const expected = String(process.env.BLOCK_IP_LOG_SECRET || "").trim();
@@ -20,7 +32,8 @@ function isAuthorized(event) {
   return actual && actual === expected;
 }
 
-function getBlockIpStore() {
+async function getBlockIpStore() {
+  const getStore = await getBlobsGetStore();
   return getStore({ name: BLOCK_IP_STORE_NAME, consistency: "strong" });
 }
 
@@ -48,8 +61,11 @@ exports.handler = async (event) => {
     const nowIso = body.time || new Date().toISOString();
     const ip = String(body.ip || "").trim() || "unknown";
 
-    const store = getBlockIpStore();
-    let logs = await store.get(BLOCK_IP_STORE_KEY, { type: "json", consistency: "strong" });
+    const store = await getBlockIpStore();
+    let logs = await store.get(BLOCK_IP_STORE_KEY, {
+      type: "json",
+      consistency: "strong",
+    });
 
     if (!Array.isArray(logs)) {
       logs = await readLegacyRepoLogs();
@@ -63,7 +79,9 @@ exports.handler = async (event) => {
       existing.lastSeen = nowIso;
       existing.path = String(body.path || existing.path || "/").trim() || "/";
       existing.referer = String(body.referer || existing.referer || "").trim();
-      existing.userAgent = String(body.userAgent || existing.userAgent || "").trim();
+      existing.userAgent = String(
+        body.userAgent || existing.userAgent || "",
+      ).trim();
       existing.country = String(body.country || existing.country || "").trim();
 
       if (!existing.blocked && existing.attempts >= BLOCK_THRESHOLD) {
