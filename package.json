@@ -8,6 +8,7 @@
     "hash-users": "node scripts/hash-users.js"
   },
   "dependencies": {
+    "@netlify/blobs": "^9.0.1",
     "bcryptjs": "^2.4.3"
   }
 }

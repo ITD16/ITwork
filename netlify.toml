@@ -3,7 +3,7 @@
   functions = "netlify/functions"
 
 [functions]
-  included_files = ["data/users.json", "data/block-ips.json"]
+  included_files = ["data/users.json"]
 
 [[redirects]]
   from = "/api/login"

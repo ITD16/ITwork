@@ -1,12 +1,23 @@
-const {
-  json,
-  requireAdmin,
-  requireSameOrigin,
-  getRepoFile,
-  putRepoFile,
-} = require("./utils");
+const { getStore } = require("@netlify/blobs");
+const { json, requireAdmin, requireSameOrigin, getRepoFile } = require("./utils");
 
 const BLOCK_IP_LOG_PATH = process.env.BLOCK_IP_LOG_PATH || "data/block-ips.json";
+const BLOCK_IP_STORE_NAME = process.env.BLOCK_IP_STORE_NAME || "security-logs";
+const BLOCK_IP_STORE_KEY = process.env.BLOCK_IP_STORE_KEY || "blocked-ips";
+
+function getBlockIpStore() {
+  return getStore({ name: BLOCK_IP_STORE_NAME, consistency: "strong" });
+}
+
+async function readLegacyRepoLogs() {
+  try {
+    const file = await getRepoFile(BLOCK_IP_LOG_PATH);
+    const logs = JSON.parse(file.content || "[]");
+    return Array.isArray(logs) ? logs : [];
+  } catch {
+    return [];
+  }
+}
 
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
@@ -27,28 +38,19 @@ exports.handler = async (event) => {
       return json(400, { error: "Missing ip" });
     }
 
-    let sha = null;
-    let logs = [];
+    const store = getBlockIpStore();
+    let logs = await store.get(BLOCK_IP_STORE_KEY, { type: "json", consistency: "strong" });
 
-    try {
-      const file = await getRepoFile(BLOCK_IP_LOG_PATH);
-      sha = file.sha;
-      logs = JSON.parse(file.content || "[]");
-      if (!Array.isArray(logs)) logs = [];
-    } catch (err) {
-      logs = [];
+    if (!Array.isArray(logs)) {
+      logs = await readLegacyRepoLogs();
     }
+    if (!Array.isArray(logs)) logs = [];
 
     const nextLogs = logs.filter((x) => String(x?.ip || "") !== targetIp);
 
-    await putRepoFile(
-      BLOCK_IP_LOG_PATH,
-      JSON.stringify(nextLogs, null, 2) + "\n",
-      `unblock ip ${targetIp} by ${auth.session.username}`,
-      sha,
-    );
+    await store.setJSON(BLOCK_IP_STORE_KEY, nextLogs);
 
-    return json(200, { ok: true, ip: targetIp });
+    return json(200, { ok: true, ip: targetIp, storage: "netlify-blobs" });
   } catch (err) {
     return json(500, { error: err.message || "Cannot unblock ip" });
   }

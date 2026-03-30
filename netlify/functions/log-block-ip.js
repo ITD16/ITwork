@@ -1,6 +1,9 @@
-const { json, getRepoFile, putRepoFile } = require("./utils");
+const { getStore } = require("@netlify/blobs");
+const { json, getRepoFile } = require("./utils");
 
 const BLOCK_IP_LOG_PATH = process.env.BLOCK_IP_LOG_PATH || "data/block-ips.json";
+const BLOCK_IP_STORE_NAME = process.env.BLOCK_IP_STORE_NAME || "security-logs";
+const BLOCK_IP_STORE_KEY = process.env.BLOCK_IP_STORE_KEY || "blocked-ips";
 const MAX_LOGS = Number(process.env.BLOCK_IP_LOG_MAX || 500);
 const BLOCK_THRESHOLD = Math.max(2, Number(process.env.BLOCK_IP_THRESHOLD || 3));
 
@@ -17,6 +20,20 @@ function isAuthorized(event) {
   return actual && actual === expected;
 }
 
+function getBlockIpStore() {
+  return getStore({ name: BLOCK_IP_STORE_NAME, consistency: "strong" });
+}
+
+async function readLegacyRepoLogs() {
+  try {
+    const file = await getRepoFile(BLOCK_IP_LOG_PATH);
+    const logs = JSON.parse(file.content || "[]");
+    return Array.isArray(logs) ? logs : [];
+  } catch {
+    return [];
+  }
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return json(405, { error: "Method not allowed" });
@@ -31,17 +48,13 @@ exports.handler = async (event) => {
     const nowIso = body.time || new Date().toISOString();
     const ip = String(body.ip || "").trim() || "unknown";
 
-    let sha = null;
-    let logs = [];
+    const store = getBlockIpStore();
+    let logs = await store.get(BLOCK_IP_STORE_KEY, { type: "json", consistency: "strong" });
 
-    try {
-      const file = await getRepoFile(BLOCK_IP_LOG_PATH);
-      sha = file.sha;
-      logs = JSON.parse(file.content || "[]");
-      if (!Array.isArray(logs)) logs = [];
-    } catch (err) {
-      logs = [];
+    if (!Array.isArray(logs)) {
+      logs = await readLegacyRepoLogs();
     }
+    if (!Array.isArray(logs)) logs = [];
 
     const existing = logs.find((x) => String(x?.ip || "") === ip);
 
@@ -79,12 +92,7 @@ exports.handler = async (event) => {
     });
     logs = logs.slice(0, MAX_LOGS);
 
-    await putRepoFile(
-      BLOCK_IP_LOG_PATH,
-      JSON.stringify(logs, null, 2) + "\n",
-      `track blocked ip ${ip}`,
-      sha,
-    );
+    await store.setJSON(BLOCK_IP_STORE_KEY, logs);
 
     const row = logs.find((x) => String(x?.ip || "") === ip) || null;
 
@@ -94,6 +102,7 @@ exports.handler = async (event) => {
       ip,
       blocked: !!row?.blocked,
       attempts: Number(row?.attempts || 0),
+      storage: "netlify-blobs",
     });
   } catch (err) {
     return json(500, { error: err.message || "Cannot log blocked ip" });

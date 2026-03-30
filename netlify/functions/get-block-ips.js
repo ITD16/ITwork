@@ -1,26 +1,37 @@
+const { getStore } = require("@netlify/blobs");
 const { json, requireAdmin, getRepoFile } = require("./utils");
 
 const BLOCK_IP_LOG_PATH = process.env.BLOCK_IP_LOG_PATH || "data/block-ips.json";
+const BLOCK_IP_STORE_NAME = process.env.BLOCK_IP_STORE_NAME || "security-logs";
+const BLOCK_IP_STORE_KEY = process.env.BLOCK_IP_STORE_KEY || "blocked-ips";
+
+function getBlockIpStore() {
+  return getStore({ name: BLOCK_IP_STORE_NAME, consistency: "strong" });
+}
+
+async function readLegacyRepoLogs() {
+  try {
+    const file = await getRepoFile(BLOCK_IP_LOG_PATH);
+    const logs = JSON.parse(file.content || "[]");
+    return Array.isArray(logs) ? logs : [];
+  } catch {
+    return [];
+  }
+}
 
 exports.handler = async (event) => {
   const auth = requireAdmin(event);
   if (!auth.ok) return auth.response;
 
   try {
-    let content = "[]";
+    const store = getBlockIpStore();
+    let logs = await store.get(BLOCK_IP_STORE_KEY, { type: "json", consistency: "strong" });
 
-    try {
-      const file = await getRepoFile(BLOCK_IP_LOG_PATH);
-      content = file.content || "[]";
-    } catch (err) {
-      content = "[]";
-    }
-
-    let logs = [];
-    try {
-      logs = JSON.parse(content || "[]");
-    } catch {
-      logs = [];
+    if (!Array.isArray(logs) || logs.length === 0) {
+      logs = await readLegacyRepoLogs();
+      if (Array.isArray(logs) && logs.length) {
+        await store.setJSON(BLOCK_IP_STORE_KEY, logs);
+      }
     }
 
     if (!Array.isArray(logs)) logs = [];
