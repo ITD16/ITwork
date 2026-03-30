@@ -34,7 +34,20 @@ function isAuthorized(event) {
 
 async function getBlockIpStore() {
   const getStore = await getBlobsGetStore();
-  return getStore({ name: BLOCK_IP_STORE_NAME, consistency: "strong" });
+
+  const siteID = String(process.env.NETLIFY_BLOBS_SITE_ID || "").trim();
+  const token = String(process.env.NETLIFY_BLOBS_TOKEN || "").trim();
+
+  if (!siteID || !token) {
+    throw new Error("Missing NETLIFY_BLOBS_SITE_ID or NETLIFY_BLOBS_TOKEN");
+  }
+
+  return getStore({
+    name: BLOCK_IP_STORE_NAME,
+    consistency: "strong",
+    siteID,
+    token,
+  });
 }
 
 async function readLegacyRepoLogs() {
