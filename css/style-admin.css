@@ -977,3 +977,52 @@ button,
 .domain-row input {
   text-transform: uppercase;
 }
+
+.block-ip-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 18px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+.block-ip-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.block-ip-head .log-meta {
+  margin-bottom: 0;
+}
+
+.block-ip-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 18px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+.log-meta-sep {
+  display: inline-block;
+  margin: 0 8px;
+}
+
+@media (max-width: 980px) {
+  .block-ip-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .block-ip-grid {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .log-meta-sep {
+    margin: 0 6px;
+  }
+}

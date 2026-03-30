@@ -228,7 +228,8 @@ function setActiveLogView(view = "changeLogs") {
 }
 
 function renderBlockIpItem(log) {
-  const ip = escapeHtml(log.ip || "unknown");
+  const rawIp = log.ip || "unknown";
+  const ip = escapeHtml(rawIp);
   const attempts = Number(log.attempts || 0);
   const firstSeen = escapeHtml(formatDateTimeVN(log.firstSeen || log.time));
   const lastSeen = escapeHtml(formatDateTimeVN(log.lastSeen || log.time));
@@ -243,19 +244,31 @@ function renderBlockIpItem(log) {
 
   return `
     <div class="log-item">
-      <div class="log-meta">
-        <strong>${ip}</strong> - ${status}
+      <div class="block-ip-head">
+        <div class="log-meta">
+          <strong>${ip}</strong> - ${status}
+        </div>
+
+        <button type="button" class="secondary small" data-unblock-ip="${escapeHtml(rawIp)}">
+          Unblock
+        </button>
       </div>
+
       <div class="muted">Attempts: ${attempts}</div>
-      <div class="muted">First seen: ${firstSeen}</div>
-      <div class="muted">Last seen: ${lastSeen}</div>
-      <div class="muted">Blocked at: ${blockedAt}</div>
-      <div class="muted">Path: ${path}</div>
-      <div class="muted">Country: ${country}</div>
-      <div class="muted">Referer: ${referer}</div>
-      <div style="margin-top:8px;">
-        <button type="button" class="secondary small" data-unblock-ip="${ip}">Unblock</button>
+
+      <div class="muted">
+        <strong>First seen:</strong> ${firstSeen}
+        <span class="log-meta-sep">-</span>
+        <strong>Last seen:</strong> ${lastSeen}
       </div>
+
+      <div class="block-ip-grid muted">
+        <div><strong>Blocked at:</strong> ${blockedAt}</div>
+        <div><strong>Path:</strong> ${path}</div>
+        <div><strong>Country:</strong> ${country}</div>
+        <div><strong>Referer:</strong> ${referer}</div>
+      </div>
+
       <pre>${ua}</pre>
     </div>
   `;
@@ -1944,7 +1957,6 @@ els.logsBox?.addEventListener("click", async (e) => {
     window.alert(err.message || "Cannot unblock IP");
   }
 });
-
 
 els.reloadUsersBtn?.addEventListener("click", async () => {
   await loadUsers();
