@@ -9,7 +9,8 @@ export default async (request, context) => {
     .filter(Boolean);
 
   const localAllowed = ["127.0.0.1", "::1"];
-  const allowed = localAllowed.includes(clientIp) || whitelist.includes(clientIp);
+  const allowed =
+    localAllowed.includes(clientIp) || whitelist.includes(clientIp);
 
   if (allowed) {
     return context.next();
@@ -32,7 +33,9 @@ export default async (request, context) => {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "x-block-ip-secret": String(Netlify.env.get("BLOCK_IP_LOG_SECRET") || ""),
+        "x-block-ip-secret": String(
+          Netlify.env.get("BLOCK_IP_LOG_SECRET") || "",
+        ),
       },
       body: JSON.stringify(payload),
     });
@@ -61,5 +64,5 @@ export default async (request, context) => {
 };
 
 export const config = {
-  path: ["/", "/index.html"],
+  path: ["/", "/index.html", "/admin.html"],
 };
