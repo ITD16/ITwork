@@ -1,5 +1,17 @@
 [
   {
+    "ip": "34.201.154.114",
+    "attempts": 1,
+    "blocked": false,
+    "firstSeen": "2026-03-30T07:43:36.618Z",
+    "lastSeen": "2026-03-30T07:43:36.618Z",
+    "blockedAt": "",
+    "path": "/",
+    "referer": "",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/131.0.6778.0 Safari/537.36",
+    "country": "US"
+  },
+  {
     "ip": "44.195.128.181",
     "attempts": 1,
     "blocked": false,
