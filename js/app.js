@@ -7,6 +7,7 @@ let originalVmixConfigs = {
 let currentMe = null;
 let currentPanelId = null;
 let activeVmixTarget = "vmix-config";
+let activeLogView = "changeLogs";
 
 const IDLE_LIMIT_MS = 5 * 60 * 1000;
 let idleTimer = null;
@@ -87,6 +88,9 @@ const els = {
   domains789List: document.getElementById("domains789List"),
   domains0bList: document.getElementById("domains0bList"),
 
+  logsMenuGroup: document.getElementById("logsMenuGroup"),
+  logsMenuBtn: document.getElementById("logsMenuBtn"),
+  logsSubmenu: document.getElementById("logsSubmenu"),
   vmixMenuGroup: document.getElementById("vmixMenuGroup"),
   vmixMenuBtn: document.getElementById("vmixMenuBtn"),
   vmixSubmenu: document.getElementById("vmixSubmenu"),
@@ -101,6 +105,7 @@ const els = {
 
   saveMessage: document.getElementById("saveMessage"),
   saveError: document.getElementById("saveError"),
+  logsPanelTitle: document.getElementById("logsPanelTitle"),
   logsBox: document.getElementById("logsBox"),
   saveBtn: document.getElementById("saveBtn"),
   resetBtn: document.getElementById("resetBtn"),
@@ -202,6 +207,58 @@ function escapeHtml(value) {
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
+}
+
+function setActiveLogView(view = "changeLogs") {
+  activeLogView = view === "blockIps" ? "blockIps" : "changeLogs";
+
+  if (els.logsPanelTitle) {
+    els.logsPanelTitle.textContent =
+      activeLogView === "blockIps" ? "Blocked IP Logs" : "Change Logs";
+  }
+
+  document
+    .querySelectorAll(".logs-submenu-item[data-log-view]")
+    .forEach((btn) => {
+      btn.classList.toggle(
+        "active",
+        btn.getAttribute("data-log-view") === activeLogView,
+      );
+    });
+}
+
+function renderBlockIpItem(log) {
+  const ip = escapeHtml(log.ip || "unknown");
+  const attempts = Number(log.attempts || 0);
+  const firstSeen = escapeHtml(formatDateTimeVN(log.firstSeen || log.time));
+  const lastSeen = escapeHtml(formatDateTimeVN(log.lastSeen || log.time));
+  const blockedAt = log.blockedAt
+    ? escapeHtml(formatDateTimeVN(log.blockedAt))
+    : "-";
+  const path = escapeHtml(log.path || "/");
+  const ua = escapeHtml(log.userAgent || "-");
+  const referer = escapeHtml(log.referer || "-");
+  const country = escapeHtml(log.country || "-");
+  const status = log.blocked ? "Blocked" : "Watching";
+
+  return `
+    <div class="log-item">
+      <div class="log-meta">
+        <strong>${ip}</strong> - ${status}
+      </div>
+      <div class="muted">Attempts: ${attempts}</div>
+      <div class="muted">First seen: ${firstSeen}</div>
+      <div class="muted">Last seen: ${lastSeen}</div>
+      <div class="muted">Blocked at: ${blockedAt}</div>
+      <div class="muted">Path: ${path}</div>
+      <div class="muted">Country: ${country}</div>
+      <div class="muted">Referer: ${referer}</div>
+      <div style="margin-top:8px;">
+        <button type="button" class="secondary small" data-unblock-ip="${ip}">Unblock</button>
+      </div>
+      <pre>${ua}</pre>
+    </div>
+  `;
 }
 
 function normalizeHexColor(value, fallback = "#ffffff") {
@@ -1217,7 +1274,7 @@ async function loadAllConfigs() {
   applyRoleUi();
 }
 
-async function loadLogs() {
+async function loadChangeLogs() {
   if (!els.logsBox) return;
 
   els.logsBox.innerHTML = "Loading...";
@@ -1270,6 +1327,61 @@ async function loadLogs() {
       `;
     })
     .join("");
+}
+
+async function loadBlockIpLogs() {
+  if (!els.logsBox) return;
+
+  els.logsBox.innerHTML = "Loading...";
+  const res = await fetch("/api/block-ips", { credentials: "include" });
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    els.logsBox.innerHTML = `<div class="error">${escapeHtml(data.error || "Cannot load blocked IP logs")}</div>`;
+    return;
+  }
+
+  const data = await res.json();
+  const logs = Array.isArray(data.logs) ? data.logs : [];
+
+  if (!logs.length) {
+    els.logsBox.innerHTML = `<div class="muted">Chưa có blocked IP log</div>`;
+    return;
+  }
+
+  els.logsBox.innerHTML = logs.map((log) => renderBlockIpItem(log)).join("");
+}
+
+async function unblockBlockedIp(ip) {
+  const targetIp = String(ip || "").trim();
+  if (!targetIp) return;
+
+  const ok = window.confirm(`Unblock IP ${targetIp}?`);
+  if (!ok) return;
+
+  const res = await fetch("/api/block-ips/unblock", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ ip: targetIp }),
+  });
+
+  const data = await res.json().catch(() => ({}));
+
+  if (!res.ok) {
+    throw new Error(data.error || "Cannot unblock IP");
+  }
+}
+
+async function loadLogs() {
+  setActiveLogView(activeLogView);
+
+  if (activeLogView === "blockIps") {
+    await loadBlockIpLogs();
+    return;
+  }
+
+  await loadChangeLogs();
 }
 
 async function saveConfig() {
@@ -1685,6 +1797,25 @@ function bindMenuUi() {
     });
   });
 
+  els.logsMenuBtn?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    resetIdleTimer();
+  });
+
+  document
+    .querySelectorAll(".logs-submenu-item[data-log-view]")
+    .forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+
+        const view = btn.getAttribute("data-log-view") || "changeLogs";
+        setActiveLogView(view);
+        await loadLogs();
+        closeMenu();
+        resetIdleTimer();
+      });
+    });
+
   els.vmixMenuBtn?.addEventListener("click", (e) => {
     e.stopPropagation();
     resetIdleTimer();
@@ -1799,6 +1930,21 @@ els.reloadLogsBtn?.addEventListener("click", async () => {
   await loadLogs();
   resetIdleTimer();
 });
+els.logsBox?.addEventListener("click", async (e) => {
+  const btn = e.target.closest("[data-unblock-ip]");
+  if (!btn) return;
+
+  const ip = btn.getAttribute("data-unblock-ip") || "";
+
+  try {
+    await unblockBlockedIp(ip);
+    await loadLogs();
+    resetIdleTimer();
+  } catch (err) {
+    window.alert(err.message || "Cannot unblock IP");
+  }
+});
+
 
 els.reloadUsersBtn?.addEventListener("click", async () => {
   await loadUsers();
@@ -1934,6 +2080,7 @@ async function init() {
   await ensureMe();
   ensureValidVmixTarget();
   await loadAllConfigs();
+  setActiveLogView(activeLogView);
   await loadLogs();
   if (isAdmin()) {
     await loadUsers();

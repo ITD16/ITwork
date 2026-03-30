@@ -3,7 +3,7 @@
   functions = "netlify/functions"
 
 [functions]
-  included_files = ["data/users.json"]
+  included_files = ["data/users.json", "data/block-ips.json"]
 
 [[redirects]]
   from = "/api/login"
@@ -64,3 +64,25 @@
   from = "/api/users/update-permissions"
   to = "/.netlify/functions/update-user-permissions"
   status = 200
+[[redirects]]
+  from = "/api/block-ips"
+  to = "/.netlify/functions/get-block-ips"
+  status = 200
+
+[[redirects]]
+  from = "/api/log-block-ip"
+  to = "/.netlify/functions/log-block-ip"
+  status = 200
+
+[[redirects]]
+  from = "/api/block-ips/unblock"
+  to = "/.netlify/functions/unblock-block-ip"
+  status = 200
+
+[[edge_functions]]
+  path = "/"
+  function = "ip-guard"
+
+[[edge_functions]]
+  path = "/index.html"
+  function = "ip-guard"

@@ -84,6 +84,38 @@
 
                   <div
                     class="menu-item-with-children"
+                    id="logsMenuGroup"
+                  >
+                    <button
+                      type="button"
+                      class="menu-item menu-item-parent"
+                      id="logsMenuBtn"
+                    >
+                      <span>Logs</span>
+                      <span class="menu-item-arrow">›</span>
+                    </button>
+
+                    <div class="menu-submenu" id="logsSubmenu">
+                      <button
+                        type="button"
+                        class="menu-item logs-submenu-item"
+                        data-log-view="changeLogs"
+                      >
+                        Change Logs
+                      </button>
+
+                      <button
+                        type="button"
+                        class="menu-item logs-submenu-item"
+                        data-log-view="blockIps"
+                      >
+                        Block IPs
+                      </button>
+                    </div>
+                  </div>
+
+                  <div
+                    class="menu-item-with-children"
                     id="vmixMenuGroup"
                     data-panel-id="vmixConfigPanel"
                   >
@@ -362,7 +394,7 @@
 
       <section id="changeLogsCard" class="card">
         <div class="section-head">
-          <h2>Change Logs</h2>
+          <h2 id="logsPanelTitle">Change Logs</h2>
           <button id="reloadLogsBtn" type="button" class="secondary">
             Reload Logs
           </button>
