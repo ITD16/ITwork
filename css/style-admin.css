@@ -1026,3 +1026,20 @@ button,
     margin: 0 6px;
   }
 }
+.block-ip-status.is-blocked {
+  color: #dc2626;
+  font-weight: 700;
+}
+
+.block-ip-status.is-watching {
+  color: inherit;
+}
+
+.block-ip-unblock-btn.is-blocked {
+  background: #dc2626;
+  color: #fff;
+}
+
+.block-ip-unblock-btn.is-blocked:hover {
+  background: #b91c1c;
+}

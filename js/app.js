@@ -240,16 +240,22 @@ function renderBlockIpItem(log) {
   const ua = escapeHtml(log.userAgent || "-");
   const referer = escapeHtml(log.referer || "-");
   const country = escapeHtml(log.country || "-");
-  const status = log.blocked ? "Blocked" : "Watching";
+  const isBlocked = !!log.blocked;
+  const status = isBlocked ? "Blocked" : "Watching";
 
   return `
     <div class="log-item">
       <div class="block-ip-head">
         <div class="log-meta">
-          <strong>${ip}</strong> - ${status}
+          <strong>${ip}</strong> -
+          <span class="block-ip-status ${isBlocked ? "is-blocked" : "is-watching"}">${status}</span>
         </div>
 
-        <button type="button" class="secondary small" data-unblock-ip="${escapeHtml(rawIp)}">
+        <button
+          type="button"
+          class="secondary small block-ip-unblock-btn ${isBlocked ? "is-blocked" : ""}"
+          data-unblock-ip="${escapeHtml(rawIp)}"
+        >
           Unblock
         </button>
       </div>
