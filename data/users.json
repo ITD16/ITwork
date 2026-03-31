@@ -17,7 +17,9 @@
       "contentidolSettings": true,
       "domains1b": false,
       "domains789": false,
-      "domains0b": false,
+      "domains0b": true,
+      "webscam1b": false,
+      "webscam0b": false,
       "vmixConfig": false,
       "vmixConfig2": false
     }
