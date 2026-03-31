@@ -70,6 +70,8 @@ function normalizeConfig(config) {
     domains1b: normalizeDomains(config.domains1b),
     domains789: normalizeDomains(config.domains789),
     domains0b: normalizeDomains(config.domains0b),
+    webscam1b: normalizeDomains(config.webscam1b),
+    webscam0b: normalizeDomains(config.webscam0b),
   };
 }
 
@@ -115,6 +117,14 @@ function normalizePartialConfig(config) {
 
   if (hasOwn(config, "domains0b")) {
     out.domains0b = normalizeDomains(config.domains0b);
+  }
+
+  if (hasOwn(config, "webscam1b")) {
+    out.webscam1b = normalizeDomains(config.webscam1b);
+  }
+
+  if (hasOwn(config, "webscam0b")) {
+    out.webscam0b = normalizeDomains(config.webscam0b);
   }
 
   return out;
@@ -233,6 +243,8 @@ function getUserPermissions(user) {
       domains1b: true,
       domains789: true,
       domains0b: true,
+      webscam1b: true,
+      webscam0b: true,
       enableFirework: true,
       vmixConfig: true,
       vmixConfig2: true,
@@ -248,6 +260,8 @@ function getUserPermissions(user) {
     domains1b: p.domains1b !== false,
     domains789: p.domains789 !== false,
     domains0b: p.domains0b !== false,
+    webscam1b: p.webscam1b !== false,
+    webscam0b: p.webscam0b !== false,
     enableFirework: false,
     vmixConfig: p.vmixConfig !== false,
     vmixConfig2: p.vmixConfig2 !== false,
@@ -275,7 +289,12 @@ function getUnauthorizedChangedFields(changes, perms) {
   if (changes.domains0b && !perms.domains0b) {
     unauthorized.push("domains0b");
   }
-
+  if (changes.webscam1b && !perms.webscam1b) {
+    unauthorized.push("webscam1b");
+  }
+  if (changes.webscam0b && !perms.webscam0b) {
+    unauthorized.push("webscam0b");
+  }
   return unauthorized;
 }
 
@@ -292,10 +311,10 @@ function applyPermissionFilteredConfig(before, incoming, perms) {
       : before.contentidolSettings,
 
     domains1b: perms.domains1b ? incoming.domains1b : before.domains1b,
-
     domains789: perms.domains789 ? incoming.domains789 : before.domains789,
-
     domains0b: perms.domains0b ? incoming.domains0b : before.domains0b,
+    webscam1b: perms.webscam1b ? incoming.webscam1b : before.webscam1b,
+    webscam0b: perms.webscam0b ? incoming.webscam0b : before.webscam0b,
   };
 }
 

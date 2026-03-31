@@ -13,6 +13,8 @@ function normalizePermissions(perms = {}) {
     domains1b: !!perms.domains1b,
     domains789: !!perms.domains789,
     domains0b: !!perms.domains0b,
+    webscam1b: !!perms.webscam1b,
+    webscam0b: !!perms.webscam0b,
     vmixConfig: !!perms.vmixConfig,
     vmixConfig2: !!perms.vmixConfig2,
   };

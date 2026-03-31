@@ -81,11 +81,23 @@
                   >
                     Change Dom 0B
                   </button>
-
-                  <div
-                    class="menu-item-with-children"
-                    id="logsMenuGroup"
+                  <button
+                    type="button"
+                    class="menu-item"
+                    data-panel-id="webscam1bPanel"
                   >
+                    Webscam 1B
+                  </button>
+
+                  <button
+                    type="button"
+                    class="menu-item"
+                    data-panel-id="webscam0bPanel"
+                  >
+                    Webscam 0B
+                  </button>
+
+                  <div class="menu-item-with-children" id="logsMenuGroup">
                     <button
                       type="button"
                       class="menu-item menu-item-parent"
@@ -331,6 +343,38 @@
                   </button>
                 </div>
                 <div id="domains0bList" class="domain-list"></div>
+              </div>
+            </div>
+
+            <div id="webscam1bPanel" class="group-box config-panel">
+              <div id="webscam1bSection" class="group-box panel-inner-box">
+                <div class="group-head">
+                  <h3></h3>
+                  <button
+                    type="button"
+                    data-add="webscam1b"
+                    class="secondary small"
+                  >
+                    + Add
+                  </button>
+                </div>
+                <div id="webscam1bList" class="domain-list"></div>
+              </div>
+            </div>
+
+            <div id="webscam0bPanel" class="group-box config-panel">
+              <div id="webscam0bSection" class="group-box panel-inner-box">
+                <div class="group-head">
+                  <h3></h3>
+                  <button
+                    type="button"
+                    data-add="webscam0b"
+                    class="secondary small"
+                  >
+                    + Add
+                  </button>
+                </div>
+                <div id="webscam0bList" class="domain-list"></div>
               </div>
             </div>
 

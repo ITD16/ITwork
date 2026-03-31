@@ -21,6 +21,8 @@ exports.handler = async (event) => {
                 domains1b: true,
                 domains789: true,
                 domains0b: true,
+                webscam1b: true,
+                webscam0b: true,
                 vmixConfig: true,
                 vmixConfig2: true,
               }
@@ -30,6 +32,8 @@ exports.handler = async (event) => {
                 domains1b: !!u.permissions?.domains1b,
                 domains789: !!u.permissions?.domains789,
                 domains0b: !!u.permissions?.domains0b,
+                webscam1b: !!u.permissions?.webscam1b,
+                webscam0b: !!u.permissions?.webscam0b,
                 vmixConfig: !!u.permissions?.vmixConfig,
                 vmixConfig2: !!u.permissions?.vmixConfig2,
               },

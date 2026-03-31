@@ -19,6 +19,8 @@ const CONFIG_PANEL_IDS = [
   "domains1bPanel",
   "domains789Panel",
   "domains0bPanel",
+  "webscam1bPanel",
+  "webscam0bPanel",
 ];
 
 const VMIX_PANEL_ID = "vmixConfigPanel";
@@ -53,6 +55,8 @@ const els = {
   domains1bPanel: document.getElementById("domains1bPanel"),
   domains789Panel: document.getElementById("domains789Panel"),
   domains0bPanel: document.getElementById("domains0bPanel"),
+  webscam1bPanel: document.getElementById("webscam1bPanel"),
+  webscam0bPanel: document.getElementById("webscam0bPanel"),
   vmixConfigPanel: document.getElementById("vmixConfigPanel"),
 
   userManagementCard: document.getElementById("userManagementCard"),
@@ -64,6 +68,8 @@ const els = {
   domains1bSection: document.getElementById("domains1bSection"),
   domains789Section: document.getElementById("domains789Section"),
   domains0bSection: document.getElementById("domains0bSection"),
+  webscam1bSection: document.getElementById("webscam1bSection"),
+  webscam0bSection: document.getElementById("webscam0bSection"),
   vmixConfigSection: document.getElementById("vmixConfigSection"),
 
   contentidolList: document.getElementById("contentidolList"),
@@ -87,6 +93,8 @@ const els = {
   domains1bList: document.getElementById("domains1bList"),
   domains789List: document.getElementById("domains789List"),
   domains0bList: document.getElementById("domains0bList"),
+  webscam1bList: document.getElementById("webscam1bList"),
+  webscam0bList: document.getElementById("webscam0bList"),
 
   logsMenuGroup: document.getElementById("logsMenuGroup"),
   logsMenuBtn: document.getElementById("logsMenuBtn"),
@@ -151,6 +159,8 @@ function getPermissions() {
     domains1b: allowed.includes("domains1b"),
     domains789: allowed.includes("domains789"),
     domains0b: allowed.includes("domains0b"),
+    webscam1b: allowed.includes("webscam1b"),
+    webscam0b: allowed.includes("webscam0b"),
     vmixConfig: allowed.includes("vmixConfig"),
     vmixConfig2: allowed.includes("vmixConfig2"),
     enableFirework: isAdmin(),
@@ -176,6 +186,13 @@ function canEditDomains789() {
 function canEditDomains0b() {
   return isAdmin() || getPermissions().domains0b;
 }
+function canEditWebscam1b() {
+  return isAdmin() || getPermissions().webscam1b;
+}
+
+function canEditWebscam0b() {
+  return isAdmin() || getPermissions().webscam0b;
+}
 
 function canEditVmixConfig() {
   const perms = getPermissions();
@@ -197,6 +214,8 @@ function canEditAnything() {
     canEditDomains1b() ||
     canEditDomains789() ||
     canEditDomains0b() ||
+    canEditWebscam1b() ||
+    canEditWebscam0b() ||
     canEditVmixConfig()
   );
 }
@@ -584,6 +603,8 @@ function sanitizeConfigForCurrentUser(config) {
     domains1b: perms.domains1b ? [...(config?.domains1b || [])] : [],
     domains789: perms.domains789 ? [...(config?.domains789 || [])] : [],
     domains0b: perms.domains0b ? [...(config?.domains0b || [])] : [],
+    webscam1b: perms.webscam1b ? [...(config?.webscam1b || [])] : [],
+    webscam0b: perms.webscam0b ? [...(config?.webscam0b || [])] : [],
   };
 }
 
@@ -631,6 +652,8 @@ function collectConfig() {
     domains1b: getDomainList(els.domains1bList),
     domains789: getDomainList(els.domains789List),
     domains0b: getDomainList(els.domains0bList),
+    webscam1b: getDomainList(els.webscam1bList),
+    webscam0b: getDomainList(els.webscam0bList),
   };
 }
 
@@ -704,6 +727,20 @@ function collectConfigByPanel(panelId = currentPanelId) {
           }
         : {};
 
+    case "webscam1bPanel":
+      return canEditWebscam1b()
+        ? {
+            webscam1b: getDomainList(els.webscam1bList),
+          }
+        : {};
+
+    case "webscam0bPanel":
+      return canEditWebscam0b()
+        ? {
+            webscam0b: getDomainList(els.webscam0bList),
+          }
+        : {};
+
     default:
       return {};
   }
@@ -756,6 +793,17 @@ function renderConfig(config) {
     els.domains0bList,
     safeConfig.domains0b || [],
     canEditDomains0b(),
+  );
+
+  renderDomainList(
+    els.webscam1bList,
+    safeConfig.webscam1b || [],
+    canEditWebscam1b(),
+  );
+  renderDomainList(
+    els.webscam0bList,
+    safeConfig.webscam0b || [],
+    canEditWebscam0b(),
   );
 
   const s = safeConfig.contentidolSettings || {};
@@ -884,6 +932,8 @@ function getAllPanels() {
     els.domains789Panel,
     els.domains0bPanel,
     els.vmixConfigPanel,
+    els.webscam1bPanel,
+    els.webscam0bPanel,
   ].filter(Boolean);
 }
 
@@ -931,6 +981,20 @@ function getPanelMeta() {
       label: "Change Dom 0B",
       subtitle: "Manage domain list 0B",
       visible: perms.domains0b,
+      target: "config",
+    },
+    {
+      id: "webscam1bPanel",
+      label: "Webscam 1B",
+      subtitle: "Manage webscam list 1B",
+      visible: perms.webscam1b,
+      target: "config",
+    },
+    {
+      id: "webscam0bPanel",
+      label: "Webscam 0B",
+      subtitle: "Manage webscam list 0B",
+      visible: perms.webscam0b,
       target: "config",
     },
     {
@@ -1111,6 +1175,16 @@ function applyRoleUi() {
     btn.disabled = !canEditDomains0b();
   });
 
+  document.querySelectorAll('[data-add="webscam1b"]').forEach((btn) => {
+    btn.style.display = canEditWebscam1b() ? "" : "none";
+    btn.disabled = !canEditWebscam1b();
+  });
+
+  document.querySelectorAll('[data-add="webscam0b"]').forEach((btn) => {
+    btn.style.display = canEditWebscam0b() ? "" : "none";
+    btn.disabled = !canEditWebscam0b();
+  });
+
   if (els.addUserBtn) {
     els.addUserBtn.style.display = isAdmin() ? "" : "none";
     els.addUserBtn.disabled = !isAdmin();
@@ -1139,6 +1213,8 @@ function applyRoleUi() {
   setInputsDisabled(els.domains1bList, !canEditDomains1b());
   setInputsDisabled(els.domains789List, !canEditDomains789());
   setInputsDisabled(els.domains0bList, !canEditDomains0b());
+  setInputsDisabled(els.webscam1bList, !canEditWebscam1b());
+  setInputsDisabled(els.webscam0bList, !canEditWebscam0b());
 
   [
     els.contentidolEnabled,
@@ -1542,6 +1618,8 @@ function renderPermissionsTable(users) {
             <th>Domain 1B</th>
             <th>Domain 789</th>
             <th>Domain 0B</th>
+            <th>Webscam 1B</th>
+            <th>Webscam 0B</th>
             <th>vMix DOM 1B</th>
             <th>vMix iDol 1B</th>
           </tr>
@@ -1557,6 +1635,8 @@ function renderPermissionsTable(users) {
                     domains1b: true,
                     domains789: true,
                     domains0b: true,
+                    webscam1b: true,
+                    webscam0b: true,
                     vmixConfig: true,
                     vmixConfig2: true,
                   }
@@ -1604,6 +1684,8 @@ function renderPermissionsTable(users) {
                 <td>${makeCheckbox(user.username, "domains1b", !!perms.domains1b, disabled)}</td>
                 <td>${makeCheckbox(user.username, "domains789", !!perms.domains789, disabled)}</td>
                 <td>${makeCheckbox(user.username, "domains0b", !!perms.domains0b, disabled)}</td>
+                <td>${makeCheckbox(user.username, "webscam1b", !!perms.webscam1b, disabled)}</td>
+                <td>${makeCheckbox(user.username, "webscam0b", !!perms.webscam0b, disabled)}</td>
                 <td>${makeCheckbox(user.username, "vmixConfig", !!perms.vmixConfig, disabled)}</td>
                 <td>${makeCheckbox(user.username, "vmixConfig2", !!perms.vmixConfig2, disabled)}</td>
               </tr>
@@ -1649,6 +1731,14 @@ async function bindPermissionCheckboxes() {
           domains0b:
             rowChecks.find(
               (x) => x.getAttribute("data-perm-field") === "domains0b",
+            )?.checked ?? true,
+          webscam1b:
+            rowChecks.find(
+              (x) => x.getAttribute("data-perm-field") === "webscam1b",
+            )?.checked ?? true,
+          webscam0b:
+            rowChecks.find(
+              (x) => x.getAttribute("data-perm-field") === "webscam0b",
             )?.checked ?? true,
           vmixConfig:
             rowChecks.find(
@@ -1910,6 +2000,8 @@ document.querySelectorAll("[data-add]").forEach((btn) => {
       domains1b: canEditDomains1b(),
       domains789: canEditDomains789(),
       domains0b: canEditDomains0b(),
+      webscam1b: canEditWebscam1b(),
+      webscam0b: canEditWebscam0b(),
     };
 
     if (!domainPermissionMap[key]) return;
@@ -1918,6 +2010,8 @@ document.querySelectorAll("[data-add]").forEach((btn) => {
       domains1b: els.domains1bList,
       domains789: els.domains789List,
       domains0b: els.domains0bList,
+      webscam1b: els.webscam1bList,
+      webscam0b: els.webscam0bList,
     };
 
     map[key]?.appendChild(createDomainRow("", true));

@@ -18,6 +18,8 @@ function getUserPermissions(user) {
       enableFirework: true,
       vmixConfig: true,
       vmixConfig2: true,
+      webscam1b: true,
+      webscam0b: true,
     };
   }
 
@@ -30,6 +32,8 @@ function getUserPermissions(user) {
     domains1b: p.domains1b !== false,
     domains789: p.domains789 !== false,
     domains0b: p.domains0b !== false,
+    webscam1b: p.webscam1b !== false,
+    webscam0b: p.webscam0b !== false,
     enableFirework: false,
     vmixConfig: p.vmixConfig !== false,
     vmixConfig2: p.vmixConfig2 !== false,
@@ -60,6 +64,8 @@ function filterConfigByPermissions(config, perms) {
     domains1b: perms.domains1b ? config.domains1b || [] : [],
     domains789: perms.domains789 ? config.domains789 || [] : [],
     domains0b: perms.domains0b ? config.domains0b || [] : [],
+    webscam1b: perms.webscam1b ? config.webscam1b || [] : [],
+    webscam0b: perms.webscam0b ? config.webscam0b || [] : [],
   };
 }
 
