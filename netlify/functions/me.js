@@ -23,8 +23,8 @@ function normalizeAllowedPanels(user) {
   if (!!p.domains1b) out.push("domains1b");
   if (!!p.domains789) out.push("domains789");
   if (!!p.domains0b) out.push("domains0b");
-  if (!!p.domains0b) out.push("webscam1b");
-  if (!!p.domains0b) out.push("webscam0b");
+  if (!!p.webscam1b) out.push("webscam1b");
+  if (!!p.webscam0b) out.push("webscam0b");
   if (!!p.vmixConfig) out.push("vmixConfig");
   if (!!p.vmixConfig2) out.push("vmixConfig2");
 
