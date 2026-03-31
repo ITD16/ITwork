@@ -22,6 +22,16 @@ function normalizeDomains(arr) {
   );
 }
 
+function normalizeWebscams(arr) {
+  return Array.from(
+    new Set(
+      (Array.isArray(arr) ? arr : [])
+        .map((x) => String(x || "").trim())
+        .filter(Boolean),
+    ),
+  );
+}
+
 function normalizeNumber(value, fallback) {
   const n = Number(value);
   return Number.isFinite(n) ? n : fallback;
@@ -70,8 +80,8 @@ function normalizeConfig(config) {
     domains1b: normalizeDomains(config.domains1b),
     domains789: normalizeDomains(config.domains789),
     domains0b: normalizeDomains(config.domains0b),
-    webscam1b: normalizeDomains(config.webscam1b),
-    webscam0b: normalizeDomains(config.webscam0b),
+    webscam1b: normalizeWebscams(config.webscam1b),
+    webscam0b: normalizeWebscams(config.webscam0b),
   };
 }
 

@@ -474,6 +474,49 @@ function createDomainRow(value = "", allowEdit = false) {
   return row;
 }
 
+function createWebscamRow(value = "", allowEdit = false) {
+  const row = document.createElement("div");
+  row.className = "domain-row";
+
+  const input = document.createElement("input");
+  input.type = "text";
+  input.value = value;
+  input.placeholder = "Example: Sunwin.lt";
+  input.disabled = !allowEdit;
+
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "danger";
+  btn.textContent = "X";
+  btn.style.display = allowEdit ? "" : "none";
+  btn.disabled = !allowEdit;
+
+  btn.addEventListener("click", () => {
+    if (!allowEdit) return;
+    row.remove();
+    resetIdleTimer();
+  });
+
+  row.appendChild(input);
+  row.appendChild(btn);
+  return row;
+}
+
+function renderWebscamList(container, items, allowEdit = false) {
+  if (!container) return;
+  container.innerHTML = "";
+  (items || []).forEach((item) =>
+    container.appendChild(createWebscamRow(item, allowEdit)),
+  );
+}
+
+function getWebscamList(container) {
+  if (!container) return [];
+  return Array.from(container.querySelectorAll("input"))
+    .map((x) => x.value.trim())
+    .filter(Boolean);
+}
+
 function renderDomainList(container, items, allowEdit = false) {
   if (!container) return;
   container.innerHTML = "";
@@ -652,8 +695,8 @@ function collectConfig() {
     domains1b: getDomainList(els.domains1bList),
     domains789: getDomainList(els.domains789List),
     domains0b: getDomainList(els.domains0bList),
-    webscam1b: getDomainList(els.webscam1bList),
-    webscam0b: getDomainList(els.webscam0bList),
+    webscam1b: getWebscamList(els.webscam1bList),
+    webscam0b: getWebscamList(els.webscam0bList),
   };
 }
 
@@ -730,14 +773,14 @@ function collectConfigByPanel(panelId = currentPanelId) {
     case "webscam1bPanel":
       return canEditWebscam1b()
         ? {
-            webscam1b: getDomainList(els.webscam1bList),
+            webscam1b: getWebscamList(els.webscam1bList),
           }
         : {};
 
     case "webscam0bPanel":
       return canEditWebscam0b()
         ? {
-            webscam0b: getDomainList(els.webscam0bList),
+            webscam0b: getWebscamList(els.webscam0bList),
           }
         : {};
 
@@ -795,12 +838,12 @@ function renderConfig(config) {
     canEditDomains0b(),
   );
 
-  renderDomainList(
+  renderWebscamList(
     els.webscam1bList,
     safeConfig.webscam1b || [],
     canEditWebscam1b(),
   );
-  renderDomainList(
+  renderWebscamList(
     els.webscam0bList,
     safeConfig.webscam0b || [],
     canEditWebscam0b(),
@@ -2014,7 +2057,11 @@ document.querySelectorAll("[data-add]").forEach((btn) => {
       webscam0b: els.webscam0bList,
     };
 
-    map[key]?.appendChild(createDomainRow("", true));
+    if (key === "webscam1b" || key === "webscam0b") {
+      map[key]?.appendChild(createWebscamRow("", true));
+    } else {
+      map[key]?.appendChild(createDomainRow("", true));
+    }
     resetIdleTimer();
   });
 });
