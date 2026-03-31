@@ -39,15 +39,24 @@
     "hideMinutes": 2,
     "textColor": "#223772"
   },
-  "domains1b": [
-    "SUNWIN.CA",
-    "GEMWIN.SX"
+  "domains1b": ["SUNWIN.CA", "GEMWIN.SX"],
+  "domains789": ["789CLUB.TW"],
+  "domains0b": ["HITCLUB.MOI", "GO88.MOBILE"],
+  "webscam1b": [
+    "Sunwiin.lt",
+    "sunwins.ag",
+    "sunwin01.bi",
+    "Sunwin86.io",
+    "sunwinxz.id",
+    "Sunnwin.lt",
+    "Sunwiin.id",
+    "Web.sunwinnews.com"
   ],
-  "domains789": [
-    "789CLUB.TW"
-  ],
-  "domains0b": [
-    "HITCLUB.MOI",
-    "GO88.MOBILE"
+  "webscam0b": [
+    "hitclub2.app",
+    "hitcub.vin",
+    "hitz.club",
+    "hitclub.tw",
+    "hitlub.com"
   ]
 }
