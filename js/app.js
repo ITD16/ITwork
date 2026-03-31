@@ -476,7 +476,7 @@ function createDomainRow(value = "", allowEdit = false) {
 
 function createWebscamRow(value = "", allowEdit = false) {
   const row = document.createElement("div");
-  row.className = "domain-row";
+  row.className = "webscam-row";
 
   const input = document.createElement("input");
   input.type = "text";

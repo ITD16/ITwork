@@ -1043,3 +1043,18 @@ button,
 .block-ip-unblock-btn.is-blocked:hover {
   background: #b91c1c;
 }
+.webscam-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.webscam-row input {
+  flex: 1;
+  text-transform: none;
+}
+
+.webscam-row button {
+  min-width: 42px;
+}
