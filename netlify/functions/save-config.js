@@ -130,11 +130,11 @@ function normalizePartialConfig(config) {
   }
 
   if (hasOwn(config, "webscam1b")) {
-    out.webscam1b = normalizeDomains(config.webscam1b);
+    out.webscam1b = normalizeWebscams(config.webscam1b);
   }
 
   if (hasOwn(config, "webscam0b")) {
-    out.webscam0b = normalizeDomains(config.webscam0b);
+    out.webscam0b = normalizeWebscams(config.webscam0b);
   }
 
   return out;
