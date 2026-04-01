@@ -3,125 +3,208 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Animated X</title>
+    <title>X Morph Animation</title>
     <style>
       body {
         margin: 0;
         min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        display: grid;
+        place-items: center;
         background: #120000;
       }
 
-      .x-wrap {
-        width: 420px;
-        height: 420px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+      .x-box {
+        position: relative;
+        width: 360px;
+        height: 360px;
       }
 
-      .warning-x {
-        width: 100%;
-        height: 100%;
+      .x-layer {
+        position: absolute;
+        inset: 0;
         transform-origin: center;
-        animation:
-          xScale 0.9s ease-in-out infinite,
-          xFlicker 0.9s ease-in-out infinite,
-          xDrift 0.18s linear infinite;
-        filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.55))
-          drop-shadow(0 0 18px rgba(255, 40, 40, 0.45));
+        pointer-events: none;
       }
 
-      @keyframes xScale {
-        0%,
-        100% {
-          transform: scale(0.92);
-        }
-        50% {
-          transform: scale(1.08);
-        }
+      .x-core {
+        animation: xCoreBurst 1.15s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+        filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.35))
+          drop-shadow(0 0 18px rgba(255, 0, 0, 0.28));
       }
 
-      @keyframes xFlicker {
-        0%,
-        100% {
-          opacity: 0.78;
+      .x-echo {
+        animation: xEchoBurst 1.15s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+        filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.45))
+          drop-shadow(0 0 28px rgba(255, 0, 0, 0.35));
+      }
+
+      .x-glint {
+        animation: xGlint 1.15s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+        mix-blend-mode: screen;
+      }
+
+      @keyframes xCoreBurst {
+        0% {
+          transform: scale(0.55);
+          opacity: 0.12;
         }
-        50% {
+        18% {
+          transform: scale(0.78);
+          opacity: 0.45;
+        }
+        38% {
+          transform: scale(1.02);
+          opacity: 0.95;
+        }
+        52% {
+          transform: scale(1.18);
           opacity: 1;
         }
-      }
-
-      @keyframes xDrift {
-        0% {
-          translate: 0 0;
-        }
-        25% {
-          translate: 1px -1px;
-        }
-        50% {
-          translate: -1px 1px;
-        }
-        75% {
-          translate: 1px 1px;
+        68% {
+          transform: scale(1.05);
+          opacity: 0.72;
         }
         100% {
-          translate: 0 0;
+          transform: scale(0.62);
+          opacity: 0.1;
         }
+      }
+
+      @keyframes xEchoBurst {
+        0% {
+          transform: scale(0.62);
+          opacity: 0;
+        }
+        22% {
+          transform: scale(0.95);
+          opacity: 0.08;
+        }
+        42% {
+          transform: scale(1.18);
+          opacity: 0.42;
+        }
+        56% {
+          transform: scale(1.42);
+          opacity: 0.95;
+        }
+        72% {
+          transform: scale(1.55);
+          opacity: 0.18;
+        }
+        100% {
+          transform: scale(1.62);
+          opacity: 0;
+        }
+      }
+
+      @keyframes xGlint {
+        0% {
+          transform: scale(0.52);
+          opacity: 0;
+        }
+        28% {
+          transform: scale(0.82);
+          opacity: 0.18;
+        }
+        46% {
+          transform: scale(1);
+          opacity: 0.65;
+        }
+        56% {
+          transform: scale(1.08);
+          opacity: 0.9;
+        }
+        70% {
+          transform: scale(1.03);
+          opacity: 0.15;
+        }
+        100% {
+          transform: scale(0.62);
+          opacity: 0;
+        }
+      }
+
+      svg {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
       }
     </style>
   </head>
   <body>
-    <div class="x-wrap">
-      <svg class="warning-x" viewBox="0 0 100 100" aria-hidden="true">
+    <div class="x-box">
+      <!-- Lớp viền nở ra -->
+      <svg class="x-layer x-echo" viewBox="0 0 100 100" aria-hidden="true">
+        <line
+          x1="18"
+          y1="18"
+          x2="82"
+          y2="82"
+          stroke="rgba(255,30,30,0.95)"
+          stroke-width="8"
+          stroke-linecap="round"
+        />
+        <line
+          x1="82"
+          y1="18"
+          x2="18"
+          y2="82"
+          stroke="rgba(255,30,30,0.95)"
+          stroke-width="8"
+          stroke-linecap="round"
+        />
+      </svg>
+
+      <!-- Lõi X -->
+      <svg class="x-layer x-core" viewBox="0 0 100 100" aria-hidden="true">
         <defs>
-          <linearGradient id="xStroke" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#7a0000" />
-            <stop offset="25%" stop-color="#ff2020" />
-            <stop offset="50%" stop-color="#ff6a6a" />
-            <stop offset="75%" stop-color="#ff2020" />
-            <stop offset="100%" stop-color="#7a0000" />
+          <linearGradient id="xRed" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7d0000" />
+            <stop offset="25%" stop-color="#ff1c1c" />
+            <stop offset="50%" stop-color="#ff5a5a" />
+            <stop offset="75%" stop-color="#ff1c1c" />
+            <stop offset="100%" stop-color="#7d0000" />
           </linearGradient>
         </defs>
 
         <line
-          x1="15"
-          y1="15"
-          x2="85"
-          y2="85"
-          stroke="url(#xStroke)"
-          stroke-width="14"
+          x1="18"
+          y1="18"
+          x2="82"
+          y2="82"
+          stroke="url(#xRed)"
+          stroke-width="12"
           stroke-linecap="round"
         />
         <line
-          x1="85"
-          y1="15"
-          x2="15"
-          y2="85"
-          stroke="url(#xStroke)"
-          stroke-width="14"
+          x1="82"
+          y1="18"
+          x2="18"
+          y2="82"
+          stroke="url(#xRed)"
+          stroke-width="12"
           stroke-linecap="round"
         />
+      </svg>
 
-        <!-- highlight bên trong -->
+      <!-- highlight trắng nhẹ ở giữa nét -->
+      <svg class="x-layer x-glint" viewBox="0 0 100 100" aria-hidden="true">
         <line
-          x1="20"
-          y1="20"
-          x2="80"
-          y2="80"
-          stroke="rgba(255,255,255,0.18)"
-          stroke-width="4"
+          x1="24"
+          y1="24"
+          x2="76"
+          y2="76"
+          stroke="rgba(255,255,255,0.28)"
+          stroke-width="3"
           stroke-linecap="round"
         />
         <line
-          x1="80"
-          y1="20"
-          x2="20"
-          y2="80"
-          stroke="rgba(255,255,255,0.18)"
-          stroke-width="4"
+          x1="76"
+          y1="24"
+          x2="24"
+          y2="76"
+          stroke="rgba(255,255,255,0.28)"
+          stroke-width="3"
           stroke-linecap="round"
         />
       </svg>
