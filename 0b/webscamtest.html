@@ -3,305 +3,128 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Animated Warning X</title>
+    <title>Animated X</title>
     <style>
-      * {
-        box-sizing: border-box;
-      }
-
       body {
         margin: 0;
-        background: #111;
-        display: flex;
-        justify-content: center;
-        align-items: center;
         min-height: 100vh;
-        font-family: Arial, sans-serif;
-      }
-
-      /* Khung demo */
-      .wrap {
-        position: relative;
-        width: 420px;
-        height: 620px;
-        border-radius: 24px;
-        overflow: hidden;
-        background:
-          linear-gradient(180deg, rgba(40, 0, 0, 0.7), rgba(0, 0, 0, 0.95)),
-          url("your-image.jpg") center/cover no-repeat;
-        box-shadow: 0 0 40px rgba(255, 0, 0, 0.2);
-      }
-
-      /* Nếu muốn lồng vào box nào khác thì chỉ cần đặt .warning-x absolute */
-      .warning-x {
-        position: absolute;
-        inset: 120px 45px 170px 45px; /* chỉnh vị trí X */
         display: flex;
-        align-items: center;
         justify-content: center;
-        pointer-events: none;
-        z-index: 5;
+        align-items: center;
+        background: #120000;
       }
 
-      .warning-x svg {
+      .x-wrap {
+        width: 420px;
+        height: 420px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .warning-x {
         width: 100%;
         height: 100%;
-        overflow: visible;
-        filter: drop-shadow(0 0 8px rgba(255, 70, 70, 0.6))
-          drop-shadow(0 0 18px rgba(255, 0, 0, 0.45))
-          drop-shadow(0 0 35px rgba(255, 0, 0, 0.3));
+        transform-origin: center;
         animation:
-          xPulse 1.1s ease-in-out infinite,
-          xShake 0.18s linear infinite;
-        transform-origin: center;
+          xScale 0.9s ease-in-out infinite,
+          xFlicker 0.9s ease-in-out infinite,
+          xDrift 0.18s linear infinite;
+        filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.55))
+          drop-shadow(0 0 18px rgba(255, 40, 40, 0.45));
       }
 
-      /* Nhấp nháy + phóng nhẹ */
-      @keyframes xPulse {
+      @keyframes xScale {
         0%,
         100% {
-          transform: scale(0.98);
-          opacity: 0.82;
-          filter: drop-shadow(0 0 8px rgba(255, 70, 70, 0.55))
-            drop-shadow(0 0 18px rgba(255, 0, 0, 0.4))
-            drop-shadow(0 0 30px rgba(255, 0, 0, 0.25));
+          transform: scale(0.92);
         }
         50% {
-          transform: scale(1.03);
-          opacity: 1;
-          filter: drop-shadow(0 0 12px rgba(255, 120, 120, 0.8))
-            drop-shadow(0 0 24px rgba(255, 0, 0, 0.65))
-            drop-shadow(0 0 42px rgba(255, 0, 0, 0.45));
-        }
-      }
-
-      /* Rung nhẹ cho cảm giác cảnh báo */
-      @keyframes xShake {
-        0% {
-          translate: 0 0;
-        }
-        25% {
-          translate: 0.8px -0.8px;
-        }
-        50% {
-          translate: -0.8px 0.8px;
-        }
-        75% {
-          translate: 0.6px 0.6px;
-        }
-        100% {
-          translate: 0 0;
-        }
-      }
-
-      /* Quét sáng chạy trên nét X */
-      .scan-line {
-        animation: scanMove 1.3s linear infinite;
-      }
-
-      @keyframes scanMove {
-        0% {
-          transform: translateX(-120px);
-          opacity: 0;
-        }
-        15% {
-          opacity: 0.95;
-        }
-        50% {
-          opacity: 1;
-        }
-        85% {
-          opacity: 0.95;
-        }
-        100% {
-          transform: translateX(120px);
-          opacity: 0;
-        }
-      }
-
-      /* Aura đỏ lan từ trong ra ngoài */
-      .center-burst {
-        animation: burstGlow 1.2s ease-in-out infinite;
-        transform-origin: center;
-      }
-
-      @keyframes burstGlow {
-        0%,
-        100% {
-          opacity: 0.35;
-          transform: scale(0.9);
-        }
-        50% {
-          opacity: 0.85;
           transform: scale(1.08);
         }
       }
 
-      /* Demo text */
-      .title {
-        position: absolute;
-        top: 24px;
-        left: 0;
-        width: 100%;
-        text-align: center;
-        color: white;
-        font-size: 36px;
-        font-weight: 700;
-        line-height: 1.2;
-        text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
-        z-index: 2;
+      @keyframes xFlicker {
+        0%,
+        100% {
+          opacity: 0.78;
+        }
+        50% {
+          opacity: 1;
+        }
       }
 
-      .bottom-text {
-        position: absolute;
-        bottom: 35px;
-        width: 100%;
-        text-align: center;
-        color: white;
-        font-size: 34px;
-        font-weight: 700;
-        line-height: 1.25;
-        text-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
-        z-index: 2;
+      @keyframes xDrift {
+        0% {
+          translate: 0 0;
+        }
+        25% {
+          translate: 1px -1px;
+        }
+        50% {
+          translate: -1px 1px;
+        }
+        75% {
+          translate: 1px 1px;
+        }
+        100% {
+          translate: 0 0;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="wrap">
-      <div class="title">TRÁNH TRUY CẬP<br />CÁC TRANG GIẢ MẠO</div>
+    <div class="x-wrap">
+      <svg class="warning-x" viewBox="0 0 100 100" aria-hidden="true">
+        <defs>
+          <linearGradient id="xStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7a0000" />
+            <stop offset="25%" stop-color="#ff2020" />
+            <stop offset="50%" stop-color="#ff6a6a" />
+            <stop offset="75%" stop-color="#ff2020" />
+            <stop offset="100%" stop-color="#7a0000" />
+          </linearGradient>
+        </defs>
 
-      <div class="warning-x">
-        <svg viewBox="0 0 100 100" aria-hidden="true">
-          <defs>
-            <!-- Gradient đỏ từ trong ra ngoài -->
-            <radialGradient id="xCoreGradient" cx="50%" cy="50%" r="60%">
-              <stop offset="0%" stop-color="#fff4f4" />
-              <stop offset="12%" stop-color="#ffb3b3" />
-              <stop offset="28%" stop-color="#ff5a5a" />
-              <stop offset="55%" stop-color="#ff1e1e" />
-              <stop offset="100%" stop-color="#7a0000" />
-            </radialGradient>
+        <line
+          x1="15"
+          y1="15"
+          x2="85"
+          y2="85"
+          stroke="url(#xStroke)"
+          stroke-width="14"
+          stroke-linecap="round"
+        />
+        <line
+          x1="85"
+          y1="15"
+          x2="15"
+          y2="85"
+          stroke="url(#xStroke)"
+          stroke-width="14"
+          stroke-linecap="round"
+        />
 
-            <!-- Gradient sáng chạy ngang -->
-            <linearGradient id="scanGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="rgba(255,255,255,0)" />
-              <stop offset="50%" stop-color="rgba(255,255,255,0.95)" />
-              <stop offset="100%" stop-color="rgba(255,255,255,0)" />
-            </linearGradient>
-
-            <!-- Mask để scan chỉ hiện trong nét X -->
-            <mask id="xMask">
-              <rect width="100" height="100" fill="black" />
-              <line
-                x1="18"
-                y1="18"
-                x2="82"
-                y2="82"
-                stroke="white"
-                stroke-width="16"
-                stroke-linecap="round"
-              />
-              <line
-                x1="82"
-                y1="18"
-                x2="18"
-                y2="82"
-                stroke="white"
-                stroke-width="16"
-                stroke-linecap="round"
-              />
-            </mask>
-
-            <!-- Blur mềm -->
-            <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="4" result="blur" />
-              <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-          </defs>
-
-          <!-- Quầng sáng từ tâm -->
-          <g class="center-burst" filter="url(#softGlow)">
-            <circle
-              cx="50"
-              cy="50"
-              r="18"
-              fill="#ff3b3b"
-              opacity="0.55"
-            ></circle>
-            <circle
-              cx="50"
-              cy="50"
-              r="28"
-              fill="#ff1a1a"
-              opacity="0.22"
-            ></circle>
-            <circle
-              cx="50"
-              cy="50"
-              r="38"
-              fill="#ff0000"
-              opacity="0.10"
-            ></circle>
-          </g>
-
-          <!-- Nét X chính -->
-          <line
-            x1="18"
-            y1="18"
-            x2="82"
-            y2="82"
-            stroke="url(#xCoreGradient)"
-            stroke-width="14"
-            stroke-linecap="round"
-          />
-          <line
-            x1="82"
-            y1="18"
-            x2="18"
-            y2="82"
-            stroke="url(#xCoreGradient)"
-            stroke-width="14"
-            stroke-linecap="round"
-          />
-
-          <!-- Viền sáng -->
-          <line
-            x1="18"
-            y1="18"
-            x2="82"
-            y2="82"
-            stroke="rgba(255,255,255,0.18)"
-            stroke-width="4"
-            stroke-linecap="round"
-          />
-          <line
-            x1="82"
-            y1="18"
-            x2="18"
-            y2="82"
-            stroke="rgba(255,255,255,0.18)"
-            stroke-width="4"
-            stroke-linecap="round"
-          />
-
-          <!-- Quét sáng -->
-          <g class="scan-line" mask="url(#xMask)">
-            <rect
-              x="-20"
-              y="0"
-              width="30"
-              height="100"
-              fill="url(#scanGradient)"
-              transform="rotate(-18 50 50)"
-            ></rect>
-          </g>
-        </svg>
-      </div>
-
-      <div class="bottom-text">KHÔNG THỂ<br />RÚT TIỀN</div>
+        <!-- highlight bên trong -->
+        <line
+          x1="20"
+          y1="20"
+          x2="80"
+          y2="80"
+          stroke="rgba(255,255,255,0.18)"
+          stroke-width="4"
+          stroke-linecap="round"
+        />
+        <line
+          x1="80"
+          y1="20"
+          x2="20"
+          y2="80"
+          stroke="rgba(255,255,255,0.18)"
+          stroke-width="4"
+          stroke-linecap="round"
+        />
+      </svg>
     </div>
   </body>
 </html>
