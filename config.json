@@ -24,6 +24,12 @@
       "startTime": "06:00",
       "endTime": "12:00",
       "enabled": true
+    },
+    {
+      "text": "IDOL HÔ CẦU BÀN TÀI XỈU MINI & XÓC ĐĨA TỨ LINH \\\"BẢN LĨNH BẠN CÓ, ĐẲNG CẤP CHÚNG TÔI KHẲNG ĐỊNH!",
+      "startTime": "12:00",
+      "endTime": "18:00",
+      "enabled": true
     }
   ],
   "contentidolSettings": {
