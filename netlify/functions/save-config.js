@@ -248,7 +248,9 @@ function buildContentIdolLogDiff(beforeList, afterList) {
   const before = Array.isArray(beforeList) ? beforeList : [];
   const after = Array.isArray(afterList) ? afterList : [];
   const maxLen = Math.max(before.length, after.length);
-  const changedItems = [];
+
+  const beforeChanged = [];
+  const afterChanged = [];
 
   for (let i = 0; i < maxLen; i += 1) {
     const beforeItem = before[i] || null;
@@ -262,7 +264,16 @@ function buildContentIdolLogDiff(beforeList, afterList) {
       isPlainObject(beforeItem) &&
       isPlainObject(afterItem)
     ) {
-      const itemChanges = {};
+      const beforeDiffItem = {
+        index: i,
+        text: beforeItem.text || afterItem.text || "",
+      };
+
+      const afterDiffItem = {
+        index: i,
+        text: afterItem.text || beforeItem.text || "",
+      };
+
       const keys = Array.from(
         new Set([
           ...Object.keys(beforeItem || {}),
@@ -270,35 +281,50 @@ function buildContentIdolLogDiff(beforeList, afterList) {
         ]),
       );
 
+      let hasFieldChange = false;
+
       for (const key of keys) {
         const beforeVal = beforeItem?.[key];
         const afterVal = afterItem?.[key];
 
         if (!isEqual(beforeVal, afterVal)) {
-          itemChanges[key] = {
-            before: beforeVal,
-            after: afterVal,
-          };
+          beforeDiffItem[key] = beforeVal;
+          afterDiffItem[key] = afterVal;
+          hasFieldChange = true;
         }
       }
 
-      changedItems.push({
-        index: i,
-        text: afterItem?.text || beforeItem?.text || "",
-        changes: itemChanges,
-      });
+      if (hasFieldChange) {
+        beforeChanged.push(beforeDiffItem);
+        afterChanged.push(afterDiffItem);
+      }
+
       continue;
     }
 
-    changedItems.push({
-      index: i,
-      text: afterItem?.text || beforeItem?.text || "",
-      before: beforeItem,
-      after: afterItem,
-    });
+    beforeChanged.push(
+      beforeItem
+        ? {
+            index: i,
+            ...beforeItem,
+          }
+        : null,
+    );
+
+    afterChanged.push(
+      afterItem
+        ? {
+            index: i,
+            ...afterItem,
+          }
+        : null,
+    );
   }
 
-  return changedItems;
+  return {
+    before: beforeChanged,
+    after: afterChanged,
+  };
 }
 
 function getUserPermissions(user) {
