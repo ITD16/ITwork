@@ -244,6 +244,63 @@ function buildDiff(before, after) {
   return changed;
 }
 
+function buildContentIdolLogDiff(beforeList, afterList) {
+  const before = Array.isArray(beforeList) ? beforeList : [];
+  const after = Array.isArray(afterList) ? afterList : [];
+  const maxLen = Math.max(before.length, after.length);
+  const changedItems = [];
+
+  for (let i = 0; i < maxLen; i += 1) {
+    const beforeItem = before[i] || null;
+    const afterItem = after[i] || null;
+
+    if (isEqual(beforeItem, afterItem)) continue;
+
+    if (
+      beforeItem &&
+      afterItem &&
+      isPlainObject(beforeItem) &&
+      isPlainObject(afterItem)
+    ) {
+      const itemChanges = {};
+      const keys = Array.from(
+        new Set([
+          ...Object.keys(beforeItem || {}),
+          ...Object.keys(afterItem || {}),
+        ]),
+      );
+
+      for (const key of keys) {
+        const beforeVal = beforeItem?.[key];
+        const afterVal = afterItem?.[key];
+
+        if (!isEqual(beforeVal, afterVal)) {
+          itemChanges[key] = {
+            before: beforeVal,
+            after: afterVal,
+          };
+        }
+      }
+
+      changedItems.push({
+        index: i,
+        text: afterItem?.text || beforeItem?.text || "",
+        changes: itemChanges,
+      });
+      continue;
+    }
+
+    changedItems.push({
+      index: i,
+      text: afterItem?.text || beforeItem?.text || "",
+      before: beforeItem,
+      after: afterItem,
+    });
+  }
+
+  return changedItems;
+}
+
 function getUserPermissions(user) {
   if (!user || (user.role || "user") === "admin") {
     return {
@@ -527,6 +584,15 @@ exports.handler = async (event) => {
       });
     }
 
+    const logChanges = { ...changes };
+
+    if (changes.contentidol) {
+      logChanges.contentidol = buildContentIdolLogDiff(
+        before.contentidol,
+        after.contentidol,
+      );
+    }
+
     const configContent = JSON.stringify(after, null, 2) + "\n";
     const configResult = await putRepoFile(
       configPath,
@@ -535,7 +601,7 @@ exports.handler = async (event) => {
       oldConfigFile.sha,
     );
 
-    await appendLog(logPath, auth, "update_config", "config", changes);
+    await appendLog(logPath, auth, "update_config", "config", logChanges);
 
     return json(200, {
       ok: true,
