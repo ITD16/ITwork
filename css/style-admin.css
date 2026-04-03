@@ -368,6 +368,31 @@ pre {
   gap: 14px;
   align-items: end;
 }
+.contentidol-left {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.contentidol-enabled {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+.contentidol-enabled span {
+  display: none;
+  margin: 0;
+}
+
+.contentidol-enabled input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  cursor: pointer;
+}
 .contentidol-text-input {
   width: 100%;
 }

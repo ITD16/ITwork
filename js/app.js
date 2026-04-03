@@ -539,11 +539,32 @@ function createContentIdolRow(item = {}, allowEdit = false) {
   const wrap = document.createElement("div");
   wrap.className = "contentidol-inline";
 
+  const leftWrap = document.createElement("div");
+  leftWrap.className = "contentidol-left";
+
+  const enabledWrap = document.createElement("label");
+  enabledWrap.className = "contentidol-enabled";
+
+  const enabledInput = document.createElement("input");
+  enabledInput.type = "checkbox";
+  enabledInput.checked = item.enabled !== false;
+  enabledInput.disabled = !allowEdit;
+
+  const enabledText = document.createElement("span");
+  enabledText.textContent = "";
+
+  enabledWrap.appendChild(enabledInput);
+  enabledWrap.appendChild(enabledText);
+
   const textInput = document.createElement("input");
   textInput.type = "text";
   textInput.placeholder = "Ví dụ: ĐANG LIVE TẠI Phòng 1";
   textInput.value = item.text || "";
   textInput.disabled = !allowEdit;
+  textInput.className = "contentidol-text-input";
+
+  leftWrap.appendChild(enabledWrap);
+  leftWrap.appendChild(textInput);
 
   const timeActions = document.createElement("div");
   timeActions.className = "contentidol-time-actions";
@@ -587,7 +608,7 @@ function createContentIdolRow(item = {}, allowEdit = false) {
   timeActions.appendChild(endWrap);
   timeActions.appendChild(removeBtn);
 
-  wrap.appendChild(textInput);
+  wrap.appendChild(leftWrap);
   wrap.appendChild(timeActions);
   row.appendChild(wrap);
 
@@ -607,16 +628,21 @@ function getContentIdolList(container) {
 
   return Array.from(container.querySelectorAll(".contentidol-item"))
     .map((row) => {
-      const inputs = row.querySelectorAll("input");
-      const text = inputs[0]?.value?.trim() || "";
-      const startTime = normalizeTimeValue(inputs[1]?.value || "", "00:00");
-      const endTime = normalizeTimeValue(inputs[2]?.value || "", "23:59");
+      const enabled = !!row.querySelector(
+        '.contentidol-enabled input[type="checkbox"]',
+      )?.checked;
+      const text =
+        row.querySelector(".contentidol-text-input")?.value?.trim() || "";
+      const timeInputs = row.querySelectorAll(".time-inline-field input");
+
+      const startTime = normalizeTimeValue(timeInputs[0]?.value || "", "00:00");
+      const endTime = normalizeTimeValue(timeInputs[1]?.value || "", "23:59");
 
       return {
         text,
         startTime,
         endTime,
-        enabled: true,
+        enabled,
       };
     })
     .filter((item) => item.text);

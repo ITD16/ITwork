@@ -103,17 +103,19 @@
       function getActiveContentItem(list) {
         const nowMinutes = getNowMinutesGMT7();
 
-        const activeItems = list.filter(
-          (item) =>
-            item &&
-            item.enabled !== false &&
-            item.text &&
-            isInTimeRange(item.startTime, item.endTime, nowMinutes),
+        const enabledItems = list.filter(
+          (item) => item && item.enabled !== false && item.text,
+        );
+
+        const activeItems = enabledItems.filter((item) =>
+          isInTimeRange(item.startTime, item.endTime, nowMinutes),
         );
 
         if (activeItems.length) return activeItems[0];
 
-        return list.length ? list[list.length - 1] : null;
+        return enabledItems.length
+          ? enabledItems[enabledItems.length - 1]
+          : null;
       }
 
       function getActiveKey(item) {
