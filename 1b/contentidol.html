@@ -94,13 +94,27 @@
         const gap = "\u00A0".repeat(gapSize);
         return Array.from({ length: count }, () => text).join(gap);
       }
+      function buildAlternatingText(items, count = 8, gapSize = 24) {
+        const gap = "\u00A0".repeat(gapSize);
+        const validItems = (items || []).filter((x) => x && x.text);
+
+        if (!validItems.length) return "";
+
+        const parts = [];
+        for (let i = 0; i < count; i += 1) {
+          const item = validItems[i % validItems.length];
+          parts.push(item.text);
+        }
+
+        return parts.join(gap);
+      }
 
       function applyStyle(settings) {
         els.tickerWrap.style.fontSize = `${settings.fontSize}px`;
         els.tickerWrap.style.color = settings.textColor || "#ffffff";
       }
 
-      function getActiveContentItem(list) {
+      function getActiveContentItems(list) {
         const nowMinutes = getNowMinutesGMT7();
 
         const enabledItems = list.filter(
@@ -111,16 +125,20 @@
           isInTimeRange(item.startTime, item.endTime, nowMinutes),
         );
 
-        if (activeItems.length) return activeItems[0];
+        if (activeItems.length) return activeItems;
 
         return enabledItems.length
-          ? enabledItems[enabledItems.length - 1]
-          : null;
+          ? [enabledItems[enabledItems.length - 1]]
+          : [];
       }
-
-      function getActiveKey(item) {
-        if (!item) return "";
-        return `${item.text}__${item.startTime}__${item.endTime}__${item.enabled}`;
+      function getActiveKey(items) {
+        if (!items || !items.length) return "";
+        return items
+          .map(
+            (item) =>
+              `${item.text}__${item.startTime}__${item.endTime}__${item.enabled}`,
+          )
+          .join("||");
       }
 
       function shouldShowByCycle(settings) {
@@ -198,18 +216,18 @@
           return;
         }
 
-        const activeItem = getActiveContentItem(list);
+        const activeItems = getActiveContentItems(list);
 
-        if (!activeItem || !activeItem.text) {
+        if (!activeItems.length) {
           hideTickerCompletely();
           currentActiveKey = "";
           return;
         }
 
-        currentActiveKey = getActiveKey(activeItem);
+        currentActiveKey = getActiveKey(activeItems);
 
-        const repeated = buildRepeatedText(
-          activeItem.text,
+        const repeated = buildAlternatingText(
+          activeItems,
           settings.copiesPerRun || 8,
           settings.copyGapSize || 24,
         );
@@ -257,8 +275,8 @@
           ? configCache.contentidol.filter((item) => item && item.text)
           : [];
 
-        const activeItem = getActiveContentItem(list);
-        const nextKey = getActiveKey(activeItem);
+        const activeItems = getActiveContentItems(list);
+        const nextKey = getActiveKey(activeItems);
 
         if (nextKey !== currentActiveKey) {
           renderTicker(configCache);
