@@ -5,7 +5,7 @@
       "text": "UPDATE DOMAIN MỚI: SUNWIN.LIVE VÀ GEMWIN.AI",
       "startTime": "12:00",
       "endTime": "18:00",
-      "enabled": true
+      "enabled": false
     },
     {
       "text": "IDOL HÔ CẦU BÀN TÀI XỈU MINI & RỒNG HỔ SUN \"KHÔNG CHỈ LÀ CUỘC CHƠI – ĐÓ LÀ NƠI HUYỀN THOẠI BẮT ĐẦU!\"",
@@ -23,6 +23,12 @@
       "text": "IDOL HÔ CẦU BÀN TÀI XỈU MINI & RỒNG HỔ SUN \"CHÚNG TÔI KHÔNG ĐỊNH NGHĨA CUỘC CHƠI – CHÚNG TÔI ĐỊNH NGHĨA NGƯỜI CHIẾN THẮNG!\"",
       "startTime": "06:00",
       "endTime": "12:00",
+      "enabled": true
+    },
+    {
+      "text": "IDOL HÔ CẦU BÀN TÀI XỈU MINI & XÓC ĐĨA TỨ LINH \\\"BẢN LĨNH BẠN CÓ, ĐẲNG CẤP CHÚNG TÔI KHẲNG ĐỊNH!",
+      "startTime": "12:00",
+      "endTime": "18:00",
       "enabled": true
     }
   ],
