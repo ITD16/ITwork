@@ -41,7 +41,7 @@
     "copiesPerRun": 8,
     "copyGapSize": 24,
     "laneGapPx": 160,
-    "showMinutes": 3,
+    "showMinutes": 2,
     "hideMinutes": 2,
     "textColor": "#223772"
   },
