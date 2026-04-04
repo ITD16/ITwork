@@ -71,17 +71,17 @@ body {
 
   background: linear-gradient(
     55deg,
-    #fffebe 0%,
-    #fffebe 10%,
-    #ffac3e 20%,
-    #ffac3e 25%,
-    #fec65b 33%,
-    #fffebe 50%,
-    #fffebe 60%,
-    #fec65b 65%,
-    #ffac3e 75%,
-    #ffac3e 85%,
-    #ffac3e 100%
+    #f7f579 0%,
+    #f0ee6f 10%,
+    #f9a22f 20%,
+    #ffa530 25%,
+    #ffba3a 33%,
+    #fefc70 50%,
+    #f5f371 60%,
+    #f8b333 65%,
+    #ea9628 75%,
+    #f39d2c 85%,
+    #ffa32a 100%
   );
 
   filter: drop-shadow(0.5px 0.1px 1px #0d0d0d);
