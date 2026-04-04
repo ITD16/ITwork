@@ -5,7 +5,7 @@ body {
 }
 
 /* Canvas full màn hình */
-#canvas{
+#canvas {
   position: fixed;
   inset: 0;
   width: 100%;
@@ -13,7 +13,7 @@ body {
 }
 
 /* Frame 16:9 chuẩn 1920x1080 (scale bằng JS) */
-#frame169{
+#frame169 {
   position: fixed;
   left: 50%;
   top: 50%;
@@ -26,11 +26,11 @@ body {
 }
 
 /* Vùng chạy chữ 9:16 ở giữa (607.5 x 1080) */
-#portraitStage{
+#portraitStage {
   position: absolute;
   left: 50%;
   top: 0;
-  width: 607.5px;     /* 1080 * 9/16 */
+  width: 580px; /* 1080 * 9/16 */
   height: 720px;
   transform: translateX(-50%);
   overflow: hidden;
@@ -49,8 +49,13 @@ body {
   margin: 0;
   padding: 0;
   line-height: 1;
-  font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont,
-              "Segoe UI", sans-serif;
+  font-family:
+    "Poppins",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
 }
 
 /* Emoji */
