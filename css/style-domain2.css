@@ -42,7 +42,7 @@ body {
 /* H1 dùng để định vị & di chuyển */
 .moving-domain {
   position: absolute;
-  font-size: 40px;
+  font-size: 34px;
   white-space: nowrap;
   pointer-events: none;
 
