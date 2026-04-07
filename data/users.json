@@ -1,10 +1,10 @@
 [
   {
     "username": "admin",
-    "passwordHash": "$2a$10$eUFohFp5UrUUz6KegT.pEOBe/FuD114fccPtt9v4SbvrJkCUxObZO",
+    "passwordHash": "$2a$10$Q5KIEPBXr.KljSupvEBGluQW0NW7Lo9JgbsNil6r10wjXx7yduCsq",
     "role": "admin",
     "active": true,
-    "mustChangePassword": false
+    "mustChangePassword": true
   },
   {
     "username": "user1",
