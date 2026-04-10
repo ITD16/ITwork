@@ -265,6 +265,8 @@ function repoInfo() {
   const configPath = process.env.CONFIG_PATH || "config.json";
   const vmixConfigPath =
     process.env.VMIX_CONFIG_PATH || "data/vmix-domg1-config.json";
+  const vmixConfig0Path =
+    process.env.VMIX_CONFIG0_PATH || "data/vmix-domg0-config.json";
   const vmixConfig2Path =
     process.env.VMIX_CONFIG2_PATH || "data/vmix-config2.json";
   const logPath = process.env.LOG_PATH || "data/change_logs.jsonl";
@@ -279,6 +281,7 @@ function repoInfo() {
     branch,
     configPath,
     vmixConfigPath,
+    vmixConfig0Path,
     vmixConfig2Path,
     logPath,
   };

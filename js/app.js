@@ -2,6 +2,7 @@ let originalConfig = null;
 let originalConfigRaw = null;
 let originalVmixConfigs = {
   "vmix-config": null,
+  "vmix-config0": null,
   "vmix-config2": null,
 };
 let currentMe = null;
@@ -27,6 +28,7 @@ const CONFIG_PANEL_IDS = [
 const VMIX_PANEL_ID = "vmixConfigPanel";
 const VMIX_TARGETS = [
   { id: "vmix-config", label: "Vmix DOM 1B" },
+  { id: "vmix-config0", label: "vMix DOM 0B" },
   { id: "vmix-config2", label: "vMix iDol 1B" },
 ];
 
@@ -165,6 +167,7 @@ function getPermissions() {
     webscam1b: allowed.includes("webscam1b"),
     webscam0b: allowed.includes("webscam0b"),
     vmixConfig: allowed.includes("vmixConfig"),
+    vmixConfig0: allowed.includes("vmixConfig0"),
     vmixConfig2: allowed.includes("vmixConfig2"),
     enableFirework: isAdmin(),
   };
@@ -199,13 +202,16 @@ function canEditWebscam0b() {
 
 function canEditVmixConfig() {
   const perms = getPermissions();
-  return isAdmin() || perms.vmixConfig || perms.vmixConfig2;
+  return (
+    isAdmin() || perms.vmixConfig || perms.vmixConfig0 || perms.vmixConfig2
+  );
 }
 
 function canEditVmixTarget(target) {
   const perms = getPermissions();
   if (isAdmin()) return true;
   if (target === "vmix-config2") return perms.vmixConfig2;
+  if (target === "vmix-config0") return perms.vmixConfig0;
   return perms.vmixConfig;
 }
 
@@ -1148,7 +1154,7 @@ function getPanelMeta() {
       id: "vmixConfigPanel",
       label: "vMix Config",
       subtitle: "Manage vmix config",
-      visible: perms.vmixConfig || perms.vmixConfig2,
+      visible: perms.vmixConfig || perms.vmixConfig0 || perms.vmixConfig2,
       target: "vmix-config",
     },
   ];

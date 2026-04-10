@@ -17,6 +17,7 @@ function getUserPermissions(user) {
       domains0b: true,
       enableFirework: true,
       vmixConfig: true,
+      vmixConfig0: true,
       vmixConfig2: true,
       webscam1b: true,
       webscam0b: true,
@@ -36,6 +37,7 @@ function getUserPermissions(user) {
     webscam0b: p.webscam0b !== false,
     enableFirework: false,
     vmixConfig: p.vmixConfig !== false,
+    vmixConfig0: p.vmixConfig0 !== false,
     vmixConfig2: p.vmixConfig2 !== false,
   };
 }
@@ -96,6 +98,7 @@ function parseTarget(value) {
   const target = String(value || "config").trim();
 
   if (target === "vmix-config2") return "vmix-config2";
+  if (target === "vmix-config0") return "vmix-config0";
   if (target === "vmix-config") return "vmix-config";
   return "config";
 }
@@ -108,7 +111,8 @@ exports.handler = async (event) => {
     const qs = event.queryStringParameters || {};
     const target = parseTarget(qs.target);
 
-    const { configPath, vmixConfigPath, vmixConfig2Path } = repoInfo();
+    const { configPath, vmixConfigPath, vmixConfig0Path, vmixConfig2Path } =
+      repoInfo();
     const { users } = await readUsersFromRepo();
     const currentUser = users.find((u) => u.username === auth.session.username);
     const perms = getUserPermissions(currentUser || auth.session);
@@ -122,6 +126,19 @@ exports.handler = async (event) => {
       const config = JSON.parse(file.content || "{}");
       return json(200, {
         target: "vmix-config",
+        config: normalizeVmixConfig(config),
+      });
+    }
+
+    if (target === "vmix-config0") {
+      if (!perms.vmixConfig0) {
+        return json(403, { error: "Forbidden" });
+      }
+
+      const file = await getRepoFile(vmixConfig0Path);
+      const config = JSON.parse(file.content || "{}");
+      return json(200, {
+        target: "vmix-config0",
         config: normalizeVmixConfig(config),
       });
     }

@@ -1,0 +1,6 @@
+{
+  "enabled": true,
+  "baseLayer": "LAYER 1",
+  "triggerMinutes": [3, 13, 23, 33, 43, 53],
+  "layersCsv": "LAYER 2:60000|LAYER 3:120000"
+}
