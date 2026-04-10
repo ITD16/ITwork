@@ -159,8 +159,8 @@ function normalizeVmixConfig(config) {
         .filter(Boolean);
 
   return {
-    holdLayer2Ms: normalizeNumber(config?.holdLayer2Ms, 60000),
-    holdLayer3Ms: normalizeNumber(config?.holdLayer3Ms, 120000),
+    enabled: !!config?.enabled,
+    baseLayer: String(config?.baseLayer || "LAYER 1").trim() || "LAYER 1",
     triggerMinutes: Array.from(
       new Set(
         triggerMinutesRaw
@@ -168,7 +168,18 @@ function normalizeVmixConfig(config) {
           .filter((x) => Number.isInteger(x) && x >= 0 && x <= 59),
       ),
     ).sort((a, b) => a - b),
-    enabled: !!config?.enabled,
+    layersCsv: String(config?.layersCsv || "")
+      .split("|")
+      .map((x) => x.trim())
+      .filter(Boolean)
+      .map((item) => {
+        const parts = item.split(":");
+        const name = String(parts[0] || "").trim();
+        const holdMs = normalizeNumber(parts[1], 10000);
+        return name ? `${name}:${holdMs}` : "";
+      })
+      .filter(Boolean)
+      .join("|"),
   };
 }
 

@@ -8,6 +8,7 @@ let currentMe = null;
 let currentPanelId = null;
 let activeVmixTarget = "vmix-config";
 let activeLogView = "changeLogs";
+let vmixLayersState = [];
 
 const IDLE_LIMIT_MS = 5 * 60 * 1000;
 let idleTimer = null;
@@ -103,12 +104,14 @@ const els = {
   vmixMenuBtn: document.getElementById("vmixMenuBtn"),
   vmixSubmenu: document.getElementById("vmixSubmenu"),
   vmixEnabled: document.getElementById("vmixEnabled"),
-  vmixHoldLayer2Ms: document.getElementById("vmixHoldLayer2Ms"),
-  vmixHoldLayer3Ms: document.getElementById("vmixHoldLayer3Ms"),
+  vmixBaseLayer: document.getElementById("vmixBaseLayer"),
+  vmixBaseLayerWrap: document.getElementById("vmixBaseLayerWrap"),
+  vmixLayersWrap: document.getElementById("vmixLayersWrap"),
+  vmixLayersList: document.getElementById("vmixLayersList"),
+  vmixLayersPreview: document.getElementById("vmixLayersPreview"),
+  btnAddVmixLayer: document.getElementById("btnAddVmixLayer"),
   vmixTriggerMinutes: document.getElementById("vmixTriggerMinutes"),
   vmixEnabledWrap: document.getElementById("vmixEnabledWrap"),
-  vmixHoldLayer2Wrap: document.getElementById("vmixHoldLayer2Wrap"),
-  vmixHoldLayer3Wrap: document.getElementById("vmixHoldLayer3Wrap"),
   vmixTriggerHelp: document.getElementById("vmixTriggerHelp"),
 
   saveMessage: document.getElementById("saveMessage"),
@@ -312,6 +315,71 @@ function normalizeTimeValue(value, fallback = "00:00") {
 function normalizeNumberInput(value, fallback) {
   const n = Number(value);
   return Number.isFinite(n) ? n : fallback;
+}
+
+function parseLayersCsv(value) {
+  return String(value || "")
+    .split("|")
+    .map((x) => x.trim())
+    .filter(Boolean)
+    .map((item) => {
+      const parts = item.split(":");
+      return {
+        name: String(parts[0] || "").trim(),
+        holdMs: normalizeNumberInput(parts[1], 10000),
+      };
+    })
+    .filter((x) => x.name);
+}
+
+function buildLayersCsv(layers) {
+  return (Array.isArray(layers) ? layers : [])
+    .map((x) => ({
+      name: String(x?.name || "").trim(),
+      holdMs: normalizeNumberInput(x?.holdMs, 10000),
+    }))
+    .filter((x) => x.name)
+    .map((x) => `${x.name}:${x.holdMs}`)
+    .join("|");
+}
+
+function renderVmixLayers(canEdit = true) {
+  if (!els.vmixLayersList) return;
+
+  els.vmixLayersList.innerHTML = "";
+
+  vmixLayersState.forEach((item, index) => {
+    const row = document.createElement("div");
+    row.className = "layer-row";
+
+    row.innerHTML = `
+      <input
+        type="text"
+        class="vmix-layer-name"
+        data-index="${index}"
+        value="${escapeHtml(String(item.name || ""))}"
+        ${canEdit ? "" : "disabled"}
+      />
+      <input
+        type="number"
+        class="vmix-layer-hold"
+        data-index="${index}"
+        value="${Number(item.holdMs) || 0}"
+        ${canEdit ? "" : "disabled"}
+      />
+      <div class="layer-row-actions">
+        <button type="button" class="secondary small vmix-layer-up" data-index="${index}" ${canEdit ? "" : "disabled"}>↑</button>
+        <button type="button" class="secondary small vmix-layer-down" data-index="${index}" ${canEdit ? "" : "disabled"}>↓</button>
+        <button type="button" class="danger small vmix-layer-delete" data-index="${index}" ${canEdit ? "" : "disabled"}>×</button>
+      </div>
+    `;
+
+    els.vmixLayersList.appendChild(row);
+  });
+
+  if (els.vmixLayersPreview) {
+    els.vmixLayersPreview.value = buildLayersCsv(vmixLayersState);
+  }
 }
 
 function normalizeTriggerMinutesInput(value) {
@@ -685,10 +753,10 @@ function sanitizeVmixConfig(config, target = activeVmixTarget) {
   }
 
   return {
-    holdLayer2Ms: normalizeNumberInput(config?.holdLayer2Ms, 60000),
-    holdLayer3Ms: normalizeNumberInput(config?.holdLayer3Ms, 120000),
-    triggerMinutes: normalizeTriggerMinutesInput(config?.triggerMinutes || []),
     enabled: !!config?.enabled,
+    baseLayer: String(config?.baseLayer || "LAYER 1").trim() || "LAYER 1",
+    triggerMinutes: normalizeTriggerMinutesInput(config?.triggerMinutes || []),
+    layersCsv: String(config?.layersCsv || "").trim(),
   };
 }
 
@@ -824,13 +892,19 @@ function collectVmixConfig(target = activeVmixTarget) {
     };
   }
 
+  const layers = (vmixLayersState || []).map((x) => ({
+    name: String(x?.name || "").trim(),
+    holdMs: normalizeNumberInput(x?.holdMs, 10000),
+  }));
+
   return {
     enabled: !!els.vmixEnabled?.checked,
-    holdLayer2Ms: normalizeNumberInput(els.vmixHoldLayer2Ms?.value, 60000),
-    holdLayer3Ms: normalizeNumberInput(els.vmixHoldLayer3Ms?.value, 120000),
+    baseLayer:
+      String(els.vmixBaseLayer?.value || "LAYER 1").trim() || "LAYER 1",
     triggerMinutes: normalizeTriggerMinutesInput(
       els.vmixTriggerMinutes?.value || "",
     ),
+    layersCsv: buildLayersCsv(layers),
   };
 }
 
@@ -930,21 +1004,23 @@ function updateVmixUiByTarget(target = activeVmixTarget) {
 
   if (els.vmixEnabledWrap)
     els.vmixEnabledWrap.style.display = isMachine2 ? "none" : "";
-  if (els.vmixHoldLayer2Wrap)
-    els.vmixHoldLayer2Wrap.style.display = isMachine2 ? "none" : "";
-  if (els.vmixHoldLayer3Wrap)
-    els.vmixHoldLayer3Wrap.style.display = isMachine2 ? "none" : "";
+
+  if (els.vmixBaseLayerWrap)
+    els.vmixBaseLayerWrap.style.display = isMachine2 ? "none" : "";
+
+  if (els.vmixLayersWrap)
+    els.vmixLayersWrap.style.display = isMachine2 ? "none" : "";
 
   if (els.vmixTriggerMinutes) {
     els.vmixTriggerMinutes.placeholder = isMachine2
-      ? "Ví dụ: 04:00,08:00,12:00..."
-      : "Ví dụ: 3,33,44";
+      ? "Ví dụ: 04:00,08:00,12:00"
+      : "Ví dụ: 3,13,23,33,43,53";
   }
 
   if (els.vmixTriggerHelp) {
     els.vmixTriggerHelp.textContent = isMachine2
-      ? "Máy này chỉ lưu trigger times, nhập thời gian theo mẫu hh:mm, cách nhau bằng dấu phẩy, không có khoảng trắng."
-      : "Máy này lưu trigger minutes, nhập phút cách nhau bằng dấu phẩy, không khoảng trắng.";
+      ? "Máy này chỉ lưu trigger times hh:mm, cách nhau bằng dấu phẩy."
+      : "Máy này lưu trigger minutes, nhập phút cách nhau bằng dấu phẩy.";
   }
 
   document
@@ -957,11 +1033,13 @@ function updateVmixUiByTarget(target = activeVmixTarget) {
     });
 
   if (els.vmixEnabled) els.vmixEnabled.disabled = isMachine2 || !canEditTarget;
-  if (els.vmixHoldLayer2Ms)
-    els.vmixHoldLayer2Ms.disabled = isMachine2 || !canEditTarget;
-  if (els.vmixHoldLayer3Ms)
-    els.vmixHoldLayer3Ms.disabled = isMachine2 || !canEditTarget;
+  if (els.vmixBaseLayer)
+    els.vmixBaseLayer.disabled = isMachine2 || !canEditTarget;
   if (els.vmixTriggerMinutes) els.vmixTriggerMinutes.disabled = !canEditTarget;
+  if (els.btnAddVmixLayer)
+    els.btnAddVmixLayer.disabled = isMachine2 || !canEditTarget;
+
+  renderVmixLayers(!isMachine2 && canEditTarget);
 }
 
 function renderVmixConfig(config, target = activeVmixTarget) {
@@ -971,22 +1049,22 @@ function renderVmixConfig(config, target = activeVmixTarget) {
 
   if (target === "vmix-config2") {
     if (els.vmixEnabled) els.vmixEnabled.checked = false;
-    if (els.vmixHoldLayer2Ms) els.vmixHoldLayer2Ms.value = "";
-    if (els.vmixHoldLayer3Ms) els.vmixHoldLayer3Ms.value = "";
+    if (els.vmixBaseLayer) els.vmixBaseLayer.value = "";
+    vmixLayersState = [];
     if (els.vmixTriggerMinutes) {
       els.vmixTriggerMinutes.value = (safeConfig.triggerTimes || []).join(",");
     }
   } else {
     if (els.vmixEnabled) els.vmixEnabled.checked = !!safeConfig.enabled;
-    if (els.vmixHoldLayer2Ms)
-      els.vmixHoldLayer2Ms.value = safeConfig.holdLayer2Ms;
-    if (els.vmixHoldLayer3Ms)
-      els.vmixHoldLayer3Ms.value = safeConfig.holdLayer3Ms;
+    if (els.vmixBaseLayer) {
+      els.vmixBaseLayer.value = safeConfig.baseLayer || "LAYER 1";
+    }
     if (els.vmixTriggerMinutes) {
       els.vmixTriggerMinutes.value = (safeConfig.triggerMinutes || []).join(
         ",",
       );
     }
+    vmixLayersState = parseLayersCsv(safeConfig.layersCsv || "");
   }
 
   updateVmixUiByTarget(target);
@@ -2180,6 +2258,59 @@ els.contentidolTextColorCode?.addEventListener("blur", () => {
     els.contentidolTextColor.value = color;
   }
   resetIdleTimer();
+});
+
+els.btnAddVmixLayer?.addEventListener("click", () => {
+  if (activeVmixTarget !== "vmix-config") return;
+  vmixLayersState.push({ name: "", holdMs: 10000 });
+  renderVmixLayers(canEditVmixTarget(activeVmixTarget));
+});
+
+els.vmixLayersList?.addEventListener("input", (e) => {
+  const idx = Number(e.target?.getAttribute("data-index"));
+  if (!Number.isInteger(idx) || idx < 0 || idx >= vmixLayersState.length)
+    return;
+
+  if (e.target.classList.contains("vmix-layer-name")) {
+    vmixLayersState[idx].name = e.target.value;
+  }
+
+  if (e.target.classList.contains("vmix-layer-hold")) {
+    vmixLayersState[idx].holdMs = normalizeNumberInput(e.target.value, 10000);
+  }
+
+  if (els.vmixLayersPreview) {
+    els.vmixLayersPreview.value = buildLayersCsv(vmixLayersState);
+  }
+});
+
+els.vmixLayersList?.addEventListener("click", (e) => {
+  const idx = Number(e.target?.getAttribute("data-index"));
+  if (!Number.isInteger(idx) || idx < 0 || idx >= vmixLayersState.length)
+    return;
+
+  if (e.target.classList.contains("vmix-layer-delete")) {
+    vmixLayersState.splice(idx, 1);
+    renderVmixLayers(canEditVmixTarget(activeVmixTarget));
+    return;
+  }
+
+  if (e.target.classList.contains("vmix-layer-up")) {
+    if (idx <= 0) return;
+    const tmp = vmixLayersState[idx - 1];
+    vmixLayersState[idx - 1] = vmixLayersState[idx];
+    vmixLayersState[idx] = tmp;
+    renderVmixLayers(canEditVmixTarget(activeVmixTarget));
+    return;
+  }
+
+  if (e.target.classList.contains("vmix-layer-down")) {
+    if (idx >= vmixLayersState.length - 1) return;
+    const tmp = vmixLayersState[idx + 1];
+    vmixLayersState[idx + 1] = vmixLayersState[idx];
+    vmixLayersState[idx] = tmp;
+    renderVmixLayers(canEditVmixTarget(activeVmixTarget));
+  }
 });
 
 els.passwordForm?.addEventListener("submit", async (e) => {

@@ -71,14 +71,14 @@ function filterConfigByPermissions(config, perms) {
 
 function normalizeVmixConfig(config) {
   return {
-    holdLayer2Ms: Number(config?.holdLayer2Ms) || 60000,
-    holdLayer3Ms: Number(config?.holdLayer3Ms) || 120000,
+    enabled: !!config?.enabled,
+    baseLayer: String(config?.baseLayer || "LAYER 1").trim() || "LAYER 1",
     triggerMinutes: Array.isArray(config?.triggerMinutes)
       ? config.triggerMinutes
           .map((x) => Number(x))
           .filter((x) => Number.isInteger(x) && x >= 0 && x <= 59)
       : [],
-    enabled: !!config?.enabled,
+    layersCsv: String(config?.layersCsv || "").trim(),
   };
 }
 

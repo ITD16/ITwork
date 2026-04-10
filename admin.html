@@ -389,14 +389,13 @@
                 </label>
 
                 <div class="settings-grid">
-                  <label id="vmixHoldLayer2Wrap" class="compact-field">
-                    <span>Hold Layer 2 (mili second)</span>
-                    <input id="vmixHoldLayer2Ms" type="text" />
-                  </label>
-
-                  <label id="vmixHoldLayer3Wrap" class="compact-field">
-                    <span>Hold Layer 3 (mili second)</span>
-                    <input id="vmixHoldLayer3Ms" type="text" />
+                  <label id="vmixBaseLayerWrap" class="compact-field">
+                    <span>Base Layer</span>
+                    <input
+                      id="vmixBaseLayer"
+                      type="text"
+                      placeholder="LAYER 1"
+                    />
                   </label>
 
                   <label class="compact-field vmix-trigger-field">
@@ -404,11 +403,36 @@
                     <input
                       id="vmixTriggerMinutes"
                       type="text"
-                      placeholder="Ví dụ: 3,33"
+                      placeholder="Ví dụ: 3,13,23,33,43,53"
                     />
                     <small id="vmixTriggerHelp" class="muted">
-                      Nhập phút, cách nhau bằng dấu phẩy
+                      Nhập phút cách nhau bằng dấu phẩy
                     </small>
+                  </label>
+                </div>
+
+                <div id="vmixLayersWrap" class="vmix-layers-wrap">
+                  <div class="vmix-layers-head">
+                    <div>Layer Name</div>
+                    <div>Hold Time (ms)</div>
+                    <div>Action</div>
+                  </div>
+
+                  <div id="vmixLayersList" class="vmix-layers-list"></div>
+
+                  <div class="vmix-layers-actions">
+                    <button
+                      type="button"
+                      id="btnAddVmixLayer"
+                      class="secondary-btn"
+                    >
+                      + Add Layer
+                    </button>
+                  </div>
+
+                  <label class="compact-field">
+                    <span>Preview layersCsv</span>
+                    <input id="vmixLayersPreview" type="text" readonly />
                   </label>
                 </div>
               </div>

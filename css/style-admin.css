@@ -1083,3 +1083,47 @@ button,
 .webscam-row button {
   min-width: 42px;
 }
+.vmix-layers-wrap {
+  margin-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 14px;
+}
+
+.vmix-layers-head,
+.layer-row {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) 180px 180px;
+  gap: 10px;
+  align-items: center;
+}
+
+.vmix-layers-head {
+  font-weight: 700;
+  color: #dfe7ff;
+  margin-bottom: 10px;
+}
+
+.vmix-layers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.layer-row input {
+  width: 100%;
+}
+
+.layer-row-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.layer-row-actions button,
+#btnAddVmixLayer {
+  min-width: 42px;
+}
+
+.vmix-layers-actions {
+  margin-top: 12px;
+  margin-bottom: 14px;
+}
