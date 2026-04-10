@@ -37,8 +37,8 @@
       "domains789": true,
       "domains0b": true,
       "webscam1b": true,
-      "webscam0b": false,
-      "vmixConfig": false,
+      "webscam0b": true,
+      "vmixConfig": true,
       "vmixConfig2": true
     }
   },
