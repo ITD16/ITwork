@@ -1092,7 +1092,7 @@ button,
 .vmix-layers-head,
 .layer-row {
   display: grid;
-  grid-template-columns: minmax(220px, 1fr) 180px 180px;
+  grid-template-columns: minmax(220px, 420px) 180px 180px;
   gap: 10px;
   align-items: center;
 }
