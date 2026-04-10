@@ -1,0 +1,10 @@
+{
+  "enabled": true,
+  "triggerMinutes": [3, 13, 23, 33, 43, 53],
+  "baseLayer": "LAYER 1",
+  "layers": [
+    { "name": "LAYER 2", "holdMs": 60000 },
+    { "name": "LAYER 3", "holdMs": 120000 },
+    { "name": "LAYER 4", "holdMs": 90000 }
+  ]
+}
