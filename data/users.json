@@ -56,7 +56,7 @@
       "domains0b": false,
       "webscam1b": false,
       "webscam0b": false,
-      "vmixConfig": false,
+      "vmixConfig": true,
       "vmixConfig2": true
     }
   },
