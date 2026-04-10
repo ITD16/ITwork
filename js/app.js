@@ -1774,6 +1774,7 @@ function renderPermissionsTable(users) {
             <th>Webscam 1B</th>
             <th>Webscam 0B</th>
             <th>vMix DOM 1B</th>
+            <th>vMix DOM 0B</th>
             <th>vMix iDol 1B</th>
           </tr>
         </thead>
@@ -1791,9 +1792,11 @@ function renderPermissionsTable(users) {
                     webscam1b: true,
                     webscam0b: true,
                     vmixConfig: true,
+                    vmixConfig0: true,
                     vmixConfig2: true,
                   }
                 : user.permissions || {};
+
               const disabled = isAdminRow;
               const canDelete =
                 (user.role || "user") !== "admin" &&
@@ -1801,29 +1804,29 @@ function renderPermissionsTable(users) {
 
               return `
               <tr>
-               <td class="sticky-col sticky-col-1 col-user">
-                ${
-                  canDelete
-                    ? `
-                  <div class="user-name-chip">
+                <td class="sticky-col sticky-col-1 col-user">
+                  ${
+                    canDelete
+                      ? `
+                    <div class="user-name-chip">
+                      <span class="user-name-text">${escapeHtml(user.username)}</span>
+                      <button
+                        type="button"
+                        class="user-delete-btn"
+                        data-delete-user="${escapeHtml(user.username)}"
+                        title="Delete user"
+                        aria-label="Delete user ${escapeHtml(user.username)}"
+                      >
+                        <span class="user-delete-btn-x">✕</span>
+                      </button>
+                    </div>
+                  `
+                      : `
                     <span class="user-name-text">${escapeHtml(user.username)}</span>
-                    <button
-                      type="button"
-                      class="user-delete-btn"
-                      data-delete-user="${escapeHtml(user.username)}"
-                      title="Delete user"
-                      aria-label="Delete user ${escapeHtml(user.username)}"
-                    >
-                      <span class="user-delete-btn-x">✕</span>
-                    </button>
-                  </div>
-                `
-                    : `
-                  <span class="user-name-text">${escapeHtml(user.username)}</span>
-                `
-                }
-              </td>
-              
+                  `
+                  }
+                </td>
+
                 <td class="sticky-col sticky-col-2 col-role">${escapeHtml(user.role || "user")}</td>
                 <td class="sticky-col sticky-col-3 col-active">${user.active ? "Yes" : "No"}</td>
                 <td class="sticky-col sticky-col-4 col-must-change">${user.mustChangePassword ? "Yes" : "No"}</td>
@@ -1840,6 +1843,7 @@ function renderPermissionsTable(users) {
                 <td>${makeCheckbox(user.username, "webscam1b", !!perms.webscam1b, disabled)}</td>
                 <td>${makeCheckbox(user.username, "webscam0b", !!perms.webscam0b, disabled)}</td>
                 <td>${makeCheckbox(user.username, "vmixConfig", !!perms.vmixConfig, disabled)}</td>
+                <td>${makeCheckbox(user.username, "vmixConfig0", !!perms.vmixConfig0, disabled)}</td>
                 <td>${makeCheckbox(user.username, "vmixConfig2", !!perms.vmixConfig2, disabled)}</td>
               </tr>
             `;
@@ -1896,6 +1900,10 @@ async function bindPermissionCheckboxes() {
           vmixConfig:
             rowChecks.find(
               (x) => x.getAttribute("data-perm-field") === "vmixConfig",
+            )?.checked ?? true,
+          vmixConfig0:
+            rowChecks.find(
+              (x) => x.getAttribute("data-perm-field") === "vmixConfig0",
             )?.checked ?? true,
           vmixConfig2:
             rowChecks.find(
