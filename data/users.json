@@ -54,7 +54,10 @@
       "domains1b": false,
       "domains789": false,
       "domains0b": false,
-      "vmixConfig": false
+      "webscam1b": false,
+      "webscam0b": false,
+      "vmixConfig": false,
+      "vmixConfig2": true
     }
   },
   {
