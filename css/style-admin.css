@@ -1132,3 +1132,14 @@ button,
   color: #dc2626;
   font-weight: 700;
 }
+.compact-field > span {
+  display: inline-block;
+  margin-bottom: 6px;
+}
+
+.label-note {
+  display: inline !important;
+  color: #dc2626 !important;
+  font-weight: 700;
+  margin-bottom: 0 !important;
+}
