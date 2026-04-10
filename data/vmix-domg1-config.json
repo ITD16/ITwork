@@ -3,11 +3,11 @@
   "baseLayer": "LAYER 1",
   "triggerMinutes": [
     3,
-    9,
+    13,
     23,
     33,
     43,
     53
   ],
-  "layersCsv": "LAYER 2:60000|LAYER 3:120000|LAYER 4:60000"
+  "layersCsv": "LAYER 2:60000|LAYER 3:120000"
 }
