@@ -2267,9 +2267,12 @@ els.contentidolTextColorCode?.addEventListener("blur", () => {
 });
 
 els.btnAddVmixLayer?.addEventListener("click", () => {
-  if (activeVmixTarget !== "vmix-config") return;
+  if (activeVmixTarget === "vmix-config2") return;
+  if (!canEditVmixTarget(activeVmixTarget)) return;
+
   vmixLayersState.push({ name: "", holdMs: 10000 });
   renderVmixLayers(canEditVmixTarget(activeVmixTarget));
+  resetIdleTimer();
 });
 
 els.vmixLayersList?.addEventListener("input", (e) => {
