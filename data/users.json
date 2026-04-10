@@ -20,7 +20,7 @@
       "domains0b": false,
       "webscam1b": false,
       "webscam0b": true,
-      "vmixConfig": false,
+      "vmixConfig": true,
       "vmixConfig2": false
     }
   },
