@@ -108,7 +108,7 @@
       "webscam1b": false,
       "webscam0b": false,
       "vmixConfig": true,
-      "vmixConfig2": true
+      "vmixConfig2": false
     }
   }
 ]
