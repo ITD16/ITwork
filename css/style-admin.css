@@ -1127,7 +1127,8 @@ button,
   margin-top: 12px;
   margin-bottom: 14px;
 }
-.label-note {
+.compact-field .label-note,
+.vmix-layers-head .label-note {
   color: #dc2626;
   font-weight: 700;
 }
