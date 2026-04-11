@@ -52,18 +52,27 @@
 
         <filter
           id="softLampShadow"
-          x="-35%"
-          y="-35%"
-          width="170%"
-          height="200%"
+          x="-40%"
+          y="-40%"
+          width="200%"
+          height="220%"
         >
-          <feDropShadow
-            dx="0"
-            dy="14"
-            stdDeviation="4"
-            flood-color="#1a120b"
-            flood-opacity="1"
+          <feOffset in="SourceAlpha" dx="0" dy="14" result="off1" />
+          <feGaussianBlur in="off1" stdDeviation="3.2" result="blur1" />
+          <feColorMatrix
+            in="blur1"
+            type="matrix"
+            values="
+              0 0 0 0 0.10
+              0 0 0 0 0.07
+              0 0 0 0 0.04
+              0 0 0 0.95 0"
+            result="shadow1"
           />
+          <feMerge>
+            <feMergeNode in="shadow1" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
         </filter>
 
         <filter id="sparkle4k" x="-20%" y="-20%" width="140%" height="140%">
@@ -142,25 +151,25 @@
           filter: "url(#softLampShadow)",
         });
 
-        const edge = makeText({
-          fill: "none",
-          stroke: "url(#edgeCap)",
-          "stroke-width": "11",
-        });
-
         const body = makeText({
           fill: "url(#gold4k)",
           stroke: "none",
           filter: "url(#sparkle4k)",
         });
 
+        const edge = makeText({
+          fill: "none",
+          stroke: "url(#edgeCap)",
+          "stroke-width": "12",
+          filter: "url(#softLampShadow)",
+        });
+
         const rim = makeText({
           fill: "none",
           stroke: "url(#microRim)",
-          "stroke-width": "2",
-          opacity: "0.7",
+          "stroke-width": "1.5",
+          opacity: "0.55",
         });
-
         svgGroup.appendChild(shadow);
         svgGroup.appendChild(edge);
         svgGroup.appendChild(body);
