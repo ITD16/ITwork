@@ -79,6 +79,11 @@
   to = "/.netlify/functions/unblock-block-ip"
   status = 200
 
+  [[redirects]]
+  from = "/api/public/domains52b"
+  to = "/.netlify/functions/api/domains52b"
+  status = 200
+
 [[edge_functions]]
   path = "/"
   function = "ip-guard"
