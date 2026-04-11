@@ -17,6 +17,7 @@ function normalizePermissions(perms = {}) {
     webscam1b: !!perms.webscam1b,
     webscam0b: !!perms.webscam0b,
     vmixConfig: !!perms.vmixConfig,
+    vmixConfig0: !!perms.vmixConfig0,
     vmixConfig2: !!perms.vmixConfig2,
   };
 }

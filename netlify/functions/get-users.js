@@ -25,6 +25,7 @@ exports.handler = async (event) => {
                 webscam1b: true,
                 webscam0b: true,
                 vmixConfig: true,
+                vmixConfig0: true,
                 vmixConfig2: true,
               }
             : {
@@ -37,6 +38,7 @@ exports.handler = async (event) => {
                 webscam1b: !!u.permissions?.webscam1b,
                 webscam0b: !!u.permissions?.webscam0b,
                 vmixConfig: !!u.permissions?.vmixConfig,
+                vmixConfig0: !!u.permissions?.vmixConfig0,
                 vmixConfig2: !!u.permissions?.vmixConfig2,
               },
       })),
