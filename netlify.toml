@@ -81,7 +81,7 @@
 
   [[redirects]]
   from = "/api/public/domains52b"
-  to = "/.netlify/functions/api/domains52b"
+  to = "/.netlify/functions/public-domains52b"
   status = 200
 
 [[edge_functions]]
