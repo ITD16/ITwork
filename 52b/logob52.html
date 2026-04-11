@@ -52,25 +52,57 @@
 
         <filter
           id="softLampShadow"
-          x="-40%"
-          y="-40%"
-          width="200%"
-          height="220%"
+          x="-45%"
+          y="-50%"
+          width="220%"
+          height="260%"
         >
-          <feOffset in="SourceAlpha" dx="0" dy="14" result="off1" />
-          <feGaussianBlur in="off1" stdDeviation="3.2" result="blur1" />
+          <!-- lớp bóng gần, sát chân chữ -->
+          <feOffset in="SourceAlpha" dx="0" dy="8" result="offNear" />
+          <feGaussianBlur in="offNear" stdDeviation="1.8" result="blurNear" />
           <feColorMatrix
-            in="blur1"
+            in="blurNear"
             type="matrix"
             values="
-              0 0 0 0 0.10
-              0 0 0 0 0.07
-              0 0 0 0 0.04
-              0 0 0 0.95 0"
-            result="shadow1"
+      0 0 0 0 0.12
+      0 0 0 0 0.08
+      0 0 0 0 0.05
+      0 0 0 1 0"
+            result="shadowNear"
           />
+
+          <!-- lớp bóng chính, dày ở dưới -->
+          <feOffset in="SourceAlpha" dx="0" dy="18" result="offMain" />
+          <feGaussianBlur in="offMain" stdDeviation="4.8" result="blurMain" />
+          <feColorMatrix
+            in="blurMain"
+            type="matrix"
+            values="
+      0 0 0 0 0.10
+      0 0 0 0 0.07
+      0 0 0 0 0.04
+      0 0 0 0.92 0"
+            result="shadowMain"
+          />
+
+          <!-- lớp bóng đáy để làm phần dưới dày hơn -->
+          <feOffset in="SourceAlpha" dx="0" dy="24" result="offBase" />
+          <feGaussianBlur in="offBase" stdDeviation="6.5" result="blurBase" />
+          <feColorMatrix
+            in="blurBase"
+            type="matrix"
+            values="
+      0 0 0 0 0.08
+      0 0 0 0 0.05
+      0 0 0 0 0.03
+      0 0 0 0.72 0"
+            result="shadowBase"
+          />
+
           <feMerge>
-            <feMergeNode in="shadow1" />
+            <feMergeNode in="shadowBase" />
+            <feMergeNode in="shadowMain" />
+            <feMergeNode in="shadowNear" />
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
@@ -145,23 +177,22 @@
 
         const shadow = makeText({
           fill: "none",
-          stroke: "#2a1a0d",
-          "stroke-width": "11",
-          opacity: "0.9",
+          stroke: "#24160c",
+          "stroke-width": "13",
+          opacity: "0.95",
           filter: "url(#softLampShadow)",
+        });
+
+        const edge = makeText({
+          fill: "none",
+          stroke: "url(#edgeCap)",
+          "stroke-width": "11",
         });
 
         const body = makeText({
           fill: "url(#gold4k)",
           stroke: "none",
           filter: "url(#sparkle4k)",
-        });
-
-        const edge = makeText({
-          fill: "none",
-          stroke: "url(#edgeCap)",
-          "stroke-width": "12",
-          filter: "url(#softLampShadow)",
         });
 
         const rim = makeText({
