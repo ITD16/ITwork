@@ -1,183 +1,226 @@
 <!doctype html>
 <html lang="vi">
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>SUNWIN/GEMWIN</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>SUNWIN/GEMWIN</title>
 
-<style>
-@font-face{
-  font-family:"SF Pro Display";
-  src: url(../font/SFPRODISPLAYBOLD.OTF) format("opentype");
-  font-weight:700;
-}
-html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  background:transparent;
-  overflow:hidden;
-}
-svg{
-  width:100%;
-  height:100%;
-  text-rendering:geometricPrecision;
-  shape-rendering:geometricPrecision;
-}
-</style>
-</head>
+    <style>
+      @font-face {
+        font-family: "SF Pro Display";
+        src: url(../font/SFPRODISPLAYBOLD.OTF) format("opentype");
+        font-weight: 700;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        overflow: hidden;
+      }
+      svg {
+        width: 100%;
+        height: 100%;
+        text-rendering: geometricPrecision;
+        shape-rendering: geometricPrecision;
+      }
+    </style>
+  </head>
 
-<body>
-<svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid meet">
-<defs>
+  <body>
+    <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <!-- ===== GOLD 4K (NGANG): 2 đầu hơi cam -> giữa sáng (WIN) mượt ===== -->
+        <linearGradient id="gold4k" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#e6c98f" />
+          <stop offset="22%" stop-color="#edd7a0" />
+          <stop offset="38%" stop-color="#f0e2bf" />
+          <stop offset="50%" stop-color="#fbf5de" />
+          <stop offset="62%" stop-color="#f0e2bf" />
+          <stop offset="78%" stop-color="#edd7a0" />
+          <stop offset="100%" stop-color="#e6c98f" />
+        </linearGradient>
 
-  <!-- ===== GOLD 4K (NGANG): 2 đầu hơi cam -> giữa sáng (WIN) mượt ===== -->
-  <linearGradient id="gold4k" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0%"   stop-color="#e6c98f"/>
-    <stop offset="22%"  stop-color="#edd7a0"/>
-    <stop offset="38%"  stop-color="#f0e2bf"/>
-    <stop offset="50%"  stop-color="#fbf5de"/>
-    <stop offset="62%"  stop-color="#f0e2bf"/>
-    <stop offset="78%"  stop-color="#edd7a0"/>
-    <stop offset="100%" stop-color="#e6c98f"/>
-  </linearGradient>
+        <!-- ===== “CÁP VIỀN” MÉP CHỮ: NHẠT HƠN 3 TONE ===== -->
+        <linearGradient id="edgeCap" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#c8a05c" />
+          <stop offset="50%" stop-color="#a77f41" />
+          <stop offset="100%" stop-color="#c8a05c" />
+        </linearGradient>
 
-  <!-- ===== “CÁP VIỀN” MÉP CHỮ: NHẠT HƠN 3 TONE ===== -->
-  <linearGradient id="edgeCap" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0%"   stop-color="#c8a05c"/>
-    <stop offset="50%"  stop-color="#a77f41"/>
-    <stop offset="100%" stop-color="#c8a05c"/>
-  </linearGradient>
+        <!-- ===== VIỀN SÁNG RẤT MỎNG (giúp nét 4K) ===== -->
+        <linearGradient id="microRim" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#fff9e6" />
+          <stop offset="100%" stop-color="#f3e3bd" />
+        </linearGradient>
 
-  <!-- ===== VIỀN SÁNG RẤT MỎNG (giúp nét 4K) ===== -->
-  <linearGradient id="microRim" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0%"   stop-color="#fff9e6"/>
-    <stop offset="100%" stop-color="#f3e3bd"/>
-  </linearGradient>
+        <!-- ===== BÓNG ĐỔ (RÕ HƠN, HỢP NỀN NÂU) ===== -->
+        <filter
+          id="softLampShadow"
+          x="-35%"
+          y="-35%"
+          width="170%"
+          height="170%"
+        >
+          <feDropShadow
+            dx="0"
+            dy="12"
+            stdDeviation="6"
+            flood-color="rgba(40,22,10,0.75)"
+          />
+        </filter>
 
-  <!-- ===== BÓNG ĐỔ (RÕ HƠN, HỢP NỀN NÂU) ===== -->
-  <filter id="softLampShadow" x="-35%" y="-35%" width="170%" height="170%">
-    <feDropShadow dx="0" dy="12" stdDeviation="6" flood-color="rgba(40,22,10,0.75)"/>
-  </filter>
-
-  <!-- ===== SPARKLE 4K RẤT NHẸ (có thể tắt) ===== -->
-  <filter id="sparkle4k" x="-20%" y="-20%" width="140%" height="140%">
-    <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="1" seed="3" result="n"/>
-    <feColorMatrix in="n" type="matrix"
-      values="
+        <!-- ===== SPARKLE 4K RẤT NHẸ (có thể tắt) ===== -->
+        <filter id="sparkle4k" x="-20%" y="-20%" width="140%" height="140%">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.85"
+            numOctaves="1"
+            seed="3"
+            result="n"
+          />
+          <feColorMatrix
+            in="n"
+            type="matrix"
+            values="
         1 0 0 0 0
         0 1 0 0 0
         0 0 1 0 0
-        0 0 0 0.22 0" result="a"/>
-    <feComposite in="a" in2="SourceGraphic" operator="in" result="spark"/>
-    <feBlend in="SourceGraphic" in2="spark" mode="screen"/>
-  </filter>
+        0 0 0 0.22 0"
+            result="a"
+          />
+          <feComposite
+            in="a"
+            in2="SourceGraphic"
+            operator="in"
+            result="spark"
+          />
+          <feBlend in="SourceGraphic" in2="spark" mode="screen" />
+        </filter>
+      </defs>
 
-</defs>
+      <!-- ===== NHÓM CHỮ: cao hơn + mảnh hơn ===== -->
+      <g
+        font-family="SF Pro Display, system-ui"
+        font-weight="700"
+        text-anchor="middle"
+        stroke-linejoin="round"
+        stroke-linecap="round"
+        transform="scale(1,1.02) translate(0,-12)"
+      >
+        <!-- ================= TOP: SUNWIN.SX ================= -->
+        <!-- cáp viền (nhạt) + bóng -->
+        <text
+          x="960"
+          y="520"
+          font-size="205"
+          letter-spacing="0.13em"
+          fill="none"
+          stroke="url(#edgeCap)"
+          stroke-width="10.5"
+          filter="url(#softLampShadow)"
+          class="sun"
+        ></text>
 
-<!-- ===== NHÓM CHỮ: cao hơn + mảnh hơn ===== -->
-<g font-family="SF Pro Display, system-ui"
-   font-weight="700"
-   text-anchor="middle"
-   stroke-linejoin="round"
-   stroke-linecap="round"
-   transform="scale(1,1.02) translate(0,-12)">
+        <!-- thân chữ gold -->
+        <text
+          x="960"
+          y="520"
+          font-size="205"
+          letter-spacing="0.13em"
+          fill="url(#gold4k)"
+          stroke="none"
+          filter="url(#sparkle4k)"
+          class="sun"
+        ></text>
 
-  <!-- ================= TOP: SUNWIN.SX ================= -->
-  <!-- cáp viền (nhạt) + bóng -->
-  <text x="960" y="520"
-        font-size="205"
-        letter-spacing="0.13em"
-        fill="none"
-        stroke="url(#edgeCap)"
-        stroke-width="10.5"
-        filter="url(#softLampShadow)"
-        class="sun"></text>
+        <!-- viền sáng mảnh -->
+        <text
+          x="960"
+          y="520"
+          font-size="205"
+          letter-spacing="0.13em"
+          fill="none"
+          stroke="url(#microRim)"
+          stroke-width="2.0"
+          opacity="0.65"
+          class="sun"
+        ></text>
 
-  <!-- thân chữ gold -->
-  <text x="960" y="520"
-        font-size="205"
-        letter-spacing="0.13em"
-        fill="url(#gold4k)"
-        stroke="none"
-        filter="url(#sparkle4k)"
-        class="sun"></text>
+        <!-- ================= BOTTOM: GEMWIN.TOP (NHỎ HƠN 20%) ================= -->
+        <!-- ĐÃ KÉO LÊN GẦN HƠN: y=725 -->
+        <text
+          x="960"
+          y="725"
+          font-size="164"
+          letter-spacing="0.11em"
+          fill="none"
+          stroke="url(#edgeCap)"
+          stroke-width="8.6"
+          filter="url(#softLampShadow)"
+          class="gem"
+        ></text>
 
-  <!-- viền sáng mảnh -->
-  <text x="960" y="520"
-        font-size="205"
-        letter-spacing="0.13em"
-        fill="none"
-        stroke="url(#microRim)"
-        stroke-width="2.0"
-        opacity="0.65"
-        class="sun"></text>
+        <text
+          x="960"
+          y="725"
+          font-size="164"
+          letter-spacing="0.11em"
+          fill="url(#gold4k)"
+          stroke="none"
+          filter="url(#sparkle4k)"
+          class="gem"
+        ></text>
+        <text
+          x="960"
+          y="725"
+          font-size="164"
+          letter-spacing="0.11em"
+          fill="none"
+          stroke="url(#microRim)"
+          stroke-width="1.6"
+          opacity="0.65"
+          class="gem"
+        ></text>
+      </g>
+    </svg>
 
-  <!-- ================= BOTTOM: GEMWIN.TOP (NHỎ HƠN 20%) ================= -->
-  <!-- ĐÃ KÉO LÊN GẦN HƠN: y=725 -->
-  <text x="960" y="725"
-        font-size="164"
-        letter-spacing="0.11em"
-        fill="none"
-        stroke="url(#edgeCap)"
-        stroke-width="8.6"
-        filter="url(#softLampShadow)"
-        class="gem"></text>
+    <script>
+      const CONFIG_URL = "/api/public/domains1b";
+      let lastDomainsKey = null;
 
-  <text x="960" y="725"
-        font-size="164"
-        letter-spacing="0.11em"
-        fill="url(#gold4k)"
-        stroke="none"
-        filter="url(#sparkle4k)"
-        class="gem"></text>
-        <text x="960" y="725"
-        font-size="164"
-        letter-spacing="0.11em"
-        fill="none"
-        stroke="url(#microRim)"
-        stroke-width="1.6"
-        opacity="0.65"
-        class="gem"></text>
+      async function applyConfig() {
+        try {
+          const res = await fetch(CONFIG_URL + "?t=" + Date.now(), {
+            cache: "no-cache",
+          });
+          if (!res.ok) throw new Error("Không load được config.json");
 
-</g>
-</svg>
+          const cfg = await res.json();
+          const domains = Array.isArray(cfg.domains1b) ? cfg.domains1b : [];
+          const d0 = domains[0] || "";
+          const d1 = domains[1] || "";
 
- <script>
-const CONFIG_URL = "../config.json";
-let lastDomainsKey = null;
+          // Tạo key để so sánh
+          const key = d0 + "|" + d1;
+          if (key === lastDomainsKey) return; // không đổi => không update DOM
 
-async function applyConfig() {
-  try {
-    const res = await fetch(CONFIG_URL + "?t=" + Date.now(), { cache: "no-cache" });
-    if (!res.ok) throw new Error("Không load được config.json");
+          lastDomainsKey = key;
 
-    const cfg = await res.json();
-    const domains = Array.isArray(cfg.domains1b) ? cfg.domains1b : [];
-    const d0 = domains[0] || "";
-    const d1 = domains[1] || "";
+          document.querySelectorAll(".sun").forEach((el) => {
+            if (el.textContent !== d0) el.textContent = d0;
+          });
+          document.querySelectorAll(".gem").forEach((el) => {
+            if (el.textContent !== d1) el.textContent = d1;
+          });
+        } catch (e) {
+          console.error(e);
+        }
+      }
 
-    // Tạo key để so sánh
-    const key = d0 + "|" + d1;
-    if (key === lastDomainsKey) return; // không đổi => không update DOM
-
-    lastDomainsKey = key;
-
-    document.querySelectorAll(".sun").forEach(el => {
-      if (el.textContent !== d0) el.textContent = d0;
-    });
-    document.querySelectorAll(".gem").forEach(el => {
-      if (el.textContent !== d1) el.textContent = d1;
-    });
-
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-applyConfig();
-setInterval(applyConfig, 10000);
-</script>
-
-</body>
+      applyConfig();
+      setInterval(applyConfig, 10000);
+    </script>
+  </body>
 </html>

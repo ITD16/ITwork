@@ -84,6 +84,11 @@
   to = "/.netlify/functions/public-domains52b"
   status = 200
 
+  [[redirects]]
+  from = "/api/public/domains1b"
+  to = "/.netlify/functions/public-domains1b"
+  status = 200
+
 [[edge_functions]]
   path = "/"
   function = "ip-guard"
