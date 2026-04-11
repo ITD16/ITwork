@@ -169,7 +169,7 @@ function isAdmin() {
   return roleName() === "admin";
 }
 
-/* function getPermissions() {
+function getPermissions() {
   const allowed = currentMe?.allowedPanels || [];
   return {
     contentidol: allowed.includes("contentidol"),
@@ -185,9 +185,9 @@ function isAdmin() {
     vmixConfig2: allowed.includes("vmixConfig2"),
     enableFirework: isAdmin(),
   };
-} */
+}
 
-function getPermissions() {
+/* function getPermissions() {
   if (isAdmin()) {
     return {
       contentidol: true,
@@ -220,7 +220,7 @@ function getPermissions() {
     vmixConfig2: allowed.includes("vmixConfig2"),
     enableFirework: false,
   };
-}
+} */
 
 function canEditContentIdol() {
   return isAdmin() || getPermissions().contentidol;
