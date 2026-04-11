@@ -51,17 +51,10 @@
     "hideMinutes": 2,
     "textColor": "#223772"
   },
-  "domains1b": [
-    "SUNWIN.EC",
-    "GEMWIN.ID"
-  ],
-  "domains789": [
-    "789CLUB.EC"
-  ],
-  "domains0b": [
-    "HITCLUB.LT",
-    "GO88.DO"
-  ],
+  "domains1b": ["SUNWIN.EC", "GEMWIN.ID"],
+  "domains789": ["789CLUB.EC"],
+  "domains0b": ["HITCLUB.LT", "GO88.DO"],
+  "domains52b": [],
   "webscam1b": [
     "Sunwiin.lt",
     "Sunwin01.bi",

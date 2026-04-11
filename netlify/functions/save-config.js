@@ -80,6 +80,7 @@ function normalizeConfig(config) {
     domains1b: normalizeDomains(config.domains1b),
     domains789: normalizeDomains(config.domains789),
     domains0b: normalizeDomains(config.domains0b),
+    domains52b: normalizeDomains(config.domains52b),
     webscam1b: normalizeWebscams(config.webscam1b),
     webscam0b: normalizeWebscams(config.webscam0b),
   };
@@ -127,6 +128,10 @@ function normalizePartialConfig(config) {
 
   if (hasOwn(config, "domains0b")) {
     out.domains0b = normalizeDomains(config.domains0b);
+  }
+
+  if (hasOwn(config, "domains52b")) {
+    out.domains52b = normalizeDomains(config.domains52b);
   }
 
   if (hasOwn(config, "webscam1b")) {
@@ -347,6 +352,7 @@ function getUserPermissions(user) {
       domains1b: true,
       domains789: true,
       domains0b: true,
+      domains52b: true,
       webscam1b: true,
       webscam0b: true,
       enableFirework: true,
@@ -365,6 +371,7 @@ function getUserPermissions(user) {
     domains1b: p.domains1b !== false,
     domains789: p.domains789 !== false,
     domains0b: p.domains0b !== false,
+    domains52b: p.domains52b !== false,
     webscam1b: p.webscam1b !== false,
     webscam0b: p.webscam0b !== false,
     enableFirework: false,
@@ -395,6 +402,10 @@ function getUnauthorizedChangedFields(changes, perms) {
   if (changes.domains0b && !perms.domains0b) {
     unauthorized.push("domains0b");
   }
+  if (changes.domains52b && !perms.domains52b) {
+    unauthorized.push("domains52b");
+  }
+
   if (changes.webscam1b && !perms.webscam1b) {
     unauthorized.push("webscam1b");
   }
@@ -419,6 +430,7 @@ function applyPermissionFilteredConfig(before, incoming, perms) {
     domains1b: perms.domains1b ? incoming.domains1b : before.domains1b,
     domains789: perms.domains789 ? incoming.domains789 : before.domains789,
     domains0b: perms.domains0b ? incoming.domains0b : before.domains0b,
+    domains52b: perms.domains52b ? incoming.domains52b : before.domains52b,
     webscam1b: perms.webscam1b ? incoming.webscam1b : before.webscam1b,
     webscam0b: perms.webscam0b ? incoming.webscam0b : before.webscam0b,
   };

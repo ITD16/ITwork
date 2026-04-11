@@ -15,6 +15,7 @@ function getUserPermissions(user) {
       domains1b: true,
       domains789: true,
       domains0b: true,
+      domains52b: true,
       enableFirework: true,
       vmixConfig: true,
       vmixConfig0: true,
@@ -33,6 +34,7 @@ function getUserPermissions(user) {
     domains1b: p.domains1b !== false,
     domains789: p.domains789 !== false,
     domains0b: p.domains0b !== false,
+    domains52b: p.domains52b !== false,
     webscam1b: p.webscam1b !== false,
     webscam0b: p.webscam0b !== false,
     enableFirework: false,
@@ -66,6 +68,7 @@ function filterConfigByPermissions(config, perms) {
     domains1b: perms.domains1b ? config.domains1b || [] : [],
     domains789: perms.domains789 ? config.domains789 || [] : [],
     domains0b: perms.domains0b ? config.domains0b || [] : [],
+    domains52b: perms.domains52b ? config.domains52b || [] : [],
     webscam1b: perms.webscam1b ? config.webscam1b || [] : [],
     webscam0b: perms.webscam0b ? config.webscam0b || [] : [],
   };

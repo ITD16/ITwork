@@ -58,6 +58,9 @@ const els = {
   domains1bPanel: document.getElementById("domains1bPanel"),
   domains789Panel: document.getElementById("domains789Panel"),
   domains0bPanel: document.getElementById("domains0bPanel"),
+  domains52bPanel: document.getElementById("domains52bPanel"),
+  domains52bSection: document.getElementById("domains52bSection"),
+  domains52bList: document.getElementById("domains52bList"),
   webscam1bPanel: document.getElementById("webscam1bPanel"),
   webscam0bPanel: document.getElementById("webscam0bPanel"),
   vmixConfigPanel: document.getElementById("vmixConfigPanel"),
@@ -174,6 +177,7 @@ function getPermissions() {
     domains1b: allowed.includes("domains1b"),
     domains789: allowed.includes("domains789"),
     domains0b: allowed.includes("domains0b"),
+    domains52b: allowed.includes("domains52b"),
     webscam1b: allowed.includes("webscam1b"),
     webscam0b: allowed.includes("webscam0b"),
     vmixConfig: allowed.includes("vmixConfig"),
@@ -201,6 +205,9 @@ function canEditDomains789() {
 
 function canEditDomains0b() {
   return isAdmin() || getPermissions().domains0b;
+}
+function canEditDomains52b() {
+  return isAdmin() || getPermissions().domains52b;
 }
 function canEditWebscam1b() {
   return isAdmin() || getPermissions().webscam1b;
@@ -233,6 +240,7 @@ function canEditAnything() {
     canEditDomains1b() ||
     canEditDomains789() ||
     canEditDomains0b() ||
+    canEditDomains52b() ||
     canEditWebscam1b() ||
     canEditWebscam0b() ||
     canEditVmixConfig()
@@ -756,6 +764,7 @@ function sanitizeConfigForCurrentUser(config) {
     domains1b: perms.domains1b ? [...(config?.domains1b || [])] : [],
     domains789: perms.domains789 ? [...(config?.domains789 || [])] : [],
     domains0b: perms.domains0b ? [...(config?.domains0b || [])] : [],
+    domains52b: perms.domains52b ? [...(config?.domains52b || [])] : [],
     webscam1b: perms.webscam1b ? [...(config?.webscam1b || [])] : [],
     webscam0b: perms.webscam0b ? [...(config?.webscam0b || [])] : [],
   };
@@ -805,6 +814,7 @@ function collectConfig() {
     domains1b: getDomainList(els.domains1bList),
     domains789: getDomainList(els.domains789List),
     domains0b: getDomainList(els.domains0bList),
+    domains52b: getDomainList(els.domains52bList),
     webscam1b: getWebscamList(els.webscam1bList),
     webscam0b: getWebscamList(els.webscam0bList),
   };
@@ -880,6 +890,13 @@ function collectConfigByPanel(panelId = currentPanelId) {
           }
         : {};
 
+    case "domains52bPanel":
+      return canEditDomains52b()
+        ? {
+            domains52b: getDomainList(els.domains52bList),
+          }
+        : {};
+
     case "webscam1bPanel":
       return canEditWebscam1b()
         ? {
@@ -952,6 +969,12 @@ function renderConfig(config) {
     els.domains0bList,
     safeConfig.domains0b || [],
     canEditDomains0b(),
+  );
+
+  renderDomainList(
+    els.domains52bList,
+    safeConfig.domains52b || [],
+    canEditDomains52b(),
   );
 
   renderWebscamList(
@@ -1094,6 +1117,7 @@ function getAllPanels() {
     els.domains1bPanel,
     els.domains789Panel,
     els.domains0bPanel,
+    els.domains52bPanel,
     els.vmixConfigPanel,
     els.webscam1bPanel,
     els.webscam0bPanel,
@@ -1144,6 +1168,13 @@ function getPanelMeta() {
       label: "Change Dom 0B",
       subtitle: "Manage domain list 0B",
       visible: perms.domains0b,
+      target: "config",
+    },
+    {
+      id: "domains52bPanel",
+      label: "Change Dom 52B",
+      subtitle: "Manage domain list 52B",
+      visible: perms.domains52b,
       target: "config",
     },
     {
@@ -1332,6 +1363,7 @@ function refreshMenuByRole() {
       if (panelId === "domains1bPanel") visible = canEditDomains1b();
       if (panelId === "domains0bPanel") visible = canEditDomains0b();
       if (panelId === "domains789Panel") visible = canEditDomains789();
+      if (panelId === "domains52bPanel") visible = canEditDomains52b();
 
       btn.style.display = visible ? "" : "none";
     });
@@ -1419,6 +1451,11 @@ function applyRoleUi() {
     btn.disabled = !canEditDomains0b();
   });
 
+  document.querySelectorAll('[data-add="domains52b"]').forEach((btn) => {
+    btn.style.display = canEditDomains52b() ? "" : "none";
+    btn.disabled = !canEditDomains52b();
+  });
+
   document.querySelectorAll('[data-add="webscam1b"]').forEach((btn) => {
     btn.style.display = canEditWebscam1b() ? "" : "none";
     btn.disabled = !canEditWebscam1b();
@@ -1457,6 +1494,7 @@ function applyRoleUi() {
   setInputsDisabled(els.domains1bList, !canEditDomains1b());
   setInputsDisabled(els.domains789List, !canEditDomains789());
   setInputsDisabled(els.domains0bList, !canEditDomains0b());
+  setInputsDisabled(els.domains52bList, !canEditDomains52b());
   setInputsDisabled(els.webscam1bList, !canEditWebscam1b());
   setInputsDisabled(els.webscam0bList, !canEditWebscam0b());
 
@@ -1862,6 +1900,7 @@ function renderPermissionsTable(users) {
             <th>Domain 1B</th>
             <th>Domain 789</th>
             <th>Domain 0B</th>
+            <th>Domain 52B</th>
             <th>Webscam 1B</th>
             <th>Webscam 0B</th>
             <th>vMix DOM 1B</th>
@@ -1880,6 +1919,7 @@ function renderPermissionsTable(users) {
                     domains1b: true,
                     domains789: true,
                     domains0b: true,
+                    domains52b: true,
                     webscam1b: true,
                     webscam0b: true,
                     vmixConfig: true,
@@ -1931,6 +1971,7 @@ function renderPermissionsTable(users) {
                 <td>${makeCheckbox(user.username, "domains1b", !!perms.domains1b, disabled)}</td>
                 <td>${makeCheckbox(user.username, "domains789", !!perms.domains789, disabled)}</td>
                 <td>${makeCheckbox(user.username, "domains0b", !!perms.domains0b, disabled)}</td>
+                <td>${makeCheckbox(user.username, "domains52b", !!perms.domains52b, disabled)}</td>
                 <td>${makeCheckbox(user.username, "webscam1b", !!perms.webscam1b, disabled)}</td>
                 <td>${makeCheckbox(user.username, "webscam0b", !!perms.webscam0b, disabled)}</td>
                 <td>${makeCheckbox(user.username, "vmixConfig", !!perms.vmixConfig, disabled)}</td>
@@ -1979,6 +2020,10 @@ async function bindPermissionCheckboxes() {
           domains0b:
             rowChecks.find(
               (x) => x.getAttribute("data-perm-field") === "domains0b",
+            )?.checked ?? true,
+          domains52b:
+            rowChecks.find(
+              (x) => x.getAttribute("data-perm-field") === "domains52b",
             )?.checked ?? true,
           webscam1b:
             rowChecks.find(
@@ -2311,6 +2356,7 @@ document.querySelectorAll("[data-add]").forEach((btn) => {
       domains1b: canEditDomains1b(),
       domains789: canEditDomains789(),
       domains0b: canEditDomains0b(),
+      domains52b: canEditDomains52b(),
       webscam1b: canEditWebscam1b(),
       webscam0b: canEditWebscam0b(),
     };
@@ -2321,6 +2367,7 @@ document.querySelectorAll("[data-add]").forEach((btn) => {
       domains1b: els.domains1bList,
       domains789: els.domains789List,
       domains0b: els.domains0bList,
+      domains52b: els.domains52bList,
       webscam1b: els.webscam1bList,
       webscam0b: els.webscam0bList,
     };
