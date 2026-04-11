@@ -6,6 +6,12 @@
     <title>Config Login</title>
     <link rel="stylesheet" href="/css/style-admin.css" />
     <link rel="icon" type="image/png" href="../logo/config.png?v=1" />
+    <script>
+      (function () {
+        const savedTheme = localStorage.getItem("site-theme") || "light";
+        document.documentElement.setAttribute("data-theme", savedTheme);
+      })();
+    </script>
   </head>
 
   <body class="login-page">
@@ -112,6 +118,34 @@
           eyeOpenSvg.style.display = isPassword ? "block" : "none";
         });
       });
+    </script>
+    <script>
+      (function () {
+        const THEME_KEY = "site-theme";
+
+        function applyTheme(theme) {
+          document.documentElement.setAttribute("data-theme", theme);
+          const toggle = document.getElementById("themeToggle");
+          if (toggle) {
+            toggle.checked = theme === "dark";
+          }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+          const toggle = document.getElementById("themeToggle");
+          const savedTheme = localStorage.getItem(THEME_KEY) || "light";
+
+          applyTheme(savedTheme);
+
+          if (toggle) {
+            toggle.addEventListener("change", function () {
+              const nextTheme = toggle.checked ? "dark" : "light";
+              localStorage.setItem(THEME_KEY, nextTheme);
+              applyTheme(nextTheme);
+            });
+          }
+        });
+      })();
     </script>
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
