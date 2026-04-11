@@ -16,7 +16,10 @@ exports.handler = async () => {
           .filter(Boolean)
       : [];
 
-    return json(200, { domains52b });
+    return json(200, {
+      enableFirework: !!config.enableFirework,
+      domains52b,
+    });
   } catch (err) {
     return json(500, { error: err.message || "Cannot load domains52b" });
   }
