@@ -25,25 +25,26 @@
 
 [data-theme="dark"] {
   --bg: #0b1220;
-  --text: #e5e7eb;
+  --text: #f3f4f6;
   --card-bg: #111827;
   --card-soft: #0f172a;
   --border: #334155;
   --input-bg: #0f172a;
-  --muted-color: #94a3b8;
+  --muted-color: #cbd5e1;
   --chip-bg: #1e293b;
-  --chip-text: #e5e7eb;
+  --chip-text: #f3f4f6;
   --topbar-bg: #0f172a;
   --modal-bg: #111827;
   --pre-bg: #0f172a;
   --overlay-bg: rgba(2, 6, 23, 0.72);
   --table-bg: #0f172a;
-  --table-text: #e5e7eb;
-  --table-head-text: #cbd5e1;
+  --table-text: #ffffff;
+  --table-head-text: #ffffff;
   --table-sticky-bg: #0f172a;
   --name-chip-bg: #111827;
   --name-chip-border: rgba(148, 163, 184, 0.35);
 }
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
