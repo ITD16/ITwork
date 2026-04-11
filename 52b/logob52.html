@@ -61,7 +61,7 @@
           <feMorphology
             in="SourceAlpha"
             operator="dilate"
-            radius="5"
+            radius="2.2"
             result="spread1"
           />
           <feGaussianBlur in="spread1" stdDeviation="2.2" result="blur1" />
@@ -69,30 +69,30 @@
             in="blur1"
             type="matrix"
             values="
-      0 0 0 0 0.10
-      0 0 0 0 0.07
-      0 0 0 0 0.04
-      0 0 0 0.88 0"
+    0 0 0 0 0.10
+    0 0 0 0 0.07
+    0 0 0 0 0.04
+    0 0 0 0.88 0"
             result="shadowAround"
           />
 
-          <!-- lớp bóng đáy dày hơn, nhưng không kéo quá xa -->
-          <feOffset in="SourceAlpha" dx="0" dy="7" result="off2" />
+          <!-- lớp bóng đáy: hơi lệch trái và xuống dưới -->
+          <feOffset in="SourceAlpha" dx="-3" dy="9" result="off2" />
           <feMorphology
             in="off2"
             operator="dilate"
-            radius="15"
+            radius="4.2"
             result="spread2"
           />
-          <feGaussianBlur in="spread2" stdDeviation="3.8" result="blur2" />
+          <feGaussianBlur in="spread2" stdDeviation="4.6" result="blur2" />
           <feColorMatrix
             in="blur2"
             type="matrix"
             values="
-      0 0 0 0 0.10
-      0 0 0 0 0.07
-      0 0 0 0 0.04
-      0 0 0 0.78 0"
+    0 0 0 0 0.10
+    0 0 0 0 0.07
+    0 0 0 0 0.04
+    0 0 0 0.74 0"
             result="shadowBottom"
           />
 
