@@ -1,16 +1,35 @@
+const isDarkTheme =
+  document.documentElement.getAttribute("data-theme") === "dark";
+
+const particlesConfig = isDarkTheme
+  ? {
+      dotColor: "#d7e3ff",
+      dotOpacity: 0.82,
+      lineColor: "#c6d6ff",
+      lineOpacity: 0.68,
+      grabLineOpacity: 1,
+    }
+  : {
+      dotColor: "#8b93a7",
+      dotOpacity: 0.5,
+      lineColor: "#a0a8bb",
+      lineOpacity: 0.4,
+      grabLineOpacity: 0.8,
+    };
+
 particlesJS("particles-js", {
   particles: {
     number: {
       value: 80,
       density: { enable: true, value_area: 800 },
     },
-    color: { value: "#8b93a7" },
+    color: { value: particlesConfig.dotColor },
     shape: {
       type: "circle",
       stroke: { width: 0, color: "#000000" },
     },
     opacity: {
-      value: 0.5,
+      value: particlesConfig.dotOpacity,
       random: false,
       anim: { enable: false, speed: 1, opacity_min: 0.1, sync: false },
     },
@@ -22,8 +41,8 @@ particlesJS("particles-js", {
     line_linked: {
       enable: true,
       distance: 150,
-      color: "#a0a8bb",
-      opacity: 0.4,
+      color: particlesConfig.lineColor,
+      opacity: particlesConfig.lineOpacity,
       width: 1,
     },
     move: {
@@ -45,7 +64,10 @@ particlesJS("particles-js", {
       resize: true,
     },
     modes: {
-      grab: { distance: 180, line_linked: { opacity: 0.8 } },
+      grab: {
+        distance: 180,
+        line_linked: { opacity: particlesConfig.grabLineOpacity },
+      },
       bubble: { distance: 150, size: 40, duration: 2, opacity: 8, speed: 3 },
       repulse: { distance: 180, duration: 0.4 },
       push: { particles_nb: 4 },
