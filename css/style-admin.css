@@ -15,6 +15,12 @@
   --modal-bg: #ffffff;
   --pre-bg: #ffffff;
   --overlay-bg: rgba(15, 23, 42, 0.55);
+  --table-bg: #ffffff;
+  --table-text: #111827;
+  --table-head-text: #374151;
+  --table-sticky-bg: #ffffff;
+  --name-chip-bg: #ffffff;
+  --name-chip-border: rgba(37, 99, 235, 0.18);
 }
 
 [data-theme="dark"] {
@@ -31,6 +37,12 @@
   --modal-bg: #111827;
   --pre-bg: #0f172a;
   --overlay-bg: rgba(2, 6, 23, 0.72);
+  --table-bg: #0f172a;
+  --table-text: #e5e7eb;
+  --table-head-text: #cbd5e1;
+  --table-sticky-bg: #0f172a;
+  --name-chip-bg: #111827;
+  --name-chip-border: rgba(148, 163, 184, 0.35);
 }
 body {
   margin: 0;
@@ -861,7 +873,8 @@ canvas {
 
 .user-perm-table th,
 .user-perm-table td {
-  background: #fff;
+  background: var(--table-bg);
+  color: var(--table-text);
   padding: 6px 8px;
   vertical-align: middle;
 }
@@ -889,13 +902,14 @@ canvas {
   position: sticky;
   top: 0;
   z-index: 30;
-  background: #fff;
+  background: var(--table-sticky-bg);
+  color: var(--table-head-text);
 }
 
 .user-perm-table .sticky-col {
   position: sticky;
   z-index: 20;
-  background: #fff;
+  background: var(--table-sticky-bg);
 }
 
 .user-perm-table thead .sticky-col {
@@ -984,14 +998,15 @@ canvas {
   align-items: center;
   gap: 4px;
   padding: 3px 6px;
-  border: 1px solid rgba(37, 99, 235, 0.18);
+  border: 1px solid var(--name-chip-border);
   border-radius: 999px;
-  background: #fff;
+  background: var(--name-chip-bg);
 }
 
 .user-name-text {
   display: inline-block;
   white-space: nowrap;
+  color: var(--table-text);
 }
 
 .user-delete-btn {
@@ -1410,6 +1425,15 @@ button,
   100% {
     transform: translateX(0);
   }
+}
+
+[data-theme="dark"] .user-perm-table-wrap {
+  border: 1px solid var(--border);
+  background: var(--table-bg);
+}
+
+[data-theme="dark"] #userManagementCard {
+  background: var(--card-bg);
 }
 
 /* End nút dark/light */
