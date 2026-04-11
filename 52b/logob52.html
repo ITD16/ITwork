@@ -52,57 +52,53 @@
 
         <filter
           id="softLampShadow"
-          x="-45%"
-          y="-50%"
-          width="220%"
-          height="260%"
+          x="-40%"
+          y="-40%"
+          width="200%"
+          height="220%"
         >
-          <!-- lớp bóng gần, sát chân chữ -->
-          <feOffset in="SourceAlpha" dx="0" dy="8" result="offNear" />
-          <feGaussianBlur in="offNear" stdDeviation="1.8" result="blurNear" />
+          <!-- lớp bóng ôm quanh chữ -->
+          <feMorphology
+            in="SourceAlpha"
+            operator="dilate"
+            radius="0.6"
+            result="spread1"
+          />
+          <feGaussianBlur in="spread1" stdDeviation="2.2" result="blur1" />
           <feColorMatrix
-            in="blurNear"
+            in="blur1"
             type="matrix"
             values="
-            0 0 0 0 0.12
-            0 0 0 0 0.08
-            0 0 0 0 0.05
-            0 0 0 1 0"
-            result="shadowNear"
+      0 0 0 0 0.10
+      0 0 0 0 0.07
+      0 0 0 0 0.04
+      0 0 0 0.88 0"
+            result="shadowAround"
           />
 
-          <!-- lớp bóng chính, dày ở dưới -->
-          <feOffset in="SourceAlpha" dx="0" dy="18" result="offMain" />
-          <feGaussianBlur in="offMain" stdDeviation="4.8" result="blurMain" />
-          <feColorMatrix
-            in="blurMain"
-            type="matrix"
-            values="
-              0 0 0 0 0.10
-              0 0 0 0 0.07
-              0 0 0 0 0.04
-              0 0 0 0.92 0"
-            result="shadowMain"
+          <!-- lớp bóng đáy dày hơn, nhưng không kéo quá xa -->
+          <feOffset in="SourceAlpha" dx="0" dy="7" result="off2" />
+          <feMorphology
+            in="off2"
+            operator="dilate"
+            radius="1.2"
+            result="spread2"
           />
-
-          <!-- lớp bóng đáy để làm phần dưới dày hơn -->
-          <feOffset in="SourceAlpha" dx="0" dy="28" result="offBase" />
-          <feGaussianBlur in="offBase" stdDeviation="7.5" result="blurBase" />
+          <feGaussianBlur in="spread2" stdDeviation="3.8" result="blur2" />
           <feColorMatrix
-            in="blurBase"
+            in="blur2"
             type="matrix"
             values="
-              0 0 0 0 0.08
-              0 0 0 0 0.05
-              0 0 0 0 0.03
-              0 0 0 0.72 0"
-            result="shadowBase"
+      0 0 0 0 0.10
+      0 0 0 0 0.07
+      0 0 0 0 0.04
+      0 0 0 0.78 0"
+            result="shadowBottom"
           />
 
           <feMerge>
-            <feMergeNode in="shadowBase" />
-            <feMergeNode in="shadowMain" />
-            <feMergeNode in="shadowNear" />
+            <feMergeNode in="shadowBottom" />
+            <feMergeNode in="shadowAround" />
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
@@ -177,8 +173,8 @@
 
         const shadow = makeText({
           fill: "none",
-          stroke: "#24160c",
-          "stroke-width": "14",
+          stroke: "#25170d",
+          "stroke-width": "12",
           opacity: "0.95",
           filter: "url(#softLampShadow)",
         });
@@ -188,7 +184,6 @@
           stroke: "url(#edgeCap)",
           "stroke-width": "11",
         });
-
         const body = makeText({
           fill: "url(#gold4k)",
           stroke: "none",
@@ -198,9 +193,10 @@
         const rim = makeText({
           fill: "none",
           stroke: "url(#microRim)",
-          "stroke-width": "1.5",
-          opacity: "0.55",
+          "stroke-width": "1.4",
+          opacity: "0.5",
         });
+
         svgGroup.appendChild(shadow);
         svgGroup.appendChild(edge);
         svgGroup.appendChild(body);
