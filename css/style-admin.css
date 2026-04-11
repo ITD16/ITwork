@@ -127,9 +127,7 @@ button.small {
   background-position: center;
   background-size: cover;
 }
-.topbar {
-  background: var(--topbar-bg);
-}
+
 .topbar-brand {
   display: flex;
   align-items: flex-start;
@@ -1415,7 +1413,7 @@ button,
 }
 
 /* Nút dark/light */
-.plane-switch {
+/* .plane-switch {
   --dot: #fff;
   --street: #6b6d76;
   --street-line: #a8aab4;
@@ -1628,6 +1626,6 @@ button,
   100% {
     transform: translateX(0);
   }
-}
+} */
 
 /* End nút dark/light */
