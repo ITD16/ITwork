@@ -36,9 +36,9 @@
       "domains1b": true,
       "domains789": true,
       "domains0b": true,
-      "webscam1b": false,
-      "webscam0b": false,
-      "vmixConfig": false,
+      "webscam1b": true,
+      "webscam0b": true,
+      "vmixConfig": true,
       "vmixConfig2": true
     }
   },
@@ -56,7 +56,7 @@
       "domains0b": false,
       "webscam1b": false,
       "webscam0b": false,
-      "vmixConfig": false,
+      "vmixConfig": true,
       "vmixConfig2": true
     }
   },
@@ -74,8 +74,8 @@
       "domains0b": true,
       "webscam1b": true,
       "webscam0b": true,
-      "vmixConfig": false,
-      "vmixConfig2": true
+      "vmixConfig": true,
+      "vmixConfig2": false
     }
   },
   {
@@ -107,8 +107,8 @@
       "domains0b": false,
       "webscam1b": false,
       "webscam0b": false,
-      "vmixConfig": false,
-      "vmixConfig2": true
+      "vmixConfig": true,
+      "vmixConfig2": false
     }
   }
 ]
