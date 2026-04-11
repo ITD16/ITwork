@@ -1,11 +1,42 @@
 * {
   box-sizing: border-box;
 }
+:root {
+  --bg: #f5f7fb;
+  --text: #111827;
+  --card-bg: #ffffff;
+  --card-soft: #fafafa;
+  --border: #e5e7eb;
+  --input-bg: #ffffff;
+  --muted-color: #6b7280;
+  --chip-bg: #eef2ff;
+  --chip-text: #111827;
+  --topbar-bg: #ffffff;
+  --modal-bg: #ffffff;
+  --pre-bg: #ffffff;
+  --overlay-bg: rgba(15, 23, 42, 0.55);
+}
+
+[data-theme="dark"] {
+  --bg: #0b1220;
+  --text: #e5e7eb;
+  --card-bg: #111827;
+  --card-soft: #0f172a;
+  --border: #334155;
+  --input-bg: #0f172a;
+  --muted-color: #94a3b8;
+  --chip-bg: #1e293b;
+  --chip-text: #e5e7eb;
+  --topbar-bg: #0f172a;
+  --modal-bg: #111827;
+  --pre-bg: #0f172a;
+  --overlay-bg: rgba(2, 6, 23, 0.72);
+}
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #f5f7fb;
-  color: #111827;
+  background: var(--bg);
+  color: var(--text);
 }
 
 body.menu-open {
@@ -16,7 +47,7 @@ body.menu-open {
   min-height: 100vh;
   position: relative;
   overflow: hidden;
-  background: #f5f7fb;
+  background: var(--bg);
 }
 
 .login-shell {
@@ -27,7 +58,7 @@ body.menu-open {
   padding: 24px;
 }
 .card {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   padding: 20px;
@@ -47,15 +78,17 @@ label span,
   margin-bottom: 6px;
 }
 .muted {
-  color: #6b7280;
+  color: var(--muted-color);
 }
 input[type="text"],
 input[type="password"] {
   width: 100%;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 10px 12px;
   font-size: 14px;
+  background: var(--input-bg);
+  color: var(--text);
 }
 button {
   border: 0;
@@ -93,6 +126,9 @@ button.small {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+}
+.topbar {
+  background: var(--topbar-bg);
 }
 .topbar-brand {
   display: flex;
@@ -142,11 +178,11 @@ button.small {
 }
 .chip {
   padding: 8px 10px;
-  background: #eef2ff;
+  background: var(--chip-bg);
   border-radius: 999px;
   font-size: 13px;
   font-weight: 400;
-  color: #111827;
+  color: var(--chip-text);
 }
 .me-name {
   font-weight: 700;
@@ -173,7 +209,7 @@ button.small {
   gap: 10px;
 }
 .group-box {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 14px;
 }
@@ -216,10 +252,10 @@ button.small {
 }
 .log-item,
 .user-row {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 12px;
-  background: #fafafa;
+  background: var(--card-soft);
 }
 .log-meta {
   font-size: 13px;
@@ -239,11 +275,12 @@ pre {
   margin: 0;
   white-space: pre-wrap;
   word-break: break-word;
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: var(--pre-bg);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 10px;
   font-size: 12px;
+  color: var(--text);
 }
 .error {
   color: #b91c1c;
@@ -259,7 +296,7 @@ pre {
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.55);
+  background: var(--overlay-bg);
   display: grid;
   place-items: center;
   z-index: 2000;
@@ -267,7 +304,7 @@ pre {
 }
 .modal-card {
   width: min(460px, 100%);
-  background: white;
+  background: var(--modal-bg);
   border-radius: 16px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
   padding: 20px;
@@ -786,7 +823,7 @@ pre {
   inset: 0;
   width: 100%;
   height: 100%;
-  background-color: #f5f7fb;
+  background-color: var(--bg);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 50% 50%;
@@ -1154,3 +1191,443 @@ button,
   font-weight: 700;
   margin-bottom: 0 !important;
 }
+
+/* Theme dark/light */
+.login-theme-switch-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 6px 0 8px;
+}
+
+.plane-switch {
+  --dot: #fff;
+  --street: #6b6d76;
+  --street-line: #a8aab4;
+  --street-line-mid: #c0c2c8;
+  --sky-1: #60a7fa;
+  --sky-2: #2f8efc;
+  --light-1: rgba(255, 233, 0, 1);
+  --light-2: rgba(255, 233, 0, 0.3);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  display: inline-flex;
+  align-items: center;
+}
+
+.plane-switch input {
+  display: none;
+}
+
+.plane-switch input + div {
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  position: relative;
+  overflow: hidden;
+  width: 50px;
+  height: 25px;
+  padding: 1px;
+  border-radius: 13px;
+  background: linear-gradient(
+      90deg,
+      var(--street) 0%,
+      var(--street) 25%,
+      var(--sky-1) 75%,
+      var(--sky-2) 100%
+    )
+    left var(--p, 0%) top 0;
+  background-position-x: var(--p, 0%);
+  background-size: 400% auto;
+  transition: background-position 0.6s;
+}
+
+.plane-switch input + div:before,
+.plane-switch input + div:after {
+  content: "";
+  display: block;
+  position: absolute;
+  transform: translateX(var(--s, 0));
+  transition: transform 0.3s;
+}
+
+.plane-switch input + div:before {
+  width: 42px;
+  right: 2px;
+  top: 4px;
+  height: 1px;
+  background: var(--street-line);
+  box-shadow: 0 16px 0 0 var(--street-line);
+}
+
+.plane-switch input + div:after {
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  left: 23px;
+  top: 1px;
+  animation: lights2 2s linear infinite;
+  box-shadow:
+    inset 0 0 0 2px var(--light-1),
+    0 21px 0 var(--light-1),
+    8px 0 0 var(--light-2),
+    8px 21px 0 var(--light-2),
+    16px 0 0 var(--light-2),
+    16px 21px 0 var(--light-2);
+}
+
+.plane-switch input + div span {
+  display: block;
+  position: absolute;
+}
+
+.plane-switch input + div span.street-middle {
+  top: 12px;
+  left: 21px;
+  width: 3px;
+  height: 1px;
+  transform: translateX(var(--s, 0));
+  background: var(--street-line-mid);
+  box-shadow:
+    5px 0 0 var(--street-line-mid),
+    10px 0 0 var(--street-line-mid),
+    15px 0 0 var(--street-line-mid),
+    20px 0 0 var(--street-line-mid),
+    25px 0 0 var(--street-line-mid);
+  transition: transform 0.3s;
+}
+
+.plane-switch input + div span.cloud {
+  width: 12px;
+  height: 4px;
+  border-radius: 2px;
+  background: #fff;
+  position: absolute;
+  top: var(--ct, 8px);
+  left: 100%;
+  opacity: var(--co, 0);
+  transition: opacity 0.3s;
+  animation: clouds2 2s linear infinite var(--cd, 0s);
+}
+
+.plane-switch input + div span.cloud:before,
+.plane-switch input + div span.cloud:after {
+  content: "";
+  position: absolute;
+  transform: translateX(var(--cx, 0));
+  border-radius: 50%;
+  width: var(--cs, 5px);
+  height: var(--cs, 5px);
+  background: #fff;
+  bottom: 1px;
+  left: 1px;
+}
+
+.plane-switch input + div span.cloud:after {
+  --cs: 6px;
+  --cx: 4px;
+}
+
+.plane-switch input + div span.cloud.two {
+  --ct: 20px;
+  --cd: 1s;
+  opacity: var(--co-2, 0);
+}
+
+.plane-switch input + div div {
+  display: table;
+  position: relative;
+  z-index: 1;
+  padding: 5px;
+  border-radius: 50%;
+  background: var(--dot);
+  transform: translateX(var(--x, 0));
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.35, 1.2);
+}
+
+.plane-switch input + div div svg {
+  width: 13px;
+  height: 13px;
+  display: block;
+  color: var(--c, var(--street));
+  transition: color 0.6s;
+}
+
+.plane-switch input:checked + div {
+  --p: 100%;
+  --x: 25px;
+  --s: -50px;
+  --c: var(--sky-2);
+  --co: 0.8;
+  --co-2: 0.6;
+}
+
+@keyframes lights2 {
+  20%,
+  30% {
+    box-shadow:
+      inset 0 0 0 2px var(--light-2),
+      0 21px 0 var(--light-2),
+      8px 0 0 var(--light-1),
+      8px 21px 0 var(--light-1),
+      16px 0 0 var(--light-2),
+      16px 21px 0 var(--light-2);
+  }
+
+  55%,
+  65% {
+    box-shadow:
+      inset 0 0 0 2px var(--light-2),
+      0 21px 0 var(--light-2),
+      8px 0 0 var(--light-2),
+      8px 21px 0 var(--light-2),
+      16px 0 0 var(--light-1),
+      16px 21px 0 var(--light-1);
+  }
+
+  90%,
+  100% {
+    box-shadow:
+      inset 0 0 0 2px var(--light-1),
+      0 21px 0 var(--light-1),
+      8px 0 0 var(--light-2),
+      8px 21px 0 var(--light-2),
+      16px 0 0 var(--light-2),
+      16px 21px 0 var(--light-2);
+  }
+}
+
+@keyframes clouds2 {
+  97% {
+    transform: translateX(-72px);
+    visibility: visible;
+  }
+
+  98%,
+  100% {
+    visibility: hidden;
+  }
+
+  99% {
+    transform: translateX(-72px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Nút dark/light */
+.plane-switch {
+  --dot: #fff;
+  --street: #6b6d76;
+  --street-line: #a8aab4;
+  --street-line-mid: #c0c2c8;
+  --sky-1: #60a7fa;
+  --sky-2: #2f8efc;
+  --light-1: rgba(255, 233, 0, 1);
+  --light-2: rgba(255, 233, 0, 0.3);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.plane-switch input {
+  display: none;
+}
+
+.plane-switch input + div {
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  position: relative;
+  overflow: hidden;
+  width: 50px;
+  height: 25px;
+  padding: 1px;
+  border-radius: 13px;
+  background: linear-gradient(
+      90deg,
+      var(--street) 0%,
+      var(--street) 25%,
+      var(--sky-1) 75%,
+      var(--sky-2) 100%
+    )
+    left var(--p, 0%) top 0;
+  background-position-x: var(--p, 0%);
+  background-size: 400% auto;
+  transition: background-position 0.6s;
+}
+
+.plane-switch input + div:before,
+.plane-switch input + div:after {
+  content: "";
+  display: block;
+  position: absolute;
+  transform: translateX(var(--s, 0));
+  transition: transform 0.3s;
+}
+
+.plane-switch input + div:before {
+  width: 42px;
+  right: 2px;
+  top: 4px;
+  height: 1px;
+  background: var(--street-line);
+  box-shadow: 0 16px 0 0 var(--street-line);
+}
+
+.plane-switch input + div:after {
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  left: 23px;
+  top: 1px;
+  -webkit-animation: lights2 2s linear infinite;
+  animation: lights2 2s linear infinite;
+  box-shadow:
+    inset 0 0 0 2px var(--light-1),
+    0 21px 0 var(--light-1),
+    8px 0 0 var(--light-2),
+    8px 21px 0 var(--light-2),
+    16px 0 0 var(--light-2),
+    16px 21px 0 var(--light-2);
+}
+
+.plane-switch input + div span {
+  display: block;
+  position: absolute;
+}
+
+.plane-switch input + div span.street-middle {
+  top: 12px;
+  left: 21px;
+  width: 3px;
+  height: 1px;
+  transform: translateX(var(--s, 0));
+  background: var(--street-line-mid);
+  box-shadow:
+    5px 0 0 var(--street-line-mid),
+    10px 0 0 var(--street-line-mid),
+    15px 0 0 var(--street-line-mid),
+    20px 0 0 var(--street-line-mid),
+    25px 0 0 var(--street-line-mid);
+  transition: transform 0.3s;
+}
+
+.plane-switch input + div span.cloud {
+  width: 12px;
+  height: 4px;
+  border-radius: 2px;
+  background: #fff;
+  position: absolute;
+  top: var(--ct, 8px);
+  left: 100%;
+  opacity: var(--co, 0);
+  transition: opacity 0.3s;
+  -webkit-animation: clouds2 2s linear infinite var(--cd, 0s);
+  animation: clouds2 2s linear infinite var(--cd, 0s);
+}
+
+.plane-switch input + div span.cloud:before,
+.plane-switch input + div span.cloud:after {
+  content: "";
+  position: absolute;
+  transform: translateX(var(--cx, 0));
+  border-radius: 50%;
+  width: var(--cs, 5px);
+  height: var(--cs, 5px);
+  background: #fff;
+  bottom: 1px;
+  left: 1px;
+}
+
+.plane-switch input + div span.cloud:after {
+  --cs: 6px;
+  --cx: 4px;
+}
+
+.plane-switch input + div span.cloud.two {
+  --ct: 20px;
+  --cd: 1s;
+  opacity: var(--co-2, 0);
+}
+
+.plane-switch input + div div {
+  display: table;
+  position: relative;
+  z-index: 1;
+  padding: 5px;
+  border-radius: 50%;
+  background: var(--dot);
+  transform: translateX(var(--x, 0));
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.35, 1.2);
+}
+
+.plane-switch input + div div svg {
+  width: 13px;
+  height: 13px;
+  display: block;
+  color: var(--c, var(--street));
+  transition: color 0.6s;
+}
+
+.plane-switch input:checked + div {
+  --p: 100%;
+  --x: 25px;
+  --s: -50px;
+  --c: var(--sky-2);
+  --co: 0.8;
+  --co-2: 0.6;
+}
+
+@keyframes lights2 {
+  20%,
+  30% {
+    box-shadow:
+      inset 0 0 0 2px var(--light-2),
+      0 21px 0 var(--light-2),
+      8px 0 0 var(--light-1),
+      8px 21px 0 var(--light-1),
+      16px 0 0 var(--light-2),
+      16px 21px 0 var(--light-2);
+  }
+
+  55%,
+  65% {
+    box-shadow:
+      inset 0 0 0 2px var(--light-2),
+      0 21px 0 var(--light-2),
+      8px 0 0 var(--light-2),
+      8px 21px 0 var(--light-2),
+      16px 0 0 var(--light-1),
+      16px 21px 0 var(--light-1);
+  }
+
+  90%,
+  100% {
+    box-shadow:
+      inset 0 0 0 2px var(--light-1),
+      0 21px 0 var(--light-1),
+      8px 0 0 var(--light-2),
+      8px 21px 0 var(--light-2),
+      16px 0 0 var(--light-2),
+      16px 21px 0 var(--light-2);
+  }
+}
+
+@keyframes clouds2 {
+  97% {
+    transform: translateX(-72px);
+    visibility: visible;
+  }
+
+  98%,
+  100% {
+    visibility: hidden;
+  }
+
+  99% {
+    transform: translateX(-72px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* End nút dark/light */
