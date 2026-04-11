@@ -549,10 +549,31 @@ pre {
   color: #ffffff;
 }
 
-.menu-item.active {
+/* .menu-item.active {
   background: linear-gradient(90deg, #2563eb, #1d4ed8);
   color: #fff;
   font-weight: 600;
+}
+  .menu-item-parent.active {
+  background: transparent;
+  color: #2563eb;
+}
+
+.vmix-submenu-item.active {
+  border-color: #2563eb !important;
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+}
+ */
+
+.menu-item.active,
+.menu-item-parent.active,
+.menu-submenu .menu-item.active,
+.vmix-submenu-item.active {
+  background: transparent !important;
+  color: #e5e7eb !important;
+  font-weight: 500 !important;
+  border-color: transparent !important;
 }
 
 .menu-item-with-children {
@@ -564,11 +585,6 @@ pre {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-}
-
-.menu-item-parent.active {
-  background: transparent;
-  color: #2563eb;
 }
 
 .menu-item-parent:hover {
@@ -618,12 +634,6 @@ pre {
   padding: 4px 10px;
   border-radius: 8px;
   font-size: 12px;
-}
-
-.vmix-submenu-item.active {
-  border-color: #2563eb !important;
-  background: #eff6ff !important;
-  color: #1d4ed8 !important;
 }
 
 .config-main {
