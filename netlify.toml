@@ -94,6 +94,11 @@
   to = "/.netlify/functions/public-domains0b"
   status = 200
 
+   [[redirects]]
+  from = "/api/public/domains789"
+  to = "/.netlify/functions/public-domains789"
+  status = 200
+
 [[edge_functions]]
   path = "/"
   function = "ip-guard"

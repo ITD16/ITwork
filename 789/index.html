@@ -1,23 +1,29 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>789</title>
-  <!-- ✅ Favicon -->
-  <link rel="icon" type="image/png" href="../logo/789.png?v=1">
-  
-  <link rel="stylesheet" href="../css/config-789.css">
-</head>
-<body>
-  <!-- gọi chạy pháo hoa -->
-  <canvas id="canvas"></canvas>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>789</title>
+    <!-- ✅ Favicon -->
+    <link rel="icon" type="image/png" href="../logo/789.png?v=1" />
 
-  <!-- ✅ LED SNAKE DOTS (10 hạt chạy vòng) -->
-  <svg class="led-border" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-    <!-- Đường chạy quanh viền (bo góc) -->
-    <path id="ledPath"
-      d="M 12 2
+    <link rel="stylesheet" href="../css/config-789.css" />
+  </head>
+  <body>
+    <!-- gọi chạy pháo hoa -->
+    <canvas id="canvas"></canvas>
+
+    <!-- ✅ LED SNAKE DOTS (10 hạt chạy vòng) -->
+    <svg
+      class="led-border"
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <!-- Đường chạy quanh viền (bo góc) -->
+      <path
+        id="ledPath"
+        d="M 12 2
          H 88
          A 10 10 0 0 1 98 12
          V 88
@@ -27,59 +33,61 @@
          V 12
          A 10 10 0 0 1 12 2
          Z"
-      fill="none"
-      stroke="transparent"
-      stroke-width="0"
-    />
-    <g id="ledDots"></g>
-  </svg>
+        fill="none"
+        stroke="transparent"
+        stroke-width="0"
+      />
+      <g id="ledDots"></g>
+    </svg>
 
-  <!-- Hai dòng domain, sẽ được gán text bằng JS -->
-  <div class="content">
-    <h1 class="autofit" style="margin:0 0 30px 0;" id="domain1"></h1>
-    <!-- Đồng hồ GMT+7 -->
-    <div id="clock-container">
-      <div id="clock-line">--:--:-- - --/--/----</div>
+    <!-- Hai dòng domain, sẽ được gán text bằng JS -->
+    <div class="content">
+      <h1 class="autofit" style="margin: 0 0 30px 0" id="domain1"></h1>
+      <!-- Đồng hồ GMT+7 -->
+      <div id="clock-container">
+        <div id="clock-line">--:--:-- - --/--/----</div>
+      </div>
     </div>
-  </div>
 
-  <script src="../js/firework.js"></script>
-  <script src="../js/oclock.js"></script>
+    <script src="../js/firework.js"></script>
+    <script src="../js/oclock.js"></script>
 
-  <script>
-    const CONFIG_URL = "../config.json";
+    <script>
+      const CONFIG_URL = "/api/public/domains789";
 
-    async function applyConfig() {
-      try {
-        const res = await fetch(CONFIG_URL + "?t=" + Date.now(), { cache: "no-cache" });
-        if (!res.ok) throw new Error("Không load được config.json");
-        const cfg = await res.json();
+      async function applyConfig() {
+        try {
+          const res = await fetch(CONFIG_URL + "?t=" + Date.now(), {
+            cache: "no-cache",
+          });
+          if (!res.ok) throw new Error("Không load được config.json");
+          const cfg = await res.json();
 
-        const domains = cfg.domains789 || [];
-        document.getElementById("domain1").textContent = domains[0] || "";
-        
-    autoFitText();
+          const domains = cfg.domains789 || [];
+          document.getElementById("domain1").textContent = domains[0] || "";
 
-        if (cfg.enableFirework === true && !window._fireworkStarted) {
-          window._fireworkStarted = false;
-          // startFirework();
+          autoFitText();
+
+          if (cfg.enableFirework === true && !window._fireworkStarted) {
+            window._fireworkStarted = false;
+            // startFirework();
+          }
+        } catch (e) {
+          console.error(e);
         }
-      } catch (e) {
-        console.error(e);
       }
-    }
 
-    applyConfig();
-    setInterval(applyConfig, 10000);
-  </script>
+      applyConfig();
+      setInterval(applyConfig, 10000);
+    </script>
 
- <!-- Chạy script Snake -->
-  <script src="../js/snake.js"></script>
+    <!-- Chạy script Snake -->
+    <script src="../js/snake.js"></script>
 
-  <!-- Chạy script Double Fullscreen -->
-  <script src="../js/fullscreen.js"></script>
+    <!-- Chạy script Double Fullscreen -->
+    <script src="../js/fullscreen.js"></script>
 
-  <!-- Tự động co chữ theo độ dài -->
-  <script src="../js/autofit.js" defer></script>
-</body>
+    <!-- Tự động co chữ theo độ dài -->
+    <script src="../js/autofit.js" defer></script>
+  </body>
 </html>
