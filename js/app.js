@@ -106,6 +106,13 @@ const els = {
   logsMenuBtn: document.getElementById("logsMenuBtn"),
   logsSubmenu: document.getElementById("logsSubmenu"),
   vmixMenuGroup: document.getElementById("vmixMenuGroup"),
+  idolMenuGroup: document.getElementById("idolMenuGroup"),
+  idolMenuBtn: document.getElementById("idolMenuBtn"),
+  idolSubmenu: document.getElementById("idolSubmenu"),
+
+  webscamMenuGroup: document.getElementById("webscamMenuGroup"),
+  webscamMenuBtn: document.getElementById("webscamMenuBtn"),
+  webscamSubmenu: document.getElementById("webscamSubmenu"),
   vmixMenuBtn: document.getElementById("vmixMenuBtn"),
   vmixSubmenu: document.getElementById("vmixSubmenu"),
   vmixEnabled: document.getElementById("vmixEnabled"),
@@ -1263,6 +1270,22 @@ function showPanel(panelId) {
       return;
     }
 
+    if (btn.classList.contains("idol-submenu-item")) {
+      btn.classList.toggle(
+        "active",
+        btn.getAttribute("data-panel-id") === panelId,
+      );
+      return;
+    }
+
+    if (btn.classList.contains("webscam-submenu-item")) {
+      btn.classList.toggle(
+        "active",
+        btn.getAttribute("data-panel-id") === panelId,
+      );
+      return;
+    }
+
     btn.classList.toggle(
       "active",
       btn.getAttribute("data-panel-id") === panelId,
@@ -1321,6 +1344,41 @@ function refreshMenuByRole() {
     const hasDomainMenu =
       canEditDomains1b() || canEditDomains0b() || canEditDomains789();
     els.domainsMenuGroup.style.display = hasDomainMenu ? "" : "none";
+  }
+
+  document
+    .querySelectorAll(".idol-submenu-item[data-panel-id]")
+    .forEach((btn) => {
+      const panelId = btn.getAttribute("data-panel-id");
+      let visible = false;
+
+      if (panelId === "contentidolPanel") visible = canEditContentIdol();
+      if (panelId === "contentidolSettingsPanel")
+        visible = canEditContentIdolSettings();
+
+      btn.style.display = visible ? "" : "none";
+    });
+
+  if (els.idolMenuGroup) {
+    const hasIdolMenu = canEditContentIdol() || canEditContentIdolSettings();
+    els.idolMenuGroup.style.display = hasIdolMenu ? "" : "none";
+  }
+
+  document
+    .querySelectorAll(".webscam-submenu-item[data-panel-id]")
+    .forEach((btn) => {
+      const panelId = btn.getAttribute("data-panel-id");
+      let visible = false;
+
+      if (panelId === "webscam1bPanel") visible = canEditWebscam1b();
+      if (panelId === "webscam0bPanel") visible = canEditWebscam0b();
+
+      btn.style.display = visible ? "" : "none";
+    });
+
+  if (els.webscamMenuGroup) {
+    const hasWebscamMenu = canEditWebscam1b() || canEditWebscam0b();
+    els.webscamMenuGroup.style.display = hasWebscamMenu ? "" : "none";
   }
 
   const firstVisible = panelMeta.find((x) => x.visible);
@@ -2108,6 +2166,46 @@ function bindMenuUi() {
     e.stopPropagation();
     resetIdleTimer();
   });
+
+  els.idolMenuBtn?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    resetIdleTimer();
+  });
+
+  document
+    .querySelectorAll(".idol-submenu-item[data-panel-id]")
+    .forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+
+        const panelId = btn.getAttribute("data-panel-id");
+        if (!panelId) return;
+
+        showPanel(panelId);
+        closeMenu();
+        resetIdleTimer();
+      });
+    });
+
+  els.webscamMenuBtn?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    resetIdleTimer();
+  });
+
+  document
+    .querySelectorAll(".webscam-submenu-item[data-panel-id]")
+    .forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+
+        const panelId = btn.getAttribute("data-panel-id");
+        if (!panelId) return;
+
+        showPanel(panelId);
+        closeMenu();
+        resetIdleTimer();
+      });
+    });
 
   document
     .querySelectorAll(".domains-submenu-item[data-panel-id]")

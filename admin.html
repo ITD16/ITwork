@@ -42,22 +42,37 @@
                     Enable Pháo hoa
                   </button>
 
-                  <button
-                    type="button"
-                    class="menu-item"
-                    data-panel-id="contentidolPanel"
-                  >
-                    Content Idol
-                  </button>
+                  /* Menu change config idol */
+                  <div class="menu-item-with-children" id="idolMenuGroup">
+                    <button
+                      type="button"
+                      class="menu-item menu-item-parent"
+                      id="idolMenuBtn"
+                    >
+                      <span>Config Idol</span>
+                      <span class="menu-item-arrow">›</span>
+                    </button>
 
-                  <button
-                    type="button"
-                    class="menu-item"
-                    data-panel-id="contentidolSettingsPanel"
-                  >
-                    Content Idol Settings
-                  </button>
+                    <div class="menu-submenu" id="idolSubmenu">
+                      <button
+                        type="button"
+                        class="menu-item idol-submenu-item"
+                        data-panel-id="contentidolPanel"
+                      >
+                        Content Idol
+                      </button>
 
+                      <button
+                        type="button"
+                        class="menu-item idol-submenu-item"
+                        data-panel-id="contentidolSettingsPanel"
+                      >
+                        Content Idol Settings
+                      </button>
+                    </div>
+                  </div>
+
+                  /* Menu change domain */
                   <div class="menu-item-with-children" id="domainsMenuGroup">
                     <button
                       type="button"
@@ -95,22 +110,37 @@
                     </div>
                   </div>
 
-                  <button
-                    type="button"
-                    class="menu-item"
-                    data-panel-id="webscam1bPanel"
-                  >
-                    Webscam 1B
-                  </button>
+                  /* Menu change link webscam */
+                  <div class="menu-item-with-children" id="webscamMenuGroup">
+                    <button
+                      type="button"
+                      class="menu-item menu-item-parent"
+                      id="webscamMenuBtn"
+                    >
+                      <span>Change link Webscam</span>
+                      <span class="menu-item-arrow">›</span>
+                    </button>
 
-                  <button
-                    type="button"
-                    class="menu-item"
-                    data-panel-id="webscam0bPanel"
-                  >
-                    Webscam 0B
-                  </button>
+                    <div class="menu-submenu" id="webscamSubmenu">
+                      <button
+                        type="button"
+                        class="menu-item webscam-submenu-item"
+                        data-panel-id="webscam1bPanel"
+                      >
+                        Webscam 1B
+                      </button>
 
+                      <button
+                        type="button"
+                        class="menu-item webscam-submenu-item"
+                        data-panel-id="webscam0bPanel"
+                      >
+                        Webscam 0B
+                      </button>
+                    </div>
+                  </div>
+
+                  /* Menu xem logs */
                   <div class="menu-item-with-children" id="logsMenuGroup">
                     <button
                       type="button"
@@ -140,6 +170,7 @@
                     </div>
                   </div>
 
+                  /* Menu vmix config */
                   <div
                     class="menu-item-with-children"
                     id="vmixMenuGroup"
