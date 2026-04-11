@@ -169,7 +169,7 @@ function isAdmin() {
   return roleName() === "admin";
 }
 
-function getPermissions() {
+/* function getPermissions() {
   const allowed = currentMe?.allowedPanels || [];
   return {
     contentidol: allowed.includes("contentidol"),
@@ -184,6 +184,41 @@ function getPermissions() {
     vmixConfig0: allowed.includes("vmixConfig0"),
     vmixConfig2: allowed.includes("vmixConfig2"),
     enableFirework: isAdmin(),
+  };
+} */
+
+function getPermissions() {
+  if (isAdmin()) {
+    return {
+      contentidol: true,
+      contentidolSettings: true,
+      domains1b: true,
+      domains789: true,
+      domains0b: true,
+      domains52b: true,
+      webscam1b: true,
+      webscam0b: true,
+      vmixConfig: true,
+      vmixConfig0: true,
+      vmixConfig2: true,
+      enableFirework: true,
+    };
+  }
+
+  const allowed = currentMe?.allowedPanels || [];
+  return {
+    contentidol: allowed.includes("contentidol"),
+    contentidolSettings: allowed.includes("contentidolSettings"),
+    domains1b: allowed.includes("domains1b"),
+    domains789: allowed.includes("domains789"),
+    domains0b: allowed.includes("domains0b"),
+    domains52b: allowed.includes("domains52b"),
+    webscam1b: allowed.includes("webscam1b"),
+    webscam0b: allowed.includes("webscam0b"),
+    vmixConfig: allowed.includes("vmixConfig"),
+    vmixConfig0: allowed.includes("vmixConfig0"),
+    vmixConfig2: allowed.includes("vmixConfig2"),
+    enableFirework: false,
   };
 }
 
