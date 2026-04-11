@@ -134,11 +134,18 @@
           return el;
         };
 
+        const shadow = makeText({
+          fill: "none",
+          stroke: "#2a1a0d",
+          "stroke-width": "11",
+          opacity: "0.9",
+          filter: "url(#softLampShadow)",
+        });
+
         const edge = makeText({
           fill: "none",
           stroke: "url(#edgeCap)",
           "stroke-width": "11",
-          filter: "url(#softLampShadow)",
         });
 
         const body = makeText({
@@ -154,6 +161,7 @@
           opacity: "0.7",
         });
 
+        svgGroup.appendChild(shadow);
         svgGroup.appendChild(edge);
         svgGroup.appendChild(body);
         svgGroup.appendChild(rim);
