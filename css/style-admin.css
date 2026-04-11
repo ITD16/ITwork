@@ -566,6 +566,16 @@ pre {
   background: rgba(255, 255, 255, 0.08) !important;
   color: #ffffff !important;
 }
+.menu-list > .menu-item:hover,
+.menu-item-parent:hover {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.menu-submenu .menu-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
 
 .menu-item-with-children {
   position: relative;
