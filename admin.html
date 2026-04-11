@@ -58,29 +58,42 @@
                     Content Idol Settings
                   </button>
 
-                  <button
-                    type="button"
-                    class="menu-item"
-                    data-panel-id="domains1bPanel"
-                  >
-                    Change Dom 1B
-                  </button>
+                  <div class="menu-item-with-children" id="domainsMenuGroup">
+                    <button
+                      type="button"
+                      class="menu-item menu-item-parent"
+                      id="domainsMenuBtn"
+                    >
+                      <span>Change Domain</span>
+                      <span class="menu-item-arrow">›</span>
+                    </button>
 
-                  <button
-                    type="button"
-                    class="menu-item"
-                    data-panel-id="domains789Panel"
-                  >
-                    Change Dom 789
-                  </button>
+                    <div class="menu-submenu" id="domainsSubmenu">
+                      <button
+                        type="button"
+                        class="menu-item domains-submenu-item"
+                        data-panel-id="domains1bPanel"
+                      >
+                        Change Dom 1B
+                      </button>
 
-                  <button
-                    type="button"
-                    class="menu-item"
-                    data-panel-id="domains0bPanel"
-                  >
-                    Change Dom 0B
-                  </button>
+                      <button
+                        type="button"
+                        class="menu-item domains-submenu-item"
+                        data-panel-id="domains0bPanel"
+                      >
+                        Change Dom 0B
+                      </button>
+
+                      <button
+                        type="button"
+                        class="menu-item domains-submenu-item"
+                        data-panel-id="domains789Panel"
+                      >
+                        Change Dom 789
+                      </button>
+                    </div>
+                  </div>
 
                   <button
                     type="button"

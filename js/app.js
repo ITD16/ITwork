@@ -100,6 +100,9 @@ const els = {
   webscam0bList: document.getElementById("webscam0bList"),
 
   logsMenuGroup: document.getElementById("logsMenuGroup"),
+  domainsMenuGroup: document.getElementById("domainsMenuGroup"),
+  domainsMenuBtn: document.getElementById("domainsMenuBtn"),
+  domainsSubmenu: document.getElementById("domainsSubmenu"),
   logsMenuBtn: document.getElementById("logsMenuBtn"),
   logsSubmenu: document.getElementById("logsSubmenu"),
   vmixMenuGroup: document.getElementById("vmixMenuGroup"),
@@ -1252,7 +1255,18 @@ function showPanel(panelId) {
       return;
     }
 
-    btn.classList.remove("active");
+    if (btn.classList.contains("domains-submenu-item")) {
+      btn.classList.toggle(
+        "active",
+        btn.getAttribute("data-panel-id") === panelId,
+      );
+      return;
+    }
+
+    btn.classList.toggle(
+      "active",
+      btn.getAttribute("data-panel-id") === panelId,
+    );
   });
 
   if (els.panelTitle) els.panelTitle.textContent = targetMeta.label;
@@ -1286,8 +1300,27 @@ function refreshMenuByRole() {
       btn.style.display = canEditVmixTarget(target) ? "" : "none";
     });
 
+  document
+    .querySelectorAll(".domains-submenu-item[data-panel-id]")
+    .forEach((btn) => {
+      const panelId = btn.getAttribute("data-panel-id");
+      let visible = false;
+
+      if (panelId === "domains1bPanel") visible = canEditDomains1b();
+      if (panelId === "domains0bPanel") visible = canEditDomains0b();
+      if (panelId === "domains789Panel") visible = canEditDomains789();
+
+      btn.style.display = visible ? "" : "none";
+    });
+
   if (els.vmixMenuGroup) {
     els.vmixMenuGroup.style.display = canEditVmixConfig() ? "" : "none";
+  }
+
+  if (els.domainsMenuGroup) {
+    const hasDomainMenu =
+      canEditDomains1b() || canEditDomains0b() || canEditDomains789();
+    els.domainsMenuGroup.style.display = hasDomainMenu ? "" : "none";
   }
 
   const firstVisible = panelMeta.find((x) => x.visible);
@@ -2071,6 +2104,25 @@ function bindMenuUi() {
     e.stopPropagation();
     resetIdleTimer();
   });
+  els.domainsMenuBtn?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    resetIdleTimer();
+  });
+
+  document
+    .querySelectorAll(".domains-submenu-item[data-panel-id]")
+    .forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+
+        const panelId = btn.getAttribute("data-panel-id");
+        if (!panelId) return;
+
+        showPanel(panelId);
+        closeMenu();
+        resetIdleTimer();
+      });
+    });
 
   document
     .querySelectorAll(".logs-submenu-item[data-log-view]")
