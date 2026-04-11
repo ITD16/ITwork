@@ -549,23 +549,6 @@ pre {
   color: #ffffff;
 }
 
-/* .menu-item.active {
-  background: linear-gradient(90deg, #2563eb, #1d4ed8);
-  color: #fff;
-  font-weight: 600;
-}
-  .menu-item-parent.active {
-  background: transparent;
-  color: #2563eb;
-}
-
-.vmix-submenu-item.active {
-  border-color: #2563eb !important;
-  background: #eff6ff !important;
-  color: #1d4ed8 !important;
-}
- */
-
 .menu-item.active,
 .menu-item-parent.active,
 .menu-submenu .menu-item.active,
@@ -574,6 +557,14 @@ pre {
   color: #e5e7eb !important;
   font-weight: 500 !important;
   border-color: transparent !important;
+}
+
+.menu-item.active:hover,
+.menu-item-parent.active:hover,
+.menu-submenu .menu-item.active:hover,
+.vmix-submenu-item.active:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
 }
 
 .menu-item-with-children {
