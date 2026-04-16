@@ -63,3 +63,4 @@
 {"time":"2026-04-11T09:28:21.821Z","user":"admin","role":"admin","ip":"108.165.93.70","deviceInfo":"Mac / Chrome","action":"update_config","target":"config","changes":{"domains52b":{"before":["B52.ID","TEST.CC"],"after":["B52.IT","TEST.CC"]}}}
 {"time":"2026-04-11T09:28:52.282Z","user":"admin","role":"admin","ip":"108.165.93.70","deviceInfo":"Mac / Chrome","action":"update_config","target":"config","changes":{"domains52b":{"before":["B52.IT","TEST.CC"],"after":["B52.IT"]}}}
 {"time":"2026-04-11T09:34:55.631Z","user":"admin","role":"admin","ip":"108.165.93.70","deviceInfo":"Mac / Chrome","action":"update_config","target":"config","changes":{"domains52b":{"before":["B52.IT"],"after":["B52.ID"]}}}
+{"time":"2026-04-16T13:25:17.077Z","user":"admin","role":"admin","ip":"108.165.93.70","deviceInfo":"Mac / Chrome","action":"update_vmix_config2","target":"vmix-config2","changes":{"triggerTimes":{"before":["04:00","10:00","16:00","22:00"],"after":["02:00","10:00"]}}}
