@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Sun</title>
+    <link rel="stylesheet" href="../css/style-domain2.css" />
+  </head>
+  <body>
+    <!-- Canvas full màn hình (giữ nguyên khung hiện tại của bạn) -->
+    <canvas id="canvas"></canvas>
+
+    <!-- Frame 16:9 chuẩn 1920x1080 (được scale để fit màn hình) -->
+    <div id="frame169">
+      <!-- Vùng chữ chạy 9:16 ở giữa: 607.5 x 1080 -->
+      <div id="portraitStage">
+        <h1 class="moving-domain" id="domain1">
+          <span class="icon">✅</span>
+          <span class="domain-text"></span>
+        </h1>
+
+        <h1 class="moving-domain" id="domain2">
+          <span class="icon">✅</span>
+          <span class="domain-text"></span>
+        </h1>
+      </div>
+    </div>
+
+    <script>
+      const CONFIG_URL = "../config.json";
+
+      let domain1 = null;
+      let domain2 = null;
+      let stage = null;
+      let frame = null;
+
+      let lastDomainsKey = "";
+
+      async function applyConfig() {
+        try {
+          const res = await fetch(CONFIG_URL + "?t=" + Date.now(), {
+            cache: "no-cache",
+          });
+          if (!res.ok) throw new Error("Không load được config.json");
+          const cfg = await res.json();
+
+          if (cfg.title) document.title = cfg.title;
+
+          const domains = cfg.domains0b || [];
+          const d1 = domains[0] || "";
+          const d2 = domains[1] || "";
+
+          const key =
+            d1 + "||" + d2 + "||" + String(cfg.enableFirework === true);
+          if (key === lastDomainsKey) return;
+          lastDomainsKey = key;
+
+          const d1Text = domain1.querySelector(".domain-text");
+          const d2Text = domain2.querySelector(".domain-text");
+          if (d1Text) d1Text.textContent = d1;
+          if (d2Text) d2Text.textContent = d2;
+
+          window.ENABLE_FIREWORK = cfg.enableFirework === true;
+
+          requestAnimationFrame(clampPositions);
+        } catch (e) {
+          console.error(e);
+          window.ENABLE_FIREWORK = false;
+        }
+      }
+
+      function fitFrame169() {
+        if (!frame) return;
+        const scale = Math.min(
+          window.innerWidth / 1920,
+          window.innerHeight / 1080,
+        );
+        frame.style.transform = `translate(-50%, -50%) scale(${scale})`;
+      }
+
+      let x = 0,
+        y = 0,
+        dx = 0.5,
+        dy = 0.8;
+      const lineGap = 18; // khoảng cách giữa 2 dòng
+
+      function random(min, max) {
+        return Math.random() * (max - min) + min;
+      }
+
+      function initPositions() {
+        if (!domain1 || !domain2 || !stage) return;
+
+        const W = stage.clientWidth;
+        const H = stage.clientHeight;
+
+        const w1 = domain1.offsetWidth;
+        const h1 = domain1.offsetHeight;
+        const w2 = domain2.offsetWidth;
+        const h2 = domain2.offsetHeight;
+
+        const groupWidth = Math.max(w1, w2);
+        const groupHeight = h1 + lineGap + h2;
+
+        x = random(0, Math.max(1, W - groupWidth));
+        y = random(0, Math.max(1, H - groupHeight));
+
+        dx = 0.5 * (Math.random() < 0.5 ? 1 : -1);
+        dy = 0.8 * (Math.random() < 0.5 ? 1 : -1);
+      }
+
+      function clampPositions() {
+        if (!domain1 || !domain2 || !stage) return;
+
+        const W = stage.clientWidth;
+        const H = stage.clientHeight;
+
+        const w1 = domain1.offsetWidth;
+        const h1 = domain1.offsetHeight;
+        const w2 = domain2.offsetWidth;
+        const h2 = domain2.offsetHeight;
+
+        const groupWidth = Math.max(w1, w2);
+        const groupHeight = h1 + lineGap + h2;
+
+        x = Math.min(Math.max(0, x), Math.max(0, W - groupWidth));
+        y = Math.min(Math.max(0, y), Math.max(0, H - groupHeight));
+      }
+
+      function animateTogether() {
+        if (!domain1 || !domain2 || !stage) return;
+
+        const W = stage.clientWidth;
+        const H = stage.clientHeight;
+
+        const w1 = domain1.offsetWidth;
+        const h1 = domain1.offsetHeight;
+        const w2 = domain2.offsetWidth;
+        const h2 = domain2.offsetHeight;
+
+        const groupWidth = Math.max(w1, w2);
+        const groupHeight = h1 + lineGap + h2;
+
+        x += dx;
+        y += dy;
+
+        if (x <= 0 || x + groupWidth >= W) dx = -dx;
+        if (y <= 0 || y + groupHeight >= H) dy = -dy;
+
+        domain1.style.left = x + "px";
+        domain1.style.top = y + "px";
+
+        domain2.style.left = x + "px";
+        domain2.style.top = y + h1 + lineGap + "px";
+
+        requestAnimationFrame(animateTogether);
+      }
+
+      async function startAll() {
+        domain1 = document.getElementById("domain1");
+        domain2 = document.getElementById("domain2");
+        stage = document.getElementById("portraitStage");
+        frame = document.getElementById("frame169");
+
+        if (!domain1 || !domain2 || !stage || !frame) {
+          console.error(
+            "Thiếu #domain1 / #domain2 / #portraitStage / #frame169",
+          );
+          return;
+        }
+
+        fitFrame169();
+        await applyConfig();
+
+        requestAnimationFrame(() => {
+          initPositions();
+          animateTogether();
+        });
+
+        setInterval(applyConfig, 10000);
+
+        window.addEventListener("resize", () => {
+          fitFrame169();
+          initPositions();
+        });
+      }
+
+      window.addEventListener("load", startAll);
+    </script>
+  </body>
+</html>
