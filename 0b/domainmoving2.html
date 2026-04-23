@@ -4,7 +4,100 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>Sun</title>
-    <link rel="stylesheet" href="../css/style-domain2.css" />
+    <style>
+      body {
+  margin: 0;
+  overflow: hidden;
+  background: #404040;
+}
+
+*{
+  padding: 0;
+  margin: 0;
+}
+
+/* Canvas full màn hình */
+#canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Frame 16:9 chuẩn 1920x1080 (scale bằng JS) */
+#frame169 {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: center;
+  transform: translate(-50%, -50%) scale(1);
+  /* debug nếu cần */
+  /* outline: 2px solid rgba(255,255,255,.15); */
+}
+
+/* Vùng chạy chữ 9:16 ở giữa (607.5 x 1080) */
+#portraitStage {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 1920px; /* 1080 * 9/16 */
+  height: 1080px;
+  transform: translateX(-50%);
+  overflow: hidden;
+
+  /* debug nếu cần */
+  /* outline: 2px dashed rgba(255,255,255,.35); */
+}
+
+/* H1 dùng để định vị & di chuyển */
+.moving-domain {
+  position: absolute;
+  font-size: 30px;
+  white-space: nowrap;
+  pointer-events: none;
+
+  margin: 0;
+  padding: 0;
+  line-height: 0.8;
+  font-family:
+    "Poppins",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+/* Emoji */
+.moving-domain .icon {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: -4px;
+  filter: none;
+}
+
+/* Gradient chỉ áp lên chữ domain */
+.moving-domain .domain-text {
+  display: inline-block;
+  vertical-align: middle;
+
+  font-weight: 700;
+  letter-spacing: 2px;
+
+  background: linear-gradient(
+    55deg,
+    #e0bd58 0%,
+    #e0bd58 100%
+  );
+
+  filter: drop-shadow(0.5px 0.1px 1px #0d0d0d);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+    </style>
   </head>
   <body>
     <!-- Canvas full màn hình (giữ nguyên khung hiện tại của bạn) -->
@@ -15,12 +108,10 @@
       <!-- Vùng chữ chạy 9:16 ở giữa: 607.5 x 1080 -->
       <div id="portraitStage">
         <h1 class="moving-domain" id="domain1">
-          <span class="icon">✅</span>
           <span class="domain-text"></span>
         </h1>
 
         <h1 class="moving-domain" id="domain2">
-          <span class="icon">✅</span>
           <span class="domain-text"></span>
         </h1>
       </div>
