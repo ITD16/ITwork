@@ -72,3 +72,4 @@
 {"time":"2026-04-23T05:43:38.418Z","user":"louis","role":"admin","ip":"142.111.69.190","deviceInfo":"Mac / Chrome","action":"update_config","target":"config","changes":{"domains789":{"before":["789CLUB.PL"],"after":["789CLUB.MOI"]}}}
 {"time":"2026-04-24T09:52:52.481Z","user":"admin","role":"admin","ip":"108.165.93.70","deviceInfo":"Mac / Chrome","action":"update_config","target":"config","changes":{"domains1b":{"before":["SUNWIN.AF","GEMWIN.VC"],"after":["SUNWIN.ML","GEMWIN.KE"]}}}
 {"time":"2026-04-24T10:58:30.019Z","user":"admin","role":"admin","ip":"108.165.93.70","deviceInfo":"Mac / Chrome","action":"update_config","target":"config","changes":{"domains0b":{"before":["HITCLUB.LC","GO88.AL"],"after":["HITCLUB.TG","GO88.NG"]}}}
+{"time":"2026-04-24T13:23:22.256Z","user":"admin","role":"admin","ip":"108.165.93.70","deviceInfo":"Mac / Chrome","action":"update_config","target":"config","changes":{"domains789":{"before":["789CLUB.MOI"],"after":["789CLUB.BI"]}}}
